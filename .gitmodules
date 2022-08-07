@@ -1,0 +1,4 @@
+[submodule "tools/GTX2RTX/ninTexUtils"]
+	path = tools/GTX2RTX/ninTexUtils
+	url = https://github.com/aboood40091/ninTexUtils
+	branch = python
