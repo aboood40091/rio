@@ -1,0 +1,53 @@
+General:
+  Build options:
+    -std=gnu++17
+    -fPIC
+    -m32
+    -Wall
+    -Wmissing-include-dirs
+    -Wundef
+    -Wredundant-decls
+    -Wcast-align
+
+  Defines:
+    GLEW_STATIC
+
+  Link:
+    libglfw3.a
+    libopengl32.a
+    libgdi32.a
+
+  Include:
+    "path\to\rio "\include
+    "path\to\glew"\include
+    "path\to\glfw"\include
+
+Debug:
+  Build options:
+    -Og
+    -g
+
+  Defines:
+    RIO_DEBUG
+
+  Link:
+    { None }
+
+  Include:
+    { None }
+
+Release:
+  Build options:
+    -Winline
+    -fomit-frame-pointer
+    -O3
+    -s
+
+  Defines:
+    RIO_RELEASE
+
+  Link:
+    { None }
+
+  Include:
+    { None }

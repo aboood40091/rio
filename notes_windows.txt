@@ -1,0 +1,16 @@
+* Requires OpenGL v3.3 Core Profile and GLFW3.
+
+* Requires OpenGL v4.2 if uniform blocks are used.
+
+* Requires OpenGL v4.5 or the following OpenGL extension:
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_clip_control.txt
+
+* Requires the following OpenGL extensions if the user wishes to use their corresponding features:
+  - https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_mirror_clamp.txt
+  - https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_filter_anisotropic.txt
+  - https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_compression_s3tc.txt (For DXT1/3/5)
+  - https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_sRGB.txt (For sRGB DXT1/3/5)
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_ES2_compatibility.txt (For RGB565)
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_vertex_type_10f_11f_11f_rev.txt
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_vertex_type_2_10_10_10_rev.txt
+  These extensions are very likely to be implemented virtually everywhere as they are also required by DirectX.
