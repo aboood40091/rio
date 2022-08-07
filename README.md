@@ -252,6 +252,9 @@ Main features:
 * Availability of Color, Depth and Stencil buffers that can be cleared to custom values at any time.  
 * Variable swap intervals, currently for setting how many screen refreshes to wait between each swap of front and back buffers. (Do note that on Windows, the screen refresh rate is used and, for equal framerates as on Wii U, should be 60Hz. This behavior may change in the future.)  
 
+On Windows, the coordinate-system is changed to be compliant with GX2 and origin is set to upper left.  
+However, this seems to affect scissors on Intel GPUs as they are not reversed accordingly. In case you are facing this issue, try defining the macro `RIO_WIN_GL_SCISSOR_INVERTED`.  
+
 #### `LookAtCamera`
 Self-explanatory class for a look-at camera. See header for more.  
 (Look-around camera may be added later for debugging purposes.)
