@@ -7,6 +7,8 @@ RIO is based heavily on Nintendo's own libraries for Wii U such as my [sead](htt
 Therefore, it can be used as an accurate source on how to use certain features on the Wii U, as well as Nintendo's answer to cross-platform support that includes their platforms.  
 
 Not all components in RIO are thread-safe and **there is currently no multi-threading support**, with hopes of actually adding it in the future.  
+
+Examples can be found [here](https://github.com/aboood40091/RIO-Tests).  
   
 Docs can be found... nowhere yet as I am still working on it. In the meantime, I tried to fill this README with as much information I could and left some useful comments in the headers.  
 
