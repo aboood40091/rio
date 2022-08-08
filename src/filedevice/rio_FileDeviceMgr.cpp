@@ -45,8 +45,12 @@ FileDeviceMgr::FileDeviceMgr()
     mDefaultFileDevice = mMainFileDevice;
 
 #if RIO_IS_CAFE
+#ifdef RIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT
+    mCafeContentFileDevice = mMainFileDevice;
+#else
     mCafeContentFileDevice = new ContentFileDevice();
     mount(mCafeContentFileDevice);
+#endif // RIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT
 #endif // RIO_IS_CAFE
 }
 
@@ -59,11 +63,15 @@ FileDeviceMgr::~FileDeviceMgr()
     }
 
 #if RIO_IS_CAFE
+#ifdef RIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT
+    mCafeContentFileDevice = nullptr;
+#else
     if (mCafeContentFileDevice)
     {
         delete mCafeContentFileDevice;
         mCafeContentFileDevice = nullptr;
     }
+#endif // RIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT
 
     FSDelClient(&mFSClient, FS_ERROR_FLAG_NONE);
     SAVEShutdown();

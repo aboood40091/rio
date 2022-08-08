@@ -31,9 +31,11 @@
 #ifdef __cplusplus
     #include <cstdint>
     #include <cstddef>
+    #include <cassert>
 #else
     #include <stdint.h>
     #include <stddef.h>
+    #include <assert.h>
     #include <stdbool.h>
 #endif
 
@@ -65,11 +67,6 @@ static_assert(sizeof(f64) == 8);
 
 #ifdef RIO_DEBUG
     #if RIO_IS_WIN
-        #ifdef __cplusplus
-            #include <cassert>
-        #else
-            #include <assert.h>
-        #endif
         #define RIO_ASSERT(ARG) assert(ARG)
 
         #ifdef __cplusplus
