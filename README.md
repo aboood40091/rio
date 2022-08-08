@@ -200,7 +200,7 @@ Expected format is RTX (custom format) on Windows and GTX (GFD Texture) on Wii U
 Many tools are available for generating GTX files, such as [this one](https://github.com/aboood40091/GTX-Extractor-Rewrite) (builds of older version [here](https://github.com/aboood40091/GTX-Extractor/releases)).  
 A script is available in the repository for converting GTX to RTX, with hopes for a separate tool in the future.  
 See header for supported texture formats.  
-Support for other dimensions and depths is planned.  
+Support for other dimensions and depths, as well as multiple textures per file (though not a priority) is planned.  
 
 Texture files are expected to be ***relative to the `textures` folder on the default file device***.  
 Appended extension is `.rtx` on Windows and `.gtx` on Wii U.  
@@ -256,6 +256,10 @@ Main features:
 
 On Windows, the coordinate-system is changed to be compliant with GX2 and origin is set to upper left.  
 However, this seems to affect scissors on Intel GPUs as they are not reversed accordingly. In case you are facing this issue, try defining the macro `RIO_WIN_GL_SCISSOR_INVERTED`.  
+
+Currently, there is no way to trigger an exit from the code itself, but it will be added eventually.  
+Moreover, do note that the main loop does not return **on Wii U** as the Window termination code calls `exit()` directly, as Cafe OS lets you not to worry about freeing resources.  
+Therefore, if you have code you are expecting to run at the end of the application, do not rely on that. (This behavior may change in the future.)  
 
 #### `LookAtCamera`
 Self-explanatory class for a look-at camera. See header for more.  
