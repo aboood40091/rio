@@ -76,7 +76,8 @@ static_assert(sizeof(f64) == 8);
         #endif
         #define RIO_LOG(FMT, ARGS...) printf(FMT, ## ARGS)
     #elif RIO_IS_CAFE
-        extern "C" void OSPanic(const char*, u32, const char*, ...);
+        #include <coreinit/debug.h>
+
         #define RIO_ASSERT(ARG)                         \
             do                                          \
             {                                           \
@@ -84,7 +85,6 @@ static_assert(sizeof(f64) == 8);
                     OSPanic(__FILE__, __LINE__, #ARG);  \
             } while (0)
 
-        extern "C" void OSReport(const char*, ...);
         #define RIO_LOG(FMT, ARGS...) OSReport(FMT, ## ARGS)
     #endif
 #else
