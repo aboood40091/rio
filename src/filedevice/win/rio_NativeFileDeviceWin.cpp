@@ -2,7 +2,7 @@
 
 #if RIO_IS_WIN
 
-#include <filedevice/rio_ContentFileDevice.h>
+#include <filedevice/rio_NativeFileDevice.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -24,15 +24,20 @@ static inline std::string GetCWD()
 
 namespace rio {
 
-ContentFileDevice::ContentFileDevice()
-    : FileDevice("content")
-    , mCWD(GetCWD() + "/fs/content")
+NativeFileDevice::NativeFileDevice()
+    : FileDevice("native")
+    , mCWD(GetCWD())
 {
-    RIO_LOG("ContentFileDevice.mCWD: %s\n", mCWD.c_str());
+}
+
+NativeFileDevice::NativeFileDevice(const std::string& drive_name)
+    : FileDevice(drive_name)
+    , mCWD(GetCWD())
+{
 }
 
 FileDevice*
-ContentFileDevice::doOpen_(
+NativeFileDevice::doOpen_(
     FileHandle* handle, const std::string& filename,
     FileDevice::FileOpenFlag flag
 )
@@ -58,21 +63,21 @@ ContentFileDevice::doOpen_(
         RIO_ASSERT(false);
     }
 
-    std::string file_path = mCWD + '/' + filename;
+    std::string file_path = getNativePath(filename);
 
     handle_inner->handle = (uintptr_t)std::fopen(file_path.c_str(), mode);
     return handle_inner->handle ? this : nullptr;
 }
 
 bool
-ContentFileDevice::doClose_(FileHandle* handle)
+NativeFileDevice::doClose_(FileHandle* handle)
 {
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
     return std::fclose((std::FILE*)handle_inner->handle) == 0;
 }
 
 bool
-ContentFileDevice::doRead_(
+NativeFileDevice::doRead_(
     u32* read_size, FileHandle* handle,
     u8* buf, u32 size
 )
@@ -90,7 +95,7 @@ ContentFileDevice::doRead_(
 }
 
 bool
-ContentFileDevice::doWrite_(
+NativeFileDevice::doWrite_(
     u32* write_size, FileHandle* handle,
     const u8* buf, u32 size
 )
@@ -108,7 +113,7 @@ ContentFileDevice::doWrite_(
 }
 
 bool
-ContentFileDevice::doSeek_(
+NativeFileDevice::doSeek_(
     FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin
 )
 {
@@ -128,7 +133,7 @@ ContentFileDevice::doSeek_(
 }
 
 bool
-ContentFileDevice::doGetCurrentSeekPos_(
+NativeFileDevice::doGetCurrentSeekPos_(
     u32* pos, FileHandle* handle
 )
 {
@@ -142,11 +147,11 @@ ContentFileDevice::doGetCurrentSeekPos_(
 }
 
 bool
-ContentFileDevice::doGetFileSize_(
+NativeFileDevice::doGetFileSize_(
     u32* size, const std::string& path
 )
 {
-    std::string file_path = mCWD + '/' + path;
+    std::string file_path = getNativePath(path);
 
     struct stat st;
     if (stat(file_path.c_str(), &st))
@@ -157,7 +162,7 @@ ContentFileDevice::doGetFileSize_(
 }
 
 bool
-ContentFileDevice::doGetFileSize_(
+NativeFileDevice::doGetFileSize_(
     u32* size, FileHandle* handle
 )
 {

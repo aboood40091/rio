@@ -42,6 +42,9 @@ FileDeviceMgr::FileDeviceMgr()
     mMainFileDevice = new MainFileDevice();
     mount(mMainFileDevice);
 
+    mNativeFileDevice = new NativeFileDevice();
+    mount(mNativeFileDevice);
+
     mDefaultFileDevice = mMainFileDevice;
 
 #if RIO_IS_CAFE
@@ -60,6 +63,12 @@ FileDeviceMgr::~FileDeviceMgr()
     {
         delete mMainFileDevice;
         mMainFileDevice = nullptr;
+    }
+
+    if (mNativeFileDevice)
+    {
+        delete mNativeFileDevice;
+        mNativeFileDevice = nullptr;
     }
 
 #if RIO_IS_CAFE

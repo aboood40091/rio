@@ -146,13 +146,13 @@ Provided file devices (with their drive names) are:
 * `ContentFileDevice` (drive name `content`): This file device maps to:  
 	* The path **“./fs/content”** (relative to the executable) on _Windows_.  
 	* The appropriate game **content** folder on _Wii U_.  
+* `NativeFileDevice` (drive name `native`): File device that allows for handling files using the platform's native pathes for those files (i.e. does no mapping).  
 ##### Wii U
-* `CafeSDFileDevice` (drive name `sd`): This file device maps to a specified path on the SD card.  
+* `CafeSDFileDevice` (drive name `sd`): This file device maps to a certain path on the SD card.  
 	This path is specified as a string by the macro `RIO_CAFE_SD_BASE_PATH`. By default, its value is `"rio"`, meaning that this device will deal with files in this folder and its subdirectories.  
 	Developers can define their own value for the macro.
 ##### Planned
-* `CafeSaveFileDevice`: A file device for natively handling save files on Wii U.
-* A native file device that allows for handling files using the platform's native path for those files.  
+* `CafeSaveFileDevice`: A file device for natively handling save files on Wii U.  
 
 #### `FileDeviceMgr`
 This is a class that keeps track of all created file devices. The main feature of this class is that, instead of retrieving a file device and using it directly, if given the drive name and virtual path, it will automatically find the correct file device through the drive name and perform any operation requested on the given virtual path. The general format would be:  
@@ -160,7 +160,8 @@ This is a class that keeps track of all created file devices. The main feature o
 
 For example, if trying to perform operations on the file “test.txt” that is stored in the mapped directory of `ContentFileDevice` (such that its path would end up being e.g. on Windows `./fs/content/text.txt`), that can be done by passing the path `content://test.txt` to the methods of `FileDeviceMgr`. If drive name is not specified (e.g. you just pass `test.txt`), the manager's default file device is used, which is described below.  
 
-There are two kinds of file devices that `FileDeviceMgr` always provides:
+There are three kinds of file devices that `FileDeviceMgr` always provides:
+* An instance of `NativeFileDevice`.  
 * `MainFileDevice`: This is considered the platform's main device. On Windows, it's always `ContentFileDevice`. On Wii U, it is `CafeSDFileDevice` (as convenience for homebrew), but defining the macro `RIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT` makes `ContentFileDevice` the main device. The main device can always be acquired by calling `FileDeviceMgr::getMainFileDevice()`.  
 * Default file device: This is the device type mentioned earlier. By default, it is the manager's main device, but a custom device can be made the default by using `FileDeviceMgr::setDefaultFileDevice()`.  
 

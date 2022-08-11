@@ -2,19 +2,25 @@
 
 #if RIO_IS_CAFE
 
-#include <filedevice/rio_ContentFileDevice.h>
+#include <filedevice/rio_NativeFileDevice.h>
 #include <filedevice/rio_FileDeviceMgr.h>
 
 namespace rio {
 
-ContentFileDevice::ContentFileDevice()
-    : FileDevice("content")
-    , mCWD("/vol/content")
+NativeFileDevice::NativeFileDevice()
+    : FileDevice("native")
+    , mCWD(".")
+{
+}
+
+NativeFileDevice::NativeFileDevice(const std::string& drive_name)
+    : FileDevice(drive_name)
+    , mCWD(".")
 {
 }
 
 FileDevice*
-ContentFileDevice::doOpen_(
+NativeFileDevice::doOpen_(
     FileHandle* handle, const std::string& filename,
     FileDevice::FileOpenFlag flag
 )
@@ -44,7 +50,7 @@ ContentFileDevice::doOpen_(
         RIO_ASSERT(false);
     }
 
-    std::string file_path = mCWD + '/' + filename;
+    std::string file_path = getNativePath(filename);
 
     FSStatus status = FSOpenFile(client, &block, file_path.c_str(), mode, &handle_inner->handle, FS_ERROR_FLAG_NONE);
     handle_inner->position = 0;
@@ -59,7 +65,7 @@ ContentFileDevice::doOpen_(
 }
 
 bool
-ContentFileDevice::doClose_(FileHandle* handle)
+NativeFileDevice::doClose_(FileHandle* handle)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -75,7 +81,7 @@ ContentFileDevice::doClose_(FileHandle* handle)
 }
 
 bool
-ContentFileDevice::doRead_(
+NativeFileDevice::doRead_(
     u32* read_size, FileHandle* handle,
     u8* buf, u32 size
 )
@@ -103,7 +109,7 @@ ContentFileDevice::doRead_(
 }
 
 bool
-ContentFileDevice::doWrite_(
+NativeFileDevice::doWrite_(
     u32* write_size, FileHandle* handle,
     const u8* buf, u32 size
 )
@@ -131,7 +137,7 @@ ContentFileDevice::doWrite_(
 }
 
 bool
-ContentFileDevice::doSeek_(
+NativeFileDevice::doSeek_(
     FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin
 )
 {
@@ -174,7 +180,7 @@ ContentFileDevice::doSeek_(
 }
 
 bool
-ContentFileDevice::doGetCurrentSeekPos_(
+NativeFileDevice::doGetCurrentSeekPos_(
     u32* pos, FileHandle* handle
 )
 {
@@ -184,7 +190,7 @@ ContentFileDevice::doGetCurrentSeekPos_(
 }
 
 bool
-ContentFileDevice::doGetFileSize_(
+NativeFileDevice::doGetFileSize_(
     u32* size, const std::string& path
 )
 {
@@ -193,7 +199,7 @@ ContentFileDevice::doGetFileSize_(
 
     FSClient* client = getUsableFSClient_();
 
-    std::string file_path = mCWD + '/' + path;
+    std::string file_path = getNativePath(path);
 
     FSStat stat;
     FSStatus status = FSGetStat(client, &block, file_path.c_str(), &stat, FS_ERROR_FLAG_NONE);
@@ -206,7 +212,7 @@ ContentFileDevice::doGetFileSize_(
 }
 
 bool
-ContentFileDevice::doGetFileSize_(
+NativeFileDevice::doGetFileSize_(
     u32* size, FileHandle* handle
 )
 {
@@ -227,7 +233,7 @@ ContentFileDevice::doGetFileSize_(
 }
 
 FSClient*
-ContentFileDevice::getUsableFSClient_() const
+NativeFileDevice::getUsableFSClient_() const
 {
     if (!mFSClient)
         return FileDeviceMgr::instance()->getFSClient();

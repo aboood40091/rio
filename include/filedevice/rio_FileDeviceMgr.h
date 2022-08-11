@@ -2,6 +2,7 @@
 #define RIO_FILE_DEVICE_MANAGER_H
 
 #include <filedevice/rio_MainFileDevice.h>
+#include <filedevice/rio_NativeFileDevice.h>
 
 #if RIO_IS_CAFE
 #include <coreinit/filesystem.h>
@@ -74,6 +75,11 @@ public:
         return mMainFileDevice;
     }
 
+    NativeFileDevice* getNativeFileDevice() const
+    {
+        return mNativeFileDevice;
+    }
+
     FileDevice* findDevice(const std::string& drive) const;
 
 #if RIO_IS_CAFE
@@ -87,9 +93,10 @@ public:
 #endif // RIO_IS_CAFE
 
 private:
-    DeviceList      mDeviceList;
-    FileDevice*     mDefaultFileDevice;
-    MainFileDevice* mMainFileDevice;
+    DeviceList          mDeviceList;
+    FileDevice*         mDefaultFileDevice;
+    MainFileDevice*     mMainFileDevice;
+    NativeFileDevice*   mNativeFileDevice;
 
 #if RIO_IS_CAFE
     FSClient            mFSClient;
