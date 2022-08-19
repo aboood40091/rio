@@ -47,12 +47,18 @@ public:
         mStride = stride;
     }
 
+    // Sets the passed data pointer as this object's data buffer.
     void setData(const void* data, u32 size);
+    // Copies the passed data into the specified range.
+    void setSubData(const void* data, u32 offset, u32 size);
 
-    // Set data and invalidate cache (currently only useful for Cafe).
+    // Setter functions with cache invalidation (same rules as above apply, currently only useful for Cafe):
     void setDataInvalidate(const void* data, u32 size);
+    void setSubDataInvalidate(const void* data, u32 offset, u32 size);
 
     static void invalidateCache(const void* data, u32 size);
+
+    // This object is bound by VertexArray
 
 private:
     u32                 mBuffer;    // Buffer index (0-15)
@@ -73,6 +79,11 @@ private:
 inline void VertexBuffer::setDataInvalidate(const void* data, u32 size)
 {
     setData(data, size);
+}
+
+inline void VertexBuffer::setSubDataInvalidate(const void* data, u32 offset, u32 size)
+{
+    setSubData(data, offset, size);
 }
 
 inline void VertexBuffer::invalidateCache(const void* data, u32 size)

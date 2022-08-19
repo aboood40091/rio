@@ -35,11 +35,27 @@ void VertexBuffer::setData(const void* data, u32 size)
     RIO_ASSERT(size != 0);
     RIO_ASSERT(mStride != 0);
 
+    glBindBuffer(GL_ARRAY_BUFFER, mHandle);
+
+    if (size == mSize)
+        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+
+    else
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+
     mpData = data;
     mSize = size;
+}
+
+void VertexBuffer::setSubData(const void* data, u32 offset, u32 size)
+{
+    RIO_ASSERT(data != nullptr);
+    RIO_ASSERT(size != 0);
+    RIO_ASSERT(mStride != 0);
+    RIO_ASSERT(offset + size <= mSize);
 
     glBindBuffer(GL_ARRAY_BUFFER, mHandle);
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
 }

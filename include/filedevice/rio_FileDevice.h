@@ -45,10 +45,13 @@ public:
         {
         }
 
+        // In
         std::string path;
         u8*         buffer;
         u32         buffer_size;
         u32         alignment;
+
+        // Out
         u32         read_size;
         u32         roundup_size;
         bool        need_unload;
