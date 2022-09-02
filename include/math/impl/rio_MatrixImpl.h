@@ -481,7 +481,7 @@ Matrix34<T>::makeVectorRotation(const Vec3& from, const Vec3& to)
 
     Vector3<T> cross;
     cross.setCross(from_, to_);
-    const T dot = from_.dot(to_) + 1;
+    const T dot = Mathf::abs(from_.dot(to_) + 1);
 
     if (dot <= std::numeric_limits<T>::epsilon())
         return false;
