@@ -2,6 +2,7 @@
 
 #if RIO_IS_CAFE
 
+#include <gpu/rio_Drawer.h>
 #include <gpu/rio_UniformBlock.h>
 
 #include <gx2/mem.h>
