@@ -10,10 +10,17 @@ namespace rio {
 
 enum Drawer::PrimitiveMode : u32
 {
-    // TODO: More modes
-    TRIANGLES       = GL_TRIANGLES,
-    TRIANGLE_STRIP  = GL_TRIANGLE_STRIP,
-    LINE_LOOP       = GL_LINE_LOOP
+    POINTS                      = GL_POINTS,
+    LINES                       = GL_LINES,
+    LINE_STRIP                  = GL_LINE_STRIP,
+    TRIANGLES                   = GL_TRIANGLES,
+    TRIANGLE_FAN                = GL_TRIANGLE_FAN,
+    TRIANGLE_STRIP              = GL_TRIANGLE_STRIP,
+    LINES_ADJACENCY             = GL_LINES_ADJACENCY,
+    LINE_STRIP_ADJACENCY        = GL_LINE_STRIP_ADJACENCY,
+    TRIANGLES_ADJACENCY         = GL_TRIANGLES_ADJACENCY,
+    TRIANGLE_STRIP_ADJACENCY    = GL_TRIANGLE_STRIP_ADJACENCY,
+    LINE_LOOP                   = GL_LINE_LOOP
 };
 
 inline void Drawer::DrawArraysInstanced(PrimitiveMode mode, u32 count, u32 instanceCount, u32 first)

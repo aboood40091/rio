@@ -9,6 +9,7 @@ template <typename T>
 struct Vector2 : BaseVec2<T>
 {
     typedef Vector2<T> Self;
+    typedef T ValueType;
 
     bool operator==(const Self& v) const;
     bool operator!=(const Self& v) const { return !operator==(v); }
@@ -74,6 +75,7 @@ template <typename T>
 struct Vector3 : BaseVec3<T>
 {
     typedef Vector3<T> Self;
+    typedef T ValueType;
 
     bool operator==(const Self& v) const;
     bool operator!=(const Self& v) const { return !operator==(v); }
@@ -142,6 +144,7 @@ template <typename T>
 struct Vector4 : BaseVec4<T>
 {
     typedef Vector4<T> Self;
+    typedef T ValueType;
 
     bool operator==(const Self& v) const;
     bool operator!=(const Self& v) const { return !operator==(v); }

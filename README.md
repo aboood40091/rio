@@ -221,9 +221,12 @@ See header for more.
 
 #### `UniformBlock`
 Class for binding uniform blocks.  
-Only for uniform blocks with std140 layout and explicit binding.  
+Only for uniform blocks with std140 layout.  
+Explicit binding on Windows with OpenGL is currently NOT supported.  
 
-Note that on Wii U, the data is passed directly to the GPU, therefore it must not be freed as long as the uniform block buffer is being used. Furthermore, keep in mind that the data setter functions **byteswap** the passed data as the Wii U's GPU expects uniform data to be in **little endian**, whereas the CPU is **big endian**.  
+Note that on Wii U, the data is passed directly to the GPU, therefore it must not be freed as long as the uniform block buffer is being used. Furthermore, keep in mind that on Wii U the data setter functions **byteswap** the passed data as the Wii U's GPU expects uniform data to be in **little endian**, whereas the CPU is **big endian**.  
+Also, on Wii U, uniform blocks can have different indices between the Vertex and Fragment shaders. They can only guaranteed to be the same through explicit binding in the shader sources.  
+As for Windows, which currently uses OpenGL, it is guaranteed that the uniform block index will be the same for the Vertex and Fragment shaders (explicit binding in the shader sources, however, will be ignored and the uniform block index must be used).  
 
 #### `VertexBuffer` 
 A class for storing buffers of vertex attribute data. There is a maximum of 16 slots for concurrent vertex buffers per drawcall, but multiple attributes can be stored in a single vertex buffer.  

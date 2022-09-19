@@ -69,13 +69,16 @@ public:
 
     void bind();
 
-    u32 getVertexAttribLocation(const char* name);
+    u32 getVertexAttribLocation(const char* name) const;
 
-    u32 getVertexSamplerLocation(const char* name);
-    u32 getFragmentSamplerLocation(const char* name);
+    u32 getVertexSamplerLocation(const char* name) const;
+    u32 getFragmentSamplerLocation(const char* name) const;
 
-    u32 getVertexUniformLocation(const char* name);
-    u32 getFragmentUniformLocation(const char* name);
+    u32 getVertexUniformLocation(const char* name) const;
+    u32 getFragmentUniformLocation(const char* name) const;
+
+    u32 getVertexUniformBlockIndex(const char* name) const;
+    u32 getFragmentUniformBlockIndex(const char* name) const;
 
     // ---------------- Uniform variables setter functions ----------------
     // (For uniform blocks, use the UniformBlock class instead)

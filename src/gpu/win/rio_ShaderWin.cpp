@@ -7,6 +7,27 @@
 
 #include <GL/glew.h>
 
+namespace {
+
+struct MaxUniformBufferBindingsGetter
+{
+    MaxUniformBufferBindingsGetter()
+    {
+        glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &mValue);
+        RIO_ASSERT(glGetError() == GL_NO_ERROR);
+    }
+
+    s32 getValue() const
+    {
+        return mValue;
+    }
+
+private:
+    s32 mValue;
+};
+
+}
+
 namespace rio {
 
 void Shader::initialize_()
@@ -111,6 +132,18 @@ void Shader::load(const char* base_fname, ShaderMode)
     MemUtil::free(fragment_shader_src_file);
 
     mLoaded = true;
+
+    s32 uniform_block_num;
+    glGetProgramiv(mShaderProgram, GL_ACTIVE_UNIFORM_BLOCKS, &uniform_block_num);
+    RIO_ASSERT(glGetError() == GL_NO_ERROR);
+
+#ifdef RIO_DEBUG
+    static MaxUniformBufferBindingsGetter uniform_block_max_num;
+    RIO_ASSERT(uniform_block_num <= uniform_block_max_num.getValue());
+#endif // RIO_DEBUG
+
+    for (s32 i = 0; i < uniform_block_num; i++)
+        glUniformBlockBinding(mShaderProgram, i, i);
 }
 
 void Shader::unload()
@@ -140,34 +173,46 @@ void Shader::bind()
     glUseProgram(mShaderProgram);
 }
 
-u32 Shader::getVertexAttribLocation(const char* name)
+u32 Shader::getVertexAttribLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return glGetAttribLocation(mShaderProgram, name);
 }
 
-u32 Shader::getVertexSamplerLocation(const char* name)
+u32 Shader::getVertexSamplerLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return glGetUniformLocation(mShaderProgram, name);
 }
 
-u32 Shader::getFragmentSamplerLocation(const char* name)
+u32 Shader::getFragmentSamplerLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return glGetUniformLocation(mShaderProgram, name);
 }
 
-u32 Shader::getVertexUniformLocation(const char* name)
+u32 Shader::getVertexUniformLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return glGetUniformLocation(mShaderProgram, name);
 }
 
-u32 Shader::getFragmentUniformLocation(const char* name)
+u32 Shader::getFragmentUniformLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return glGetUniformLocation(mShaderProgram, name);
+}
+
+u32 Shader::getVertexUniformBlockIndex(const char* name) const
+{
+    RIO_ASSERT(mLoaded);
+    return glGetUniformBlockIndex(mShaderProgram, name);
+}
+
+u32 Shader::getFragmentUniformBlockIndex(const char* name) const
+{
+    RIO_ASSERT(mLoaded);
+    return glGetUniformBlockIndex(mShaderProgram, name);
 }
 
 void Shader::setUniform(f32 v, u32 vs_location, u32 fs_location)

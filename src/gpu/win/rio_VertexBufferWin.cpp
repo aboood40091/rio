@@ -52,6 +52,7 @@ void VertexBuffer::setSubData(const void* data, u32 offset, u32 size)
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
     RIO_ASSERT(mStride != 0);
+    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
     glBindBuffer(GL_ARRAY_BUFFER, mHandle);

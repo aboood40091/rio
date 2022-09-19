@@ -192,34 +192,58 @@ void Shader::bind()
     GX2SetPixelShader(mpPixelShader);
 }
 
-u32 Shader::getVertexAttribLocation(const char* name)
+u32 Shader::getVertexAttribLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return GX2GetVertexAttribVarLocation(mpVertexShader, name);
 }
 
-u32 Shader::getVertexSamplerLocation(const char* name)
+u32 Shader::getVertexSamplerLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return GX2GetVertexSamplerVarLocation(mpVertexShader, name);
 }
 
-u32 Shader::getFragmentSamplerLocation(const char* name)
+u32 Shader::getFragmentSamplerLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return GX2GetPixelSamplerVarLocation(mpPixelShader, name);
 }
 
-u32 Shader::getVertexUniformLocation(const char* name)
+u32 Shader::getVertexUniformLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return GX2GetVertexUniformVarOffset(mpVertexShader, name);
 }
 
-u32 Shader::getFragmentUniformLocation(const char* name)
+u32 Shader::getFragmentUniformLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     return GX2GetPixelUniformVarOffset(mpPixelShader, name);
+}
+
+u32 Shader::getVertexUniformBlockIndex(const char* name) const
+{
+    RIO_ASSERT(mLoaded);
+
+    u32 ret = u32(-1);
+    GX2UniformBlock* uniform_block = GX2GetVertexUniformBlock(mpVertexShader, name);
+    if (uniform_block)
+        ret = uniform_block->offset;
+
+    return ret;
+}
+
+u32 Shader::getFragmentUniformBlockIndex(const char* name) const
+{
+    RIO_ASSERT(mLoaded);
+
+    u32 ret = u32(-1);
+    GX2UniformBlock* uniform_block = GX2GetPixelUniformBlock(mpPixelShader, name);
+    if (uniform_block)
+        ret = uniform_block->offset;
+
+    return ret;
 }
 
 void Shader::setUniform(f32 v, u32 vs_location, u32 fs_location)

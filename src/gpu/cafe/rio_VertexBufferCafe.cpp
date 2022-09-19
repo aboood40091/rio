@@ -37,6 +37,7 @@ void VertexBuffer::setSubData(const void* data, u32 offset, u32 size)
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
     RIO_ASSERT(mStride != 0);
+    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
     const u8* src = (u8*)data;
@@ -63,6 +64,7 @@ void VertexBuffer::setSubDataInvalidate(const void* data, u32 offset, u32 size)
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
     RIO_ASSERT(mStride != 0);
+    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
     const u8* src = (u8*)data;

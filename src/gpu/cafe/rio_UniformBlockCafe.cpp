@@ -10,8 +10,18 @@
 
 namespace rio {
 
-UniformBlock::UniformBlock(ShaderStage stage, u32 binding)
-    : mBinding(binding)
+UniformBlock::UniformBlock(ShaderStage stage, u32 index)
+    : mVSIndex(index)
+    , mFSIndex(index)
+    , mpData(nullptr)
+    , mSize(0)
+    , mStage(stage)
+{
+}
+
+UniformBlock::UniformBlock(ShaderStage stage, u32 vs_index, u32 fs_index)
+    : mVSIndex(vs_index)
+    , mFSIndex(fs_index)
     , mpData(nullptr)
     , mSize(0)
     , mStage(stage)
@@ -46,6 +56,7 @@ void UniformBlock::setSubData(const void* data, u32 offset, u32 size)
 {
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
+    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
     // Additional checks for Cafe
@@ -87,6 +98,7 @@ void UniformBlock::setSubDataInvalidate(const void* data, u32 offset, u32 size)
 {
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
+    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
     // Additional checks for Cafe
@@ -113,11 +125,16 @@ void UniformBlock::invalidateCache(const void* data, u32 size)
 void UniformBlock::bind() const
 {
     if (mStage & STAGE_VERTEX_SHADER)
-        GX2SetVertexUniformBlock(mBinding, mSize, mpData);
-
+    {
+        RIO_ASSERT(mVSIndex != u32(-1));
+        GX2SetVertexUniformBlock(mVSIndex, mSize, mpData);
+    }
 
     if (mStage & STAGE_FRAGMENT_SHADER)
-        GX2SetPixelUniformBlock(mBinding, mSize, mpData);
+    {
+        RIO_ASSERT(mFSIndex != u32(-1));
+        GX2SetPixelUniformBlock(mFSIndex, mSize, mpData);
+    }
 }
 
 }

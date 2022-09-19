@@ -171,6 +171,12 @@ protected:
     virtual bool doGetFileSize_(u32* size, const std::string& path) = 0;
     virtual bool doGetFileSize_(u32* size, FileHandle* handle) = 0;
 
+public:
+    virtual std::string getNativePath(const std::string& path) const
+    {
+        return "";
+    }
+
 protected:
     struct FileHandleInner
     {
