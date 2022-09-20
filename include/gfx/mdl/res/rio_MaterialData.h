@@ -80,7 +80,7 @@ static_assert(sizeof(UniformVar) == 0x18);
 
 class UniformBlock
 {
-    // Serializable class for shader uniform blocks with std140 layout and explicit binding.
+    // Serializable class for shader uniform blocks with std140 layout.
 
 public:
     const char* name() const
@@ -92,11 +92,6 @@ public:
     ::rio::UniformBlock::ShaderStage stage() const
     {
         return mStage;
-    }
-
-    u32 binding() const
-    {
-        return mBinding;
     }
 
     u32 size() const
@@ -112,7 +107,7 @@ public:
 private:
     FixedString                         mName;      // Block name.
     ::rio::UniformBlock::ShaderStage    mStage;     // Block shader stage.
-    u32                                 mBinding;   // Block binding point (location).
+    u32                                 _unused0;   // Unused (for now).
     u32                                 mSize;      // Total block size.
     Buffer<UniformVar>                  mUniforms;  // List of variables.
 };

@@ -88,7 +88,10 @@ Material::Material(const res::Material* res_material, Model* parent_mdl)
         {
             const res::UniformBlock& res_uniform_block = uniform_blocks[i];
 
-            new (&mUniformBlocks[i]) UniformBlock(res_uniform_block.stage(), res_uniform_block.binding());
+            u32 vs_index = mShader->getVertexUniformBlockIndex(res_uniform_block.name());
+            u32 fs_index = mShader->getFragmentUniformBlockIndex(res_uniform_block.name());
+
+            new (&mUniformBlocks[i]) UniformBlock(res_uniform_block.stage(), vs_index, fs_index);
             UniformBlock& uniform_block = mUniformBlocks[i];
 
             uniform_block.setData(MemUtil::alloc(res_uniform_block.size(), Drawer::cUniformBlockAlignment),

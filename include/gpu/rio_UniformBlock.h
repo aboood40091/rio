@@ -27,9 +27,10 @@ class UniformBlock
 public:
     enum ShaderStage : u32
     {
-        STAGE_VERTEX_SHADER   = (1 << 0),
-        STAGE_FRAGMENT_SHADER = (1 << 1),
-        STAGE_ALL             = STAGE_VERTEX_SHADER | STAGE_FRAGMENT_SHADER
+        STAGE_NONE              = 0,
+        STAGE_VERTEX_SHADER     = (1 << 0),
+        STAGE_FRAGMENT_SHADER   = (1 << 1),
+        STAGE_ALL               = STAGE_VERTEX_SHADER | STAGE_FRAGMENT_SHADER
     };
 
 public:
