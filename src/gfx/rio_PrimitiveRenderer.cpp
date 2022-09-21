@@ -432,7 +432,7 @@ void PrimitiveRenderer::drawLine(const Vector3f& from, const Vector3f& to, const
 
     Matrix34f mtxR;
     if (!mtxR.makeVectorRotation({ 1.0f, 0.0f, 0.0f }, dir))
-        return;
+        mtxR.makeR({ 0.0f, Mathf::pi(), 0.0f });
 
     Matrix34f mtx;
     mtx.setMul(mtxR, mtxS);
