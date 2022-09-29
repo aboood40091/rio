@@ -1,5 +1,6 @@
 #include <rio.h>
 
+#include <audio/rio_AudioMgr.h>
 #include <controller/rio_ControllerMgr.h>
 #include <filedevice/rio_FileDeviceMgr.h>
 #include <gfx/lyr/rio_Renderer.h>
@@ -89,6 +90,10 @@ bool Initialize()
         return false;
     }
 
+    // Create the audio manager instance
+    if (!AudioMgr::createSingleton())
+        RIO_LOG("rio::Initialize: Failed to create AudioMgr.\n");
+
     return true;
 }
 
@@ -116,6 +121,9 @@ void Exit()
     // Destroy the root task upon quitting
     if (sRootTask)
         TaskMgr::instance()->destroyTask(sRootTask);
+
+    // Destroy the audio manager upon quitting
+    AudioMgr::destroySingleton();
 
     // Destroy the model cacher instance upon quitting
     mdl::res::ModelCacher::destroySingleton();

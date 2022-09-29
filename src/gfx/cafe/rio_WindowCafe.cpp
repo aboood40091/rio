@@ -2,6 +2,7 @@
 
 #if RIO_IS_CAFE
 
+#include <audio/rio_AudioMgr.h>
 #include <gfx/rio_Window.h>
 #include <gpu/rio_RenderState.h>
 
@@ -24,7 +25,6 @@
 #include <whb/log_udp.h>
 
 extern "C" void OSBlockThreadsOnExit(void);
-extern "C" void _Exit(int);
 
 namespace {
 
@@ -382,6 +382,8 @@ void Window::terminate_()
         MEMFreeToDefaultHeap(gContext);
         gContext = nullptr;
     }
+
+    AudioMgr::destroySingleton();
 
     foregroundRelease_();
 

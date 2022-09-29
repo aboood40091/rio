@@ -27,6 +27,9 @@ Dependencies:
 * devkitPPC (Tested with latest version as of August 7th, 2022)  
 * [wut](https://github.com/devkitPro/wut)  
 
+Optional:
+* SDL2 Mixer (for the audio module)  
+
 ## Initialization
 RIO can be initialized and used as follows:  
 ```cpp
@@ -34,7 +37,7 @@ int main()
 {
     // Initialize RIO with root task
     if (!rio::Initialize<RootTask>())
-        return false;
+        return -1;
 
     // Main loop
     rio::EnterMainLoop();
@@ -56,6 +59,7 @@ Singletons initialized by calling `rio::Initialize()` in order (destroyed in the
 * `PrimitiveRenderer`  
 * `Renderer`  
 * `ModelCacher`  
+* `AudioMgr`  
 
 Main loop starts with `TaskMgr` executing, followed by `Renderer` rendering all layers, and, finally, swapping buffers of `Window`. (May change in the future with `Window` events being first to be processed.)  
 
@@ -82,6 +86,32 @@ See header for more.
 
 #### `MemUtil`
 Self-explanatory class for memory-related operations. See header for more.  
+
+### audio
+This module is a simple wrapper over SDL2 Mixer and is completely optional.  
+It is enabled by defining the macro `RIO_AUDIO_USE_SDL_MIXER`.  
+It allows for creating music instances and sound effect instances.  
+
+The main three differences between a music instance and a sound effect instance are:  
+* Number of instances that can be played at the same time.  
+* Music is streamed, whereas sound effects are stored in their entirety in memory.  
+* Panning is not possible with music instances, whereas this module provides an interface for simulating 3D audio for sound effects using panning.  
+Supported file formats are `WAV`, `MP3`, `OGG`.  
+
+#### `AudioBgm`
+The music instance. Many can be created, but only 1 can be played at a time. Playing another instance will take over.  
+
+#### `AudioSfx`
+The sound effect instance (called "chunk" by SDL2 Mixer). Many can be created, but only 16 (more specifically, double the SDL Mixer limit) can be played at a time. Since only 16 sound effects can be played at a time, there are 16 "slots" (SDL2 Mixer calls them "channels") for storing the currently playing sound effect instances. Therefore, there are 2 types of `play` functions provided:  
+* 1. The slot is picked automatically by simply using the next slot from the last one used (last slot loops back to the first).  
+* 2. Picking the slot is up to the user. (But may be replaced by the mechanism above. A locking mechanism for preventing replacement of playing sound effects may be added in the future.)  
+
+#### `AudioSfxHandle`
+An class for storing a playing `AudioSfx` instance, providing the instance and which slot it's currently playing in.  
+
+#### `AudioMgr`
+The class responsible for loading and caching audio files, as well as managing the listener for the 3D audio interface and controlling *global* volumes (Master, Music, Sfx).  
+Audio files are loaded using the functions `load{Bgm/Sfx}()`, which expect the audio file(s)' path, _including_ the extension, ***relative to the `sounds` folder on the default file device***. (File devices are explained below.)  
 
 ### container
 This is a module for fast and lightweight containers that has been carried over from sead. Not all containers have been copied over, in favor of STL containers, although that may change in the future (either with more sead containers or completely custom ones).  

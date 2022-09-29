@@ -29,7 +29,11 @@ public:
     };
 
 public:
-    static const u32 cBufferMinAlignment = 64;
+#if RIO_IS_CAFE
+    static constexpr s32 cBufferMinAlignment = 64;
+#else
+    static constexpr s32 cBufferMinAlignment = 1;
+#endif // RIO_IS_CAFE
 
 public:
     struct LoadArg
