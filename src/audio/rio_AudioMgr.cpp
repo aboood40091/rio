@@ -186,6 +186,7 @@ AudioMgr::AudioMgr()
 #endif // RIO_DEBUG
 
     Mix_AllocateChannels(AudioSfx::cSlotMaxNum);
+    Mix_HookMusicFinished(AudioBgm::onFinishCallback_);
 
     setMasterVolume(sMasterVolume);
 #endif // RIO_AUDIO_USE_SDL_MIXER

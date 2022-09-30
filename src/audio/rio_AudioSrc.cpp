@@ -6,14 +6,25 @@ namespace rio {
 #ifdef RIO_AUDIO_USE_SDL_MIXER
 
 AudioBgm* AudioBgm::sCurrent = nullptr;
+bool AudioBgm::sIsCurrentFadingOut = false;
+
+void AudioBgm::onFinishCallback_()
+{
+    sCurrent = nullptr;
+    sIsCurrentFadingOut = false;
+}
 
 void AudioBgm::setCurrentVolume(f32 volume)
 {
     RIO_ASSERT(volume >= 0.0f);
-    Mix_VolumeMusic(volume * (AudioMgr::instance()->getMusicVolume() * AudioMgr::instance()->getMasterVolume() * MIX_MAX_VOLUME));
 
     if (sCurrent)
         sCurrent->mVolume = volume;
+
+    if (sIsCurrentFadingOut)
+        return;
+
+    Mix_VolumeMusic(volume * (AudioMgr::instance()->getMusicVolume() * AudioMgr::instance()->getMasterVolume() * MIX_MAX_VOLUME));
 }
 
 f32 AudioBgm::getCurrentVolume()
@@ -24,6 +35,12 @@ f32 AudioBgm::getCurrentVolume()
     return Mix_VolumeMusic(-1) / (AudioMgr::instance()->getMusicVolume() * AudioMgr::instance()->getMasterVolume() * MIX_MAX_VOLUME);
 }
 
+void AudioBgm::fadeOutCurrent(s32 ms)
+{
+    Mix_FadeOutMusic(ms);
+    sIsCurrentFadingOut = true;
+}
+
 void AudioBgm::play(bool loop)
 {
     if (isPlaying())
@@ -31,6 +48,7 @@ void AudioBgm::play(bool loop)
 
     Mix_PlayMusic(mInnerHandle, loop ? -1 : 0);
     sCurrent = this;
+    sIsCurrentFadingOut = false;
 
     setCurrentVolume(mVolume);
 }
@@ -65,10 +83,7 @@ void AudioBgm::resume()
 void AudioBgm::stop()
 {
     if (isCurrent())
-    {
         Mix_HaltMusic();
-        sCurrent = nullptr;
-    }
 }
 
 s32 AudioSfx::sCurrentSlot = 0;

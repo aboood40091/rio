@@ -41,6 +41,8 @@ private:
         RIO_ASSERT(inner_handle != nullptr);
         mVolume = 1.0f;
     }
+
+    static void onFinishCallback_();
 #endif // RIO_AUDIO_USE_SDL_MIXER
 
 #ifdef RIO_AUDIO_USE_SDL_MIXER
@@ -60,6 +62,23 @@ public:
     f32 getVolume() const
     {
         return mVolume;
+    }
+
+    static void fadeOutCurrent(s32 ms);
+    static bool isCurrentFadingOut() { return sIsCurrentFadingOut; }
+
+    void fadeOut(s32 ms)
+    {
+        if (isCurrent())
+            fadeOutCurrent(ms);
+    }
+
+    bool isFadingOut()
+    {
+        if (isCurrent())
+            return isCurrentFadingOut();
+        else
+            return false;
     }
 
     void play(bool loop = true);
@@ -82,6 +101,7 @@ private:
     f32 mVolume;
 
     static AudioBgm* sCurrent;
+    static bool sIsCurrentFadingOut;
 
     friend class AudioMgr;
 
