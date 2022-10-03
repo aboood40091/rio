@@ -15,9 +15,9 @@ class LookAtCamera : public Camera
 {
 public:
     LookAtCamera()
-        : mPos({ 0.0f, 0.0f, 1.0f })
-        , mAt ({ 0.0f, 0.0f, 0.0f })
-        , mUp ({ 0.0f, 1.0f, 0.0f })
+        : mPos({ 0.0f, 0.0f,  0.0f })
+        , mAt ({ 0.0f, 0.0f, -1.0f })
+        , mUp ({ 0.0f, 1.0f,  0.0f })
     {
     }
 
