@@ -441,15 +441,18 @@ Vector2<T>::normalized() const
 }
 
 template <typename T>
-inline void
+inline f32
 Vector2<T>::setNormalized(const Self& v)
 {
     RIO_ASSERT(v.x != 0 || v.y != 0);
 
-    f32 inv_length = Mathf::rsqrt(v.squaredLength());
+    f32 sq_length = v.squaredLength();
+    f32 inv_length = Mathf::rsqrt(sq_length);
 
     this->x = v.x * inv_length;
     this->y = v.y * inv_length;
+
+    return sq_length * inv_length;
 }
 
 template <typename T>
@@ -1077,16 +1080,19 @@ Vector3<T>::normalized() const
 }
 
 template <typename T>
-inline void
+inline f32
 Vector3<T>::setNormalized(const Self& v)
 {
     RIO_ASSERT(v.x != 0 || v.y != 0 || v.z != 0);
 
-    f32 inv_length = Mathf::rsqrt(v.squaredLength());
+    f32 sq_length = v.squaredLength();
+    f32 inv_length = Mathf::rsqrt(sq_length);
 
     this->x = v.x * inv_length;
     this->y = v.y * inv_length;
     this->z = v.z * inv_length;
+
+    return sq_length * inv_length;
 }
 
 template <typename T>
@@ -1734,17 +1740,20 @@ Vector4<T>::normalized() const
 }
 
 template <typename T>
-inline void
+inline f32
 Vector4<T>::setNormalized(const Self& v)
 {
     RIO_ASSERT(v.x != 0 || v.y != 0 || v.z != 0 || v.w != 0);
 
-    f32 inv_length = Mathf::rsqrt(v.squaredLength());
+    f32 sq_length = v.squaredLength();
+    f32 inv_length = Mathf::rsqrt(sq_length);
 
     this->x = v.x * inv_length;
     this->y = v.y * inv_length;
     this->z = v.z * inv_length;
     this->w = v.w * inv_length;
+
+    return sq_length * inv_length;
 }
 
 template <typename T>

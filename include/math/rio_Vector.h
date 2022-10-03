@@ -50,10 +50,10 @@ struct Vector2 : BaseVec2<T>
 
     T dot(const Self& v) const;
 
-    void normalize() { setNormalized(*this); }
+    f32 normalize() { return setNormalized(*this); }
 
     Self normalized() const;
-    void setNormalized(const Self& v);
+    f32 setNormalized(const Self& v);
 
     Self multAdd(const Self& c, const Self& b) const;
     void setMultAdd(const Self& a, const Self& c, const Self& b);
@@ -119,10 +119,10 @@ struct Vector3 : BaseVec3<T>
     Self cross(const Self& b) const;
     void setCross(const Self& a, const Self& b);
 
-    void normalize() { setNormalized(*this); }
+    f32 normalize() { return setNormalized(*this); }
 
     Self normalized() const;
-    void setNormalized(const Self& v);
+    f32 setNormalized(const Self& v);
 
     Self multAdd(const Self& c, const Self& b) const;
     void setMultAdd(const Self& a, const Self& c, const Self& b);
@@ -185,10 +185,10 @@ struct Vector4 : BaseVec4<T>
 
     T dot(const Self& v) const;
 
-    void normalize() { setNormalized(*this); }
+    f32 normalize() { return setNormalized(*this); }
 
     Self normalized() const;
-    void setNormalized(const Self& v);
+    f32 setNormalized(const Self& v);
 
     Self multAdd(const Self& c, const Self& b) const;
     void setMultAdd(const Self& a, const Self& c, const Self& b);

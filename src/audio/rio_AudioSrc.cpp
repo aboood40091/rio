@@ -150,7 +150,6 @@ void AudioSfx::play(u32 slot, const Vector3f& pos, bool loop)
 
     Mix_PlayChannel(slot, mInnerHandle, loop ? -1 : 0);
     sCurrent[slot] = this;
-
 }
 
 void AudioSfx::setPosition(u32 slot, const Vector3f& pos)
