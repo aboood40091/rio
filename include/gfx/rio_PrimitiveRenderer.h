@@ -20,8 +20,8 @@ public:
     {
     public:
         QuadArg()
-            : mCenter({ 0.0f, 0.0f, 0.0f })
-            , mSize({ 1.0f, 1.0f })
+            : mCenter{ 0.0f, 0.0f, 0.0f }
+            , mSize{ 1.0f, 1.0f }
             , mColor0(Color4f::cWhite)
             , mColor1(Color4f::cWhite)
             , mHorizontal(false)
@@ -52,8 +52,8 @@ public:
     {
     public:
         CubeArg()
-            : mCenter({ 0.0f, 0.0f, 0.0f })
-            , mSize({ 1.0f, 1.0f, 1.0f })
+            : mCenter{ 0.0f, 0.0f, 0.0f }
+            , mSize{ 1.0f, 1.0f, 1.0f }
             , mColor0(Color4f::cWhite)
             , mColor1(Color4f::cWhite)
         {

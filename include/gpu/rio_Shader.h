@@ -67,7 +67,7 @@ public:
     // Get the current global shader mode.
     static ShaderMode getShaderMode();
 
-    void bind();
+    void bind() const;
 
     u32 getVertexAttribLocation(const char* name) const;
 

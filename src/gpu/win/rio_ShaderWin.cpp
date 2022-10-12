@@ -166,7 +166,7 @@ Shader::ShaderMode Shader::getShaderMode()
     return Shader::MODE_INVALID;
 }
 
-void Shader::bind()
+void Shader::bind() const
 {
     RIO_ASSERT(mLoaded);
 
