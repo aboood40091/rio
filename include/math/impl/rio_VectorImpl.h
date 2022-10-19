@@ -382,6 +382,31 @@ Vector2<T>::set(T x_, T y_)
     this->y = y_;
 }
 
+#if RIO_IS_CAFE
+
+template <>
+inline f32
+Vector2<f32>::squaredLength() const
+{
+    const Vector2f* const pSelf = this;
+
+    // Temporary variable
+    f32 v0;
+
+    // Load 2 floats from pSelf into ps(v0)
+    asm volatile ("psq_l %[v0], 0(%[pSelf]), 0, 0" : [v0] "=f"(v0) : [pSelf] "r"(pSelf));
+
+    // Multiply ps(v0) by itself
+    asm volatile ("ps_mul %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    // Add ps1(v0) to ps0(v0)
+    asm volatile ("ps_sum0 %[v0], %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    return v0;
+}
+
+#endif // RIO_IS_CAFE
+
 template <typename T>
 inline f32
 Vector2<T>::length() const
@@ -434,10 +459,7 @@ Vector2<T>::normalized() const
 
     f32 inv_length = Mathf::rsqrt(squaredLength());
 
-    return {
-        this->x * inv_length,
-        this->y * inv_length
-    };
+    return (*this) * inv_length;
 }
 
 template <typename T>
@@ -449,8 +471,7 @@ Vector2<T>::setNormalized(const Self& v)
     f32 sq_length = v.squaredLength();
     f32 inv_length = Mathf::rsqrt(sq_length);
 
-    this->x = v.x * inv_length;
-    this->y = v.y * inv_length;
+    setScale(v, inv_length);
 
     return sq_length * inv_length;
 }
@@ -955,6 +976,34 @@ Vector3<T>::set(T x_, T y_, T z_)
     this->z = z_;
 }
 
+#if RIO_IS_CAFE
+
+template <>
+inline f32
+Vector3<f32>::squaredLength() const
+{
+    const Vector3f* const pSelf = this;
+
+    // Temporary variables
+    f32 v0;
+
+    // Load 2 floats from pSelf into ps(v0)
+    asm volatile ("psq_l %[v0], 0(%[pSelf]), 0, 0" : [v0] "=f"(v0) : [pSelf] "r"(pSelf));
+
+    // Multiply ps(v0) by itself
+    asm volatile ("ps_mul %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    // Add ps1(v0) to ps0(v0)
+    asm volatile ("ps_sum0 %[v0], %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    // Handle z component
+    v0 += Mathf::square(pSelf->z);
+
+    return v0;
+}
+
+#endif // RIO_IS_CAFE
+
 template <typename T>
 inline f32
 Vector3<T>::length() const
@@ -1072,11 +1121,7 @@ Vector3<T>::normalized() const
 
     f32 inv_length = Mathf::rsqrt(squaredLength());
 
-    return {
-        this->x * inv_length,
-        this->y * inv_length,
-        this->z * inv_length
-    };
+    return (*this) * inv_length;
 }
 
 template <typename T>
@@ -1088,9 +1133,7 @@ Vector3<T>::setNormalized(const Self& v)
     f32 sq_length = v.squaredLength();
     f32 inv_length = Mathf::rsqrt(sq_length);
 
-    this->x = v.x * inv_length;
-    this->y = v.y * inv_length;
-    this->z = v.z * inv_length;
+    setScale(v, inv_length);
 
     return sq_length * inv_length;
 }
@@ -1665,6 +1708,42 @@ Vector4<T>::set(T x_, T y_, T z_, T w_)
     this->w = w_;
 }
 
+#if RIO_IS_CAFE
+
+template <>
+inline f32
+Vector4<f32>::squaredLength() const
+{
+    const Vector4f* const pSelf = this;
+
+    // Temporary variables
+    f32 v0;
+    f32 v2;
+    f32 v3;
+
+    // Load 2 floats from pSelf into ps(v0)
+    asm volatile ("psq_l %[v0], 0(%[pSelf]), 0, 0" : [v0] "=f"(v0) : [pSelf] "r"(pSelf));
+
+    // Multiply ps(v0) by itself
+    asm volatile ("ps_mul %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    // Add ps1(v0) to ps0(v0) and store result in ps(v2)
+    asm volatile ("ps_sum0 %[v2], %[v0], %[v0], %[v0]" : [v2] "=f"(v2) : [v0] "f"(v0));
+
+    // Load 2 floats from pSelf+8 into ps(v0)
+    asm volatile ("psq_l %[v0], 8(%[pSelf]), 0, 0" : [v0] "=f"(v0) : [pSelf] "r"(pSelf));
+
+    // Multiply ps(v0) by itself
+    asm volatile ("ps_mul %[v0], %[v0], %[v0]" : [v0] "+f"(v0));
+
+    // Add ps1(v0) to ps0(v0) and store result in ps(v3)
+    asm volatile ("ps_sum0 %[v3], %[v0], %[v0], %[v0]" : [v3] "=f"(v3) : [v0] "f"(v0));
+
+    return v2 + v3;
+}
+
+#endif // RIO_IS_CAFE
+
 template <typename T>
 inline f32
 Vector4<T>::length() const
@@ -1731,12 +1810,7 @@ Vector4<T>::normalized() const
 
     f32 inv_length = Mathf::rsqrt(squaredLength());
 
-    return {
-        this->x * inv_length,
-        this->y * inv_length,
-        this->z * inv_length,
-        this->w * inv_length
-    };
+    return (*this) * inv_length;
 }
 
 template <typename T>
@@ -1748,10 +1822,7 @@ Vector4<T>::setNormalized(const Self& v)
     f32 sq_length = v.squaredLength();
     f32 inv_length = Mathf::rsqrt(sq_length);
 
-    this->x = v.x * inv_length;
-    this->y = v.y * inv_length;
-    this->z = v.z * inv_length;
-    this->w = v.w * inv_length;
+    setScale(v, inv_length);
 
     return sq_length * inv_length;
 }

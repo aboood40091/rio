@@ -7,29 +7,24 @@ void LookAtCamera::getMatrix(BaseMtx34f* dst) const
     RIO_ASSERT(dst);
     RIO_ASSERT(mPos != mAt);
 
-    Vector3f a;
-    a.setNormalized(mPos - mAt);
+    const Vector3f& dir = (mPos - mAt).normalized();
+    const Vector3f& right = (mUp.cross(dir)).normalized();
+    const Vector3f& up = dir.cross(right);
 
-    Vector3f b;
-    b.setNormalized(mUp.cross(a));
+    dst->m[0][0] = right.x;
+    dst->m[0][1] = right.y;
+    dst->m[0][2] = right.z;
+    dst->m[0][3] = -right.dot(mPos);
 
-    Vector3f c;
-    c.setCross(a, b);
+    dst->m[1][0] = up.x;
+    dst->m[1][1] = up.y;
+    dst->m[1][2] = up.z;
+    dst->m[1][3] = -up.dot(mPos);
 
-    dst->m[0][0] = b.x;
-    dst->m[0][1] = b.y;
-    dst->m[0][2] = b.z;
-    dst->m[0][3] = -b.dot(mPos);
-
-    dst->m[1][0] = c.x;
-    dst->m[1][1] = c.y;
-    dst->m[1][2] = c.z;
-    dst->m[1][3] = -c.dot(mPos);
-
-    dst->m[2][0] = a.x;
-    dst->m[2][1] = a.y;
-    dst->m[2][2] = a.z;
-    dst->m[2][3] = -a.dot(mPos);
+    dst->m[2][0] = dir.x;
+    dst->m[2][1] = dir.y;
+    dst->m[2][2] = dir.z;
+    dst->m[2][3] = -dir.dot(mPos);
 }
 
 }
