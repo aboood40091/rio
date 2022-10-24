@@ -45,36 +45,41 @@ void PerspectiveProjection::setFovy_(f32 fovy)
 
 void PerspectiveProjection::updateMatrix_() const
 {
-    f32 v0 = (mNear + mNear) * mFovyTan;
-    f32 v1 = v0 * mAspect;
+    f32 clip_height = mNear * 2 * mFovyTan;
+    f32 clip_width  = clip_height * mAspect;
 
-    f32 v2 = v1 * mOffset.x;
-    f32 v3 = v0 * mOffset.y;
+    f32 center_x = clip_width * mOffset.x;
+    f32 center_y = clip_height * mOffset.y;
 
-    f32 v4 = v0 * 0.5f + v3;
+    clip_height *= 0.5f;
+    clip_width  *= 0.5f;
 
-    v3 = v3 - v0 * 0.5f;
-    f32 v5 = v2 - v1 * 0.5f;
+    f32 top    =  clip_height + center_y;
+    f32 bottom = -clip_height + center_y;
 
-    v2 = v1 * 0.5f + v2;
+    f32 left   = -clip_width  + center_x;
+    f32 right  =  clip_width  + center_x;
 
-    f32 v6 = 1.0f / (v2 - v5);
-    mMatrix.m[0][0] = (mNear + mNear) * v6;
+    f32 inv_size = 1.0f / (right - left);
+
+    mMatrix.m[0][0] = mNear * 2 * inv_size;
     mMatrix.m[0][1] = 0.0f;
-    mMatrix.m[0][2] = (v2 + v5) * v6;
+    mMatrix.m[0][2] = (right + left) * inv_size;
     mMatrix.m[0][3] = 0.0f;
 
-    f32 v7 = 1.0f / (v4 - v3);
+    inv_size = 1.0f / (top - bottom);
+
     mMatrix.m[1][0] = 0.0f;
-    mMatrix.m[1][1] = (mNear + mNear) * v7;
-    mMatrix.m[1][2] = (v4 + v3) * v7;
+    mMatrix.m[1][1] = mNear * 2 * inv_size;
+    mMatrix.m[1][2] = (top + bottom) * inv_size;
     mMatrix.m[1][3] = 0.0f;
 
-    f32 v8 = 1.0f / (mFar - mNear);
+    inv_size = 1.0f / (mFar - mNear);
+
     mMatrix.m[2][0] = 0.0f;
     mMatrix.m[2][1] = 0.0f;
-    mMatrix.m[2][2] = -(mFar + mNear) * v8;
-    mMatrix.m[2][3] = -((mFar + mFar) * mNear) * v8;
+    mMatrix.m[2][2] = -(mFar + mNear) * inv_size;
+    mMatrix.m[2][3] = -(mFar * 2 * mNear) * inv_size;
 
     mMatrix.m[3][0] = 0.0f;
     mMatrix.m[3][1] = 0.0f;
