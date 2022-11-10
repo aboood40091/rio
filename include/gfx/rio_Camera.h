@@ -45,6 +45,28 @@ private:
     Vector3f    mUp;
 };
 
+class OrthoCamera : public Camera
+{
+public:
+    OrthoCamera()
+        : mPos{ 0.0f, 0.0f }
+        , mZoomScale(1.0f)
+    {
+    }
+
+    Vector2f& pos() { return mPos; }
+    const Vector2f& pos() const { return mPos; }
+
+    f32 getZoomScale() const { return mZoomScale; }
+    void setZoomScale(f32 zoom_scale) { mZoomScale = zoom_scale; }
+
+    void getMatrix(BaseMtx34f* dst) const override;
+
+private:
+    Vector2f    mPos;
+    f32         mZoomScale;
+};
+
 }
 
 #endif // RIO_GFX_CAMERA_H

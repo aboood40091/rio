@@ -299,6 +299,9 @@ Therefore, if you have code you are expecting to run at the end of the applicati
 Self-explanatory class for a look-at camera. See header for more.  
 (Look-around camera may be added later for debugging purposes.)
 
+#### `OrthoCamera`
+Camera class for easier usage with `OrthoProjection`. See header for more.  
+
 #### `OrthoProjection`
 Self-explanatory class for orthographic projection. See header for more.  
 
