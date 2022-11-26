@@ -2,6 +2,7 @@
 #define RIO_GFX_PRIMITIVE_RENDERER_H
 
 #include <gfx/rio_Color.h>
+#include <gpu/rio_Drawer.h>
 #include <gpu/rio_Shader.h>
 #include <gpu/rio_TextureSampler.h>
 #include <gpu/rio_VertexArray.h>
@@ -32,6 +33,7 @@ public:
         QuadArg& setSize(const Vector2f& size) { mSize = size; return *this; }
         QuadArg& setCornerAndSize(const Vector3f& p, const Vector2f& size);
         QuadArg& setColor(const Color4f& colorT, const Color4f& colorB);
+        QuadArg& setColor(const Color4f& color) { return setColor(color, color); }
         QuadArg& setColorHorizontal(const Color4f& colorL, const Color4f& colorR);
 
         const Vector3f& getCenter() const { return mCenter; }
@@ -63,7 +65,7 @@ public:
         CubeArg& setSize(const Vector3f& size) { mSize = size; return *this; }
         CubeArg& setCornerAndSize(const Vector3f& p, const Vector3f& size);
         CubeArg& setColor(const Color4f& c0, const Color4f& c1) { mColor0 = c0; mColor1 = c1; return *this; }
-        CubeArg& setColor(const Color4f& color) { setColor(color, color); return *this; }
+        CubeArg& setColor(const Color4f& color) { return setColor(color, color); }
 
         const Vector3f& getCenter() const { return mCenter; }
         const Vector3f& getSize() const { return mSize; }
@@ -96,6 +98,8 @@ private:
 
 public:
     void setModelMatrix(const BaseMtx34f& model_matrix);
+    const Matrix34f& getModelMatrix() const { return mModelMtx; }
+
     void setCamera(const Camera& camera);
     void setProjection(const Projection& projection);
 
@@ -151,7 +155,7 @@ private:
     static_assert(sizeof(Vertex) == 0x24, "Vertex size mismatch");
 
     void drawTriangles_(const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1, Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num, const Texture2D* texture = nullptr);
-    void drawLines_(const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1, Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num);
+    void drawLines_(const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1, Drawer::PrimitiveMode mode, Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num);
 
     static inline void getQuadVertex(Vertex* vtx, u16* idx);
     static inline void getLineVertex(Vertex* vtx, u16* idx);

@@ -167,7 +167,7 @@ void PrimitiveRenderer::initialize_(const char* shader_path)
         static const u16 idx[4] = { 0, 1, 3, 2 };
         MemUtil::copy(mBoxIndexBuf, idx, sizeof(idx));
 
-        VertexBuffer::invalidateCache(mBoxIndexBuf,   6 * sizeof(   u16));
+        VertexBuffer::invalidateCache(mBoxIndexBuf,   4 * sizeof(   u16));
     }
 
     {
@@ -588,7 +588,7 @@ void PrimitiveRenderer::drawBox_(
     const BaseMtx34f& model_mtx, const Color4f& colorL, const Color4f& colorR
 )
 {
-    drawLines_(model_mtx, colorL, colorR, mQuadVertexBuf, 4, mBoxIndexBuf, 4);
+    drawLines_(model_mtx, colorL, colorR, Drawer::LINE_LOOP, mQuadVertexBuf, 4, mBoxIndexBuf, 4);
 }
 
 void PrimitiveRenderer::drawCube_(
@@ -602,14 +602,14 @@ void PrimitiveRenderer::drawWireCube_(
     const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1
 )
 {
-    drawLines_(model_mtx, c0, c1, mWireCubeVertexBuf, 8, mWireCubeIndexBuf, 17);
+    drawLines_(model_mtx, c0, c1, Drawer::LINE_LOOP, mWireCubeVertexBuf, 8, mWireCubeIndexBuf, 17);
 }
 
 void PrimitiveRenderer::drawLine_(
     const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1
 )
 {
-    drawLines_(model_mtx, c0, c1, mLineVertexBuf, 2, mLineIndexBuf, 2);
+    drawLines_(model_mtx, c0, c1, Drawer::LINES, mLineVertexBuf, 2, mLineIndexBuf, 2);
 }
 
 void PrimitiveRenderer::drawSphere4x8_(
@@ -644,14 +644,14 @@ void PrimitiveRenderer::drawCircle16_(
     const BaseMtx34f& model_mtx, const Color4f& edge
 )
 {
-    drawLines_(model_mtx, edge, edge, mDiskSVertexBuf, 16 + 1, mCircleSIndexBuf, 16);
+    drawLines_(model_mtx, edge, edge, Drawer::LINE_LOOP, mDiskSVertexBuf, 16 + 1, mCircleSIndexBuf, 16);
 }
 
 void PrimitiveRenderer::drawCircle32_(
     const BaseMtx34f& model_mtx, const Color4f& edge
 )
 {
-    drawLines_(model_mtx, edge, edge, mDiskLVertexBuf, 32 + 1, mCircleLIndexBuf, 32);
+    drawLines_(model_mtx, edge, edge, Drawer::LINE_LOOP, mDiskLVertexBuf, 32 + 1, mCircleLIndexBuf, 32);
 }
 
 void PrimitiveRenderer::drawCylinder16_(
@@ -698,6 +698,7 @@ void PrimitiveRenderer::drawTriangles_(
 
 void PrimitiveRenderer::drawLines_(
     const BaseMtx34f& model_mtx, const Color4f& c0, const Color4f& c1,
+    Drawer::PrimitiveMode mode,
     Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num
 )
 {
@@ -711,7 +712,7 @@ void PrimitiveRenderer::drawLines_(
     mVertexBuffer.setData(vtx, vtx_num * sizeof(Vertex));
     mVertexArray.bind();
 
-    Drawer::DrawElements(Drawer::LINE_LOOP, idx_num, idx);
+    Drawer::DrawElements(mode, idx_num, idx);
 }
 
 void PrimitiveRenderer::getQuadVertex(Vertex* vtx, u16* idx)
@@ -738,8 +739,8 @@ void PrimitiveRenderer::getQuadVertex(Vertex* vtx, u16* idx)
 void PrimitiveRenderer::getLineVertex(Vertex* vtx, u16* idx)
 {
     static const Vertex cVtx[2] = {
-        { { -0.5f,  0.0f, 0.0f }, { 0.0f, 0.5f }, { 0.0f, 0.0f, 0.0f, 0.0f } },
-        { {  0.5f,  0.0f, 0.0f }, { 1.0f, 0.5f }, { 1.0f, 0.0f, 0.0f, 0.0f } }
+        { { -0.5f, 0.0f, 0.0f }, { 0.0f, 0.5f }, { 0.0f, 0.0f, 0.0f, 0.0f } },
+        { {  0.5f, 0.0f, 0.0f }, { 1.0f, 0.5f }, { 1.0f, 0.0f, 0.0f, 0.0f } }
     };
 
     static const u16 cIdx[2] = {
@@ -793,13 +794,8 @@ void PrimitiveRenderer::getWireCubeVertex(Vertex* vtx, u16* idx)
     getCubeVertex(vtx, nullptr);
 
     static const u16 cIdx[17] = {
-        0, 1, 2,
-        3, 0, 7,
-        6, 1, 2,
-        5, 6, 7,
-        4, 5, 4,
-        3, 0
-
+        0, 1, 2, 3, 0, 7, 6, 1,
+        2, 5, 6, 7, 4, 5, 4, 3, 0
     };
 
     if (idx)
