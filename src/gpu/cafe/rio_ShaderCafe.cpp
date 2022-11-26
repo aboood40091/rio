@@ -248,83 +248,47 @@ u32 Shader::getFragmentUniformBlockIndex(const char* name) const
 
 void Shader::setUniform(f32 v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 1, &v);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 1, &v);
+    setUniform(BaseVec4f{ v, 0.0f, 0.0f, 0.0f }, vs_location, fs_location);
 }
 
 void Shader::setUniform(s32 v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 1, &v);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 1, &v);
+    setUniform(BaseVec4i{ v, 0, 0, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(u32 v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 1, &v);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 1, &v);
+    setUniform(BaseVec4u{ v, 0, 0, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec2f& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 2, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 2, &v.x);
+    setUniform(BaseVec4f{ v.x, v.y, 0.0f, 0.0f }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec2i& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 2, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 2, &v.x);
+    setUniform(BaseVec4i{ v.x, v.y, 0, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec2u& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 2, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 2, &v.x);
+    setUniform(BaseVec4u{ v.x, v.y, 0, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec3f& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 3, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 3, &v.x);
+    setUniform(BaseVec4f{ v.x, v.y, v.z, 0.0f }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec3i& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 3, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 3, &v.x);
+    setUniform(BaseVec4i{ v.x, v.y, v.z, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec3u& v, u32 vs_location, u32 fs_location)
 {
-    if (vs_location != 0xFFFFFFFF)
-        GX2SetVertexUniformReg(vs_location, 3, &v.x);
-
-    if (fs_location != 0xFFFFFFFF)
-        GX2SetPixelUniformReg(fs_location, 3, &v.x);
+    setUniform(BaseVec4u{ v.x, v.y, v.z, 0 }, vs_location, fs_location);
 }
 
 void Shader::setUniform(const BaseVec4f& v, u32 vs_location, u32 fs_location)
