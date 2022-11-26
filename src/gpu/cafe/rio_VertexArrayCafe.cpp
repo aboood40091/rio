@@ -10,6 +10,11 @@
 #include <gx2/shaders.h>
 #include <gx2/utils.h>
 
+#define GX2_COMP_SEL_X001 GX2_SEL_MASK(GX2_SQ_SEL_X, GX2_SQ_SEL_0, GX2_SQ_SEL_0, GX2_SQ_SEL_1)
+#define GX2_COMP_SEL_XY01 GX2_SEL_MASK(GX2_SQ_SEL_X, GX2_SQ_SEL_Y, GX2_SQ_SEL_0, GX2_SQ_SEL_1)
+#define GX2_COMP_SEL_XYZ1 GX2_SEL_MASK(GX2_SQ_SEL_X, GX2_SQ_SEL_Y, GX2_SQ_SEL_Z, GX2_SQ_SEL_1)
+#define GX2_COMP_SEL_XYZW GX2_SEL_MASK(GX2_SQ_SEL_X, GX2_SQ_SEL_Y, GX2_SQ_SEL_Z, GX2_SQ_SEL_W)
+
 namespace rio {
 
 VertexArray::~VertexArray()
@@ -41,6 +46,19 @@ void VertexArray::initialize()
 
 void VertexArray::process()
 {
+    static constexpr u32 sFormatMask[] = {
+        GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01,
+        GX2_COMP_SEL_X001, GX2_COMP_SEL_X001,
+        GX2_COMP_SEL_XY01, GX2_COMP_SEL_X001,
+        GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01,
+        GX2_COMP_SEL_XY01, GX2_COMP_SEL_XYZ1,
+        GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW,
+        GX2_COMP_SEL_XY01, GX2_COMP_SEL_XY01,
+        GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW,
+        GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZ1,
+        GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW
+    };
+
     u32 num_streams = 0;
     for (u32 i = 0; i < VertexBuffer::NUM_MAX_BUFFERS; i++)
     {
@@ -67,9 +85,9 @@ void VertexArray::process()
                 gx2_stream.buffer = buffer;
                 gx2_stream.offset = stream->mOffset;
                 gx2_stream.format = (GX2AttribFormat)stream->mInternalFormat;
+                gx2_stream.mask = sFormatMask[stream->mInternalFormat & 0xff];
                 gx2_stream.endianSwap = GX2_ENDIAN_SWAP_DEFAULT;
                 // TODO
-                gx2_stream.mask = GX2_SEL_MASK(GX2_SQ_SEL_X, GX2_SQ_SEL_Y, GX2_SQ_SEL_Z, GX2_SQ_SEL_1);
                 gx2_stream.type = GX2_ATTRIB_INDEX_PER_VERTEX;
                 gx2_stream.aluDivisor = 0;
             }
