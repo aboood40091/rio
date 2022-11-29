@@ -298,6 +298,16 @@ void PrimitiveRenderer::setModelMatrix(const BaseMtx34f& model_matrix)
     mModelMtx = static_cast<const Matrix34f&>(model_matrix);
 }
 
+void PrimitiveRenderer::setViewMtx(const rio::BaseMtx34f& view_mtx)
+{
+    mCameraMtx = static_cast<const Matrix34f&>(view_mtx);
+}
+
+void PrimitiveRenderer::setProjMtx(const rio::BaseMtx44f& proj_mtx)
+{
+    mProjectionMtx = static_cast<const Matrix44f&>(proj_mtx);
+}
+
 void PrimitiveRenderer::setCamera(const Camera& camera)
 {
     camera.getMatrix(&mCameraMtx);
