@@ -11,6 +11,7 @@ Model::Model(const res::Model* res_mdl)
     : mResModel(*res_mdl)
     , mMeshes(nullptr)
     , mMaterials(nullptr)
+    , mModelMtx{Matrix34f::ident}
 {
     RIO_ASSERT(res_mdl);
 
@@ -68,6 +69,8 @@ Model::~Model()
 
 void Model::setModelWorldMtx(const Matrix34f& srt)
 {
+    mModelMtx = srt;
+
     for (u32 i = 0; i < mNumMeshes; i++)
         mMeshes[i].calcWorldMtx_(srt);
 }

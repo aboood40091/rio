@@ -54,6 +54,7 @@ public:
         return mMaterials[i];
     }
 
+    const Matrix34f& getModelWorldMtx() const { return mModelMtx; }
     void setModelWorldMtx(const Matrix34f& srt);
 
 private:
@@ -64,6 +65,8 @@ private:
 
     Material* mMaterials;
     u32 mNumMaterials;
+
+    Matrix34f mModelMtx;
 };
 
 } }
