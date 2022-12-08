@@ -45,6 +45,16 @@ public:
     typedef std::multiset<Layer> List;
     typedef List::iterator iterator;
 
+    static Layer* peelIterator(List::iterator& itr)
+    {
+        return const_cast<Layer*>(&(*itr));
+    }
+
+    static const Layer* peelIterator(const List::iterator& itr)
+    {
+        return &(*itr);
+    }
+
 public:
     Layer(const char* name, s32 priority);
     ~Layer();
