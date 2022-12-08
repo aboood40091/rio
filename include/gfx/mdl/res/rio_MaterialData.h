@@ -168,79 +168,6 @@ static_assert(sizeof(TextureRef) == 0x48);
 class Material
 {
 public:
-    const char* name() const
-    {
-        RIO_ASSERT(mName.ptr()[mName.count() - 1] == '\0');
-        return mName.ptr();
-    }
-
-    const char* shaderName() const
-    {
-        RIO_ASSERT(mShaderName.ptr()[mShaderName.count() - 1] == '\0');
-        return mShaderName.ptr();
-    }
-
-    bool isVisible() const
-    {
-        return mFlags & 1;
-    }
-
-    bool isTranslucent() const
-    {
-        return mRenderFlags & TRANSLUCENT;
-    }
-
-    u32 numTextures() const
-    {
-        return mTextures.count();
-    }
-
-    const TextureRef* textures() const
-    {
-        return mTextures.ptr();
-    }
-
-    const TextureRef& texture(u32 i) const
-    {
-        RIO_ASSERT(i < numTextures());
-        return mTextures.ptr()[i];
-    }
-
-    u32 numUniformVars() const
-    {
-        return mUniformVars.count();
-    }
-
-    const UniformVar* uniformVars() const
-    {
-        return mUniformVars.ptr();
-    }
-
-    const UniformVar& uniformVar(u32 i) const
-    {
-        RIO_ASSERT(i < numUniformVars());
-        return mUniformVars.ptr()[i];
-    }
-
-    u32 numUniformBlocks() const
-    {
-        return mUniformBlocks.count();
-    }
-
-    const UniformBlock* uniformBlocks() const
-    {
-        return mUniformBlocks.ptr();
-    }
-
-    const UniformBlock& uniformBlock(u32 i) const
-    {
-        RIO_ASSERT(i < numUniformBlocks());
-        return mUniformBlocks.ptr()[i];
-    }
-
-    void initRenderState(RenderState& state) const;
-
-private:
     enum RenderFlags : u16
     {
         DEPTH_TEST_ENABLE                = 0x0001,
@@ -324,6 +251,80 @@ private:
         POLYGON_MODE_FILL
     };
 
+public:
+    const char* name() const
+    {
+        RIO_ASSERT(mName.ptr()[mName.count() - 1] == '\0');
+        return mName.ptr();
+    }
+
+    const char* shaderName() const
+    {
+        RIO_ASSERT(mShaderName.ptr()[mShaderName.count() - 1] == '\0');
+        return mShaderName.ptr();
+    }
+
+    bool isVisible() const
+    {
+        return mFlags & 1;
+    }
+
+    bool isTranslucent() const
+    {
+        return mRenderFlags & TRANSLUCENT;
+    }
+
+    u32 numTextures() const
+    {
+        return mTextures.count();
+    }
+
+    const TextureRef* textures() const
+    {
+        return mTextures.ptr();
+    }
+
+    const TextureRef& texture(u32 i) const
+    {
+        RIO_ASSERT(i < numTextures());
+        return mTextures.ptr()[i];
+    }
+
+    u32 numUniformVars() const
+    {
+        return mUniformVars.count();
+    }
+
+    const UniformVar* uniformVars() const
+    {
+        return mUniformVars.ptr();
+    }
+
+    const UniformVar& uniformVar(u32 i) const
+    {
+        RIO_ASSERT(i < numUniformVars());
+        return mUniformVars.ptr()[i];
+    }
+
+    u32 numUniformBlocks() const
+    {
+        return mUniformBlocks.count();
+    }
+
+    const UniformBlock* uniformBlocks() const
+    {
+        return mUniformBlocks.ptr();
+    }
+
+    const UniformBlock& uniformBlock(u32 i) const
+    {
+        RIO_ASSERT(i < numUniformBlocks());
+        return mUniformBlocks.ptr()[i];
+    }
+
+    void initRenderState(RenderState& state) const;
+
+private:
     FixedString             mName;                          // Material name.
     FixedString             mShaderName;                    // Shader filename (without extension).
 

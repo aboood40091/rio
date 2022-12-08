@@ -16,7 +16,7 @@ def read_obj(path):
                 pos.append(tuple(map(float, elem)))
 
             elif line.startswith("vt "):
-                assert len(elem) == 2
+                assert len(elem) in (2, 3)
                 texCoord.append((float(elem[0]), 1.0 - float(elem[1])))
 
             elif line.startswith("vn "):
