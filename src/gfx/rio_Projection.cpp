@@ -1,4 +1,5 @@
 #include <gfx/rio_Projection.h>
+#include <gfx/rio_Window.h>
 
 namespace rio {
 
@@ -106,6 +107,19 @@ void OrthoProjection::set(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 
     setNear(near);
     setFar(far);
     setTBLR(top, bottom, left, right);
+}
+
+void OrthoProjection::setFromWindow(f32 near, f32 far)
+{
+    const Window* const window = Window::instance();
+    RIO_ASSERT(window);
+
+    const f32 window_width_2 = window->getWidth() * 0.5f;
+    const f32 window_height_2 = window->getHeight() * 0.5f;
+
+    setNear(near);
+    setFar(far);
+    setTBLR(window_height_2, -window_height_2, -window_width_2, window_width_2);
 }
 
 void OrthoProjection::updateMatrix_() const

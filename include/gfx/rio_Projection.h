@@ -101,6 +101,7 @@ public:
     OrthoProjection(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 right);
 
     void set(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 right);
+    void setFromWindow(f32 near = -1000.f, f32 far = 1000.f);
 
     f32 getNear() const { return mNear; }
     f32 getFar() const { return mFar; }
