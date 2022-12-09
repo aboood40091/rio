@@ -156,9 +156,24 @@ static void calcLerp(rio::Quatf* p_quat, f32 frame, const res::Buffer<res::KeyFr
     p_quat->normalize();
 }
 
-static void applyAnim(f32 frame, Mesh& mesh, const res::SkeletalAnimation& skl_anim, const Bone& bone, const rio::Matrix34f& parent_transform)
+const res::BoneAnim* getBoneAnim(const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone)
+{
+    u32 bone_idx = skeleton.getBoneIndex(bone);
+    for (u32 i = 0; i < skl_anim.numBoneAnims(); i++)
+    {
+        const res::BoneAnim& bone_anim = skl_anim.boneAnim(i);
+        if (bone_anim.skeletalBoneIndex())
+            return &bone_anim;
+    }
+
+    return nullptr;
+}
+
+static void applyAnim(f32 frame, Mesh& mesh, const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone, const rio::Matrix34f& parent_transform)
 {
     rio::Matrix34f world_transform;
+
+    const res::BoneAnim* p_bone_anim = getBoneAnim(skl_anim, skeleton, bone);
 
     if (bone.boneAnim().find(anim_name) == bone.boneAnim().end())
         world_transform.setMul(parent_transform, bone.nodeTransform());
