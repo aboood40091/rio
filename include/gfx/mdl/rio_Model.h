@@ -4,12 +4,12 @@
 #include <gfx/mdl/res/rio_ModelData.h>
 #include <gfx/mdl/rio_Mesh.h>
 #include <gfx/mdl/rio_Material.h>
+#include <gfx/mdl/rio_Skeleton.h>
 #include <math/rio_Matrix.h>
 
-namespace rio { namespace mdl {
+#include <string>
 
-class Material;
-class Mesh;
+namespace rio { namespace mdl {
 
 class Model
 {
@@ -54,8 +54,17 @@ public:
         return mMaterials[i];
     }
 
+    Skeleton& skeleton() { return mSkeleton; }
+    const Skeleton& skeleton() const { return mSkeleton; }
+
     const Matrix34f& getModelWorldMtx() const { return mModelMtx; }
     void setModelWorldMtx(const Matrix34f& srt);
+
+    s32 getSkeletalAnimationIndex(const std::string& name);
+    void applyAnim(f32 time, s32 skl_anim_idx);
+
+private:
+    void applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim);
 
 private:
     const res::Model& mResModel;
@@ -65,6 +74,8 @@ private:
 
     Material* mMaterials;
     u32 mNumMaterials;
+
+    Skeleton mSkeleton;
 
     Matrix34f mModelMtx;
 };

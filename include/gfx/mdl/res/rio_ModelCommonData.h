@@ -94,6 +94,10 @@ typedef Buffer<s16>         BufferS16;
 typedef Buffer<s32>         BufferS32;
 typedef Buffer<f64>         BufferF64;
 
+typedef Buffer<BaseVec2i>   BufferVec2i;
+typedef Buffer<BaseVec3i>   BufferVec3i;
+typedef Buffer<BaseVec4i>   BufferVec4i;
+
 typedef Buffer<BaseVec2f>   BufferVec2f;
 typedef Buffer<BaseVec3f>   BufferVec3f;
 typedef Buffer<BaseVec4f>   BufferVec4f;
