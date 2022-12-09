@@ -6,28 +6,75 @@
 
 namespace rio { namespace mdl { namespace res {
 
-struct Vertex
+class MeshBone
 {
-    BaseVec3f   pos;
-    BaseVec2f   tex_coord;
-    BaseVec3f   normal;
-};
-static_assert(std::is_pod<Vertex>::value);
-static_assert(sizeof(Vertex) == 0x20);
+public:
+    u32 skeletonBoneIndex() const
+    {
+        return mSklBoneIndex;
+    }
 
-typedef Buffer<Vertex> VertexBuffer;
+    const rio::BaseMtx34f& offsetMatrix() const
+    {
+        return mOffsetMtx;
+    }
+
+private:
+    u32 mSklBoneIndex;
+    rio::BaseMtx34f mOffsetMtx;
+};
+static_assert(std::is_pod<MeshBone>::value);
+static_assert(sizeof(MeshBone) == 0x34);
+
+typedef Buffer<MeshBone> MeshBoneBuf;
 
 class Mesh
 {
 public:
-    const VertexBuffer& vertexBuffer() const
+    const BufferVec3f& positionBuffer() const
     {
-        return mVtxBuf;
+        return mPositionBuf;
+    }
+
+    const BufferVec2f& texCoordBuffer() const
+    {
+        return mTexCoordBuf;
+    }
+
+    const BufferVec3f& normalBuffer() const
+    {
+        return mNormalBuf;
+    }
+
+    const BufferVec4i& blendIndexBuffer() const
+    {
+        return mBlendIndexBuf;
+    }
+
+    const BufferVec4f& blendWeightBuffer() const
+    {
+        return mBlendWeightBuf;
     }
 
     const BufferU32& indexBuffer() const
     {
         return mIdxBuf;
+    }
+
+    u32 numBones() const
+    {
+        return mBoneBuf.count();
+    }
+
+    const MeshBone* bones() const
+    {
+        return mBoneBuf.ptr();
+    }
+
+    const MeshBone& bone(u32 i) const
+    {
+        RIO_ASSERT(i < numBones());
+        return mBoneBuf.ptr()[i];
     }
 
     const Vector3f& scale() const
@@ -51,17 +98,24 @@ public:
     }
 
 private:
-    VertexBuffer    mVtxBuf;    // Vertex buffer
-    BufferU32       mIdxBuf;    // Index buffer
+    BufferVec3f mPositionBuf;       // Position Buffer
+    BufferVec2f mTexCoordBuf;       // Texture coordinate Buffer
+    BufferVec3f mNormalBuf;         // Normal Buffer
+    BufferVec4i mBlendIndexBuf;     // Blend Index Buffer
+    BufferVec4f mBlendWeightBuf;    // Blend Weight Buffer
 
-    Vector3f        mScale;     // Mesh local scale
-    Vector3f        mRotate;    // Mesh local rotation
-    Vector3f        mTranslate; // Mesh local translation
+    BufferU32   mIdxBuf;            // Index buffer
 
-    u32             mMatIdx;    // Material index
+    MeshBoneBuf mBoneBuf;           // Mesh reference of bone
+
+    Vector3f    mScale;             // Mesh local scale
+    Vector3f    mRotate;            // Mesh local rotation
+    Vector3f    mTranslate;         // Mesh local translation
+
+    u32         mMatIdx;            // Material index
 };
 static_assert(std::is_pod<Mesh>::value);
-static_assert(sizeof(Mesh) == 0x38);
+static_assert(sizeof(Mesh) == 0x60);
 
 } } }
 

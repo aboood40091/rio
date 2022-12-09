@@ -7,11 +7,23 @@
 
 namespace rio { namespace mdl {
 
+class Bone;
 class Material;
 class Model;
+class Skeleton;
 
 class Mesh
 {
+public:
+    enum AttributeLocation
+    {
+        ATTRIB_POSITION = 0,
+        ATTRIB_TEX_COORD,
+        ATTRIB_NORMAL,
+        ATTRIB_BLEND_INDEX,
+        ATTRIB_BLEND_WEIGHT
+    };
+
 public:
     Mesh(const res::Mesh* res_mesh, Model* parent_mdl);
 
@@ -35,9 +47,20 @@ public:
         return mWorldMtx;
     }
 
+    rio::BaseMtx34f* boneTransform() const
+    {
+        return mBoneTransform;
+    }
+
+    s32 getMeshBoneIndex(const Skeleton& skeleton, const Bone& bone);
+
+    void calcBoneBaseTransform(const Skeleton& skeleton);
+
     void draw() const;
 
 private:
+    void calcBoneBaseTransform_(const Skeleton& skeleton, const Bone& bone, const rio::Matrix34f& parent_transform);
+
     void setMaterial_(Material* material);
     void calcLocalMtx_();
     void calcWorldMtx_(const Matrix34f& mdl_world_mtx);
@@ -51,14 +74,31 @@ private:
     Matrix34f           mLocalMtx;          // Local transformation matrix.
     Matrix34f           mWorldMtx;          // World transformation matrix. (Model x Local)
 
+    u32                 mVtxNum;            // Vertices count.
+
     const u32*          mIdxBuf;            // Index buffer.
     u32                 mIdxNum;            // Indices count.
 
-    VertexBuffer        mVBO;               // Vertex buffer object.
-    VertexStream        mPosStream;         // Position vertex attribute stream.
-    VertexStream        mTexCoordStream;    // Texture coordinates vertex attribute stream layout.
-    VertexStream        mNormalStream;      // Normal vertex attribute stream.
+    struct Attrib
+    {
+        Attrib(s32 buffer_index)
+            : vtx_stream()
+            , vtx_buf(buffer_index)
+        {
+        }
+
+        VertexStream vtx_stream;
+        VertexBuffer vtx_buf;
+    };
+
+    Attrib              mPositionAttrib;    // Position vertex attribute.
+    Attrib              mTexCoordAttrib;    // Texture coordinates vertex attribute.
+    Attrib              mNormalAttrib;      // Normal vertex attribute.
+    Attrib              mBlendIndexAttrib;  // Blend index vertex attribute.
+    Attrib              mBlendWeightAttrib; // Blend weight vertex attribute.
     VertexArray         mVAO;               // Vertex array object.
+
+    rio::Matrix34f*     mBoneTransform;
 
     friend class Model;
 };
