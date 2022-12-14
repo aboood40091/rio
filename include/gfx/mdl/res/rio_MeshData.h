@@ -97,6 +97,11 @@ public:
         return mMatIdx;
     }
 
+    u32 blendWeightNum() const
+    {
+        return mWeightNum;
+    }
+
 private:
     BufferVec3f mPositionBuf;       // Position Buffer
     BufferVec2f mTexCoordBuf;       // Texture coordinate Buffer
@@ -113,9 +118,10 @@ private:
     Vector3f    mTranslate;         // Mesh local translation
 
     u32         mMatIdx;            // Material index
+    u32         mWeightNum;         // Blend Weight count
 };
 static_assert(std::is_pod<Mesh>::value);
-static_assert(sizeof(Mesh) == 0x60);
+static_assert(sizeof(Mesh) == 0x64);
 
 } } }
 

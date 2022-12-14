@@ -84,7 +84,7 @@ void Mesh::calcBoneBaseTransform(const Skeleton& skeleton)
 
 s32 Mesh::getMeshBoneIndex(const Skeleton& skeleton, const Bone& bone)
 {
-    u32 idx = mSkeleton.getBoneIndex(bone);
+    u32 idx = skeleton.getBoneIndex(bone);
 
     for (u32 i = 0; i < mResMesh.numBones(); i++)
         if (mResMesh.bones()[i].skeletonBoneIndex() == u32(idx))
@@ -104,6 +104,112 @@ void Mesh::calcBoneBaseTransform_(const Skeleton& skeleton, const Bone& bone, co
 
     for (const Bone* p_child_bone : bone.children())
         calcBoneBaseTransform_(skeleton, *p_child_bone, world_transform);
+}
+
+static void calcLerp(rio::Vector3f* p_vec, f32 frame, const res::Buffer<res::KeyFrameVec3>& keys)
+{
+    u32 key_num = keys.count();
+    RIO_ASSERT(key_num > 0);
+    if (key_num == 1)
+    {
+        *p_vec = keys.ptr()[0].value();
+        return;
+    }
+
+    u32 idx = 0;
+    for (u32 i = 0; i < key_num - 1; i++)
+    {
+        if (f32(keys.ptr()[i + 1].frame()) > frame)
+        {
+            idx = i;
+            break;
+        }
+    }
+
+    const f32 t1 = keys.ptr()[idx].frame();
+    const f32 t2 = keys.ptr()[idx + 1].frame();
+    const f32 factor = (frame - t1) / (t2 - t1);
+
+    *p_vec = keys.ptr()[idx].value()     * (1 - factor) +
+             keys.ptr()[idx + 1].value() * factor;
+}
+
+static void calcLerp(rio::Quatf* p_quat, f32 frame, const res::Buffer<res::KeyFrameQuat>& keys)
+{
+    u32 key_num = keys.count();
+    RIO_ASSERT(key_num > 0);
+    if (key_num == 1)
+    {
+        *p_quat = keys.ptr()[0].value();
+        return;
+    }
+
+    u32 idx = 0;
+    for (u32 i = 0; i < key_num - 1; i++)
+    {
+        if (f32(keys.ptr()[i + 1].frame()) > frame)
+        {
+            idx = i;
+            break;
+        }
+    }
+
+    const f32 t1 = keys.ptr()[idx].frame();
+    const f32 t2 = keys.ptr()[idx + 1].frame();
+    const f32 factor = (frame - t1) / (t2 - t1);
+
+    p_quat->setSlerp(
+        keys.ptr()[idx].value(),
+        keys.ptr()[idx + 1].value(),
+        factor
+    );
+    p_quat->normalize();
+}
+
+static const res::BoneAnim* getBoneAnim(const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone)
+{
+    u32 bone_idx = skeleton.getBoneIndex(bone);
+    for (u32 i = 0; i < skl_anim.numBoneAnims(); i++)
+    {
+        const res::BoneAnim& bone_anim = skl_anim.boneAnims()[i];
+        if (bone_anim.skeletonBoneIndex() == bone_idx)
+            return &bone_anim;
+    }
+
+    return nullptr;
+}
+
+void Mesh::applyAnim(f32 frame, const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone, const rio::Matrix34f& parent_transform)
+{
+    rio::Matrix34f world_transform;
+
+    const res::BoneAnim* p_bone_anim = getBoneAnim(skl_anim, skeleton, bone);
+    if (!p_bone_anim)
+        world_transform.setMul(parent_transform, bone.getNodeTransform());
+
+    else
+    {
+        rio::Vector3f scale;
+        calcLerp(&scale, frame, p_bone_anim->scalingKey());
+
+        rio::Quatf rotate;
+        calcLerp(&rotate, frame, p_bone_anim->rotationKey());
+
+        rio::Vector3f translate;
+        calcLerp(&translate, frame, p_bone_anim->positionKey());
+
+        rio::Matrix34f node_transform;
+        node_transform.makeSQT(scale, rotate, translate);
+
+        world_transform.setMul(parent_transform, node_transform);
+    }
+
+    s32 idx = getMeshBoneIndex(skeleton, bone);
+    if (idx != -1)
+        mBoneTransform[idx].setMul(world_transform, static_cast<const rio::Matrix34f&>(mResMesh.bones()[idx].offsetMatrix()));
+
+    for (const Bone* p_child_bone : bone.children())
+        applyAnim(frame, skl_anim, skeleton, *p_child_bone, world_transform);
 }
 
 void Mesh::draw() const
