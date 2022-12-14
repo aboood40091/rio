@@ -15,6 +15,11 @@ class Bone
 public:
     Bone(const res::Bone* p_res_bone);
 
+    const res::Bone& resBone() const
+    {
+        return mResBone;
+    }
+
     const rio::Matrix34f& getNodeTransform() const
     {
         return static_cast<const rio::Matrix34f&>(mResBone.nodeTransform());
@@ -44,6 +49,11 @@ class Skeleton
 public:
     Skeleton(const res::Skeleton* p_res_skl);
 
+    const res::Skeleton& resSkeleton() const
+    {
+        return mResSkeleton;
+    }
+
     Bone* root() const
     {
         return mpRoot;
@@ -57,7 +67,7 @@ public:
     u32 getBoneIndex(const Bone& bone) const
     {
         const Bone* bones = mBone.data();
-        intptr_t idx = intptr_t(&bone) - intptr_t(bones);
+        intptr_t idx = intptr_t(&bone - bones);
         RIO_ASSERT(0 <= idx && size_t(idx) < mBone.size());
         return idx;
     }

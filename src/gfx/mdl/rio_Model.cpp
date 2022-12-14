@@ -96,122 +96,13 @@ void Model::applyAnim(f32 time, s32 skl_anim_idx)
         applyAnim_(mMeshes[i], time, skl_anim);
 }
 
-static void calcLerp(rio::Vector3f* p_vec, f32 frame, const res::Buffer<res::KeyFrameVec3>& keys)
-{
-    u32 key_num = keys.count();
-    RIO_ASSERT(key_num > 0);
-    if (key_num == 1)
-    {
-        *p_vec = keys.ptr()[0].value();
-        return;
-    }
-
-    u32 idx = 0;
-    for (u32 i = 0; i < key_num - 1; i++)
-    {
-        if (f32(keys.ptr()[i + 1].frame()) > frame)
-        {
-            idx = i;
-            break;
-        }
-    }
-
-    const f32 t1 = keys.ptr()[idx].frame();
-    const f32 t2 = keys.ptr()[idx + 1].frame();
-    const f32 factor = (frame - t1) / (t2 - t1);
-
-    *p_vec = keys.ptr()[idx].value()     * (1 - factor) +
-             keys.ptr()[idx + 1].value() * factor;
-}
-
-static void calcLerp(rio::Quatf* p_quat, f32 frame, const res::Buffer<res::KeyFrameQuat>& keys)
-{
-    u32 key_num = keys.count();
-    RIO_ASSERT(key_num > 0);
-    if (key_num == 1)
-    {
-        *p_quat = keys.ptr()[0].value();
-        return;
-    }
-
-    u32 idx = 0;
-    for (u32 i = 0; i < key_num - 1; i++)
-    {
-        if (f32(keys.ptr()[i + 1].frame()) > frame)
-        {
-            idx = i;
-            break;
-        }
-    }
-
-    const f32 t1 = keys.ptr()[idx].frame();
-    const f32 t2 = keys.ptr()[idx + 1].frame();
-    const f32 factor = (frame - t1) / (t2 - t1);
-
-    p_quat->setInterpolate(
-        keys.ptr()[idx].value(),
-        keys.ptr()[idx + 1].value(),
-        factor
-    );
-    p_quat->normalize();
-}
-
-const res::BoneAnim* getBoneAnim(const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone)
-{
-    u32 bone_idx = skeleton.getBoneIndex(bone);
-    for (u32 i = 0; i < skl_anim.numBoneAnims(); i++)
-    {
-        const res::BoneAnim& bone_anim = skl_anim.boneAnim(i);
-        if (bone_anim.skeletalBoneIndex())
-            return &bone_anim;
-    }
-
-    return nullptr;
-}
-
-static void applyAnim(f32 frame, Mesh& mesh, const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone, const rio::Matrix34f& parent_transform)
-{
-    rio::Matrix34f world_transform;
-
-    const res::BoneAnim* p_bone_anim = getBoneAnim(skl_anim, skeleton, bone);
-
-    if (bone.boneAnim().find(anim_name) == bone.boneAnim().end())
-        world_transform.setMul(parent_transform, bone.nodeTransform());
-
-    else
-    {
-        const BoneAnim& bone_anim = bone.boneAnim().at(anim_name);
-
-        aiVector3D scale;
-        calcLerp(&scale, frame, bone_anim.scaling_key);
-
-        aiQuaternion rotate;
-        calcLerp(&rotate, frame, bone_anim.rotation_key);
-
-        aiVector3D translate;
-        calcLerp(&translate, frame, bone_anim.position_key);
-
-        rio::Matrix44f node_transform;
-        new ((void*)node_transform.a) aiMatrix4x4(scale, rotate, translate);
-
-        world_transform.setMul(parent_transform, *(const rio::Matrix34f*)node_transform.a);
-    }
-
-    s32 idx = entry.getBoneInstanceIndex(bone.name());
-    if (idx != -1)
-        entry.setBoneTransform(idx, world_transform, entry.boneInstance(idx).offset_mtx);
-
-    for (const Bone* p_child_bone : bone.children())
-        applyAnim(frame, entry, anim_name, *p_child_bone, world_transform);
-}
-
 void Model::applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim)
 {
     if (!mSkeleton.root())
         return;
 
-    frame = std::fmod(time * skl_anim.fps(), animation.duration());
-    ::applyAnim(frame, mesh, skl_anim, *mSkeleton.root(), rio::Matrix34f::ident);
+    f32 frame = std::fmod(time * skl_anim.fps(), skl_anim.duration());
+    mesh.applyAnim(frame, skl_anim, mSkeleton, *mSkeleton.root(), rio::Matrix34f::ident);
 }
 
 } }

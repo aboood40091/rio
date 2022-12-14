@@ -10,6 +10,12 @@ namespace rio { namespace mdl { namespace res {
 class Bone
 {
 public:
+    const char* name() const
+    {
+        RIO_ASSERT(mName.ptr()[mName.count() - 1] == '\0');
+        return mName.ptr();
+    }
+
     s32 parentIndex() const
     {
         return mParentIdx;
@@ -121,6 +127,27 @@ static_assert(sizeof(KeyFrameQuat) == 0x14);
 
 class BoneAnim
 {
+public:
+    u32 skeletonBoneIndex() const
+    {
+        return mSklBoneIndex;
+    }
+
+    const Buffer<KeyFrameVec3>& scalingKey() const
+    {
+        return mScalingKey;
+    }
+
+    const Buffer<KeyFrameQuat>& rotationKey() const
+    {
+        return mRotationKey;
+    }
+
+    const Buffer<KeyFrameVec3>& positionKey() const
+    {
+        return mPositionKey;
+    }
+
 private:
     u32 mSklBoneIndex;
 
@@ -138,6 +165,32 @@ public:
     {
         RIO_ASSERT(mName.ptr()[mName.count() - 1] == '\0');
         return mName.ptr();
+    }
+
+    f32 fps() const
+    {
+        return mFPS;
+    }
+
+    f32 duration() const
+    {
+        return mDuration;
+    }
+
+    u32 numBoneAnims() const
+    {
+        return mBoneAnims.count();
+    }
+
+    const BoneAnim* boneAnims() const
+    {
+        return mBoneAnims.ptr();
+    }
+
+    const BoneAnim& boneAnim(u32 i) const
+    {
+        RIO_ASSERT(i < numBoneAnims());
+        return mBoneAnims.ptr()[i];
     }
 
 private:

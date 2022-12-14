@@ -9,6 +9,7 @@ template <typename T>
 struct Matrix34 : BaseMtx34<T>
 {
     typedef Matrix34<T> Self;
+    typedef BaseQuat<T> Quat;
     typedef BaseVec3<T> Vec3;
 
     bool operator==(const Self& n) const;
@@ -34,11 +35,15 @@ struct Matrix34 : BaseMtx34<T>
 
     void makeS(const Vec3& s);
     void makeR(const Vec3& r);
+    void makeQ(const Quat& q);
     void makeT(const Vec3& t);
     void makeSR(const Vec3& s, const Vec3& r);
+    void makeSQ(const Vec3& s, const Quat& q);
     void makeST(const Vec3& s, const Vec3& t);
     void makeRT(const Vec3& r, const Vec3& t);
+    void makeQT(const Quat& q, const Vec3& t);
     void makeSRT(const Vec3& s, const Vec3& r, const Vec3& t);
+    void makeSQT(const Vec3& s, const Quat& q, const Vec3& t);
 
     bool makeVectorRotation(const Vec3& from, const Vec3& to);
 
@@ -83,6 +88,7 @@ struct Matrix44 : BaseMtx44<T>
 {
     typedef Matrix44<T> Self;
     typedef BaseMtx34<T> Mtx34;
+    typedef BaseQuat<T> Quat;
     typedef BaseVec3<T> Vec3;
     typedef BaseVec4<T> Vec4;
 
@@ -125,11 +131,15 @@ struct Matrix44 : BaseMtx44<T>
 
     void makeS(const Vec3& s);
     void makeR(const Vec3& r);
+    void makeQ(const Quat& q);
     void makeT(const Vec3& t);
     void makeSR(const Vec3& s, const Vec3& r);
+    void makeSQ(const Vec3& s, const Quat& q);
     void makeST(const Vec3& s, const Vec3& t);
     void makeRT(const Vec3& r, const Vec3& t);
+    void makeQT(const Quat& q, const Vec3& t);
     void makeSRT(const Vec3& s, const Vec3& r, const Vec3& t);
+    void makeSQT(const Vec3& s, const Quat& q, const Vec3& t);
 
     // TODO
     //void setScaleLocal(T s);

@@ -12,6 +12,12 @@ class Material;
 class Model;
 class Skeleton;
 
+namespace res {
+
+class SkeletalAnimation;
+
+}
+
 class Mesh
 {
 public:
@@ -55,6 +61,7 @@ public:
     s32 getMeshBoneIndex(const Skeleton& skeleton, const Bone& bone);
 
     void calcBoneBaseTransform(const Skeleton& skeleton);
+    void applyAnim(f32 frame, const res::SkeletalAnimation& skl_anim, const Skeleton& skeleton, const Bone& bone, const rio::Matrix34f& parent_transform);
 
     void draw() const;
 
