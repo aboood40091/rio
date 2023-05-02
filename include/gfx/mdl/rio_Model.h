@@ -60,11 +60,13 @@ public:
     const Matrix34f& getModelWorldMtx() const { return mModelMtx; }
     void setModelWorldMtx(const Matrix34f& srt);
 
-    s32 getSkeletalAnimationIndex(const std::string& name);
-    void applyAnim(f32 time, s32 skl_anim_idx);
+    s32 getSkeletalAnimationIndex(const std::string& name) const;
+    void applyAnim(f32 time, s32 skl_anim_idx, bool loop = true);
+
+    void resetAnim();
 
 private:
-    void applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim);
+    void applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim, bool loop);
 
 private:
     const res::Model& mResModel;

@@ -79,7 +79,7 @@ void Model::setModelWorldMtx(const Matrix34f& srt)
         mMeshes[i].calcWorldMtx_(srt);
 }
 
-s32 Model::getSkeletalAnimationIndex(const std::string& name)
+s32 Model::getSkeletalAnimationIndex(const std::string& name) const
 {
     for (u32 i = 0; i < mResModel.numSkeletalAnimations(); i++)
         if (name == mResModel.skeletalAnimations()[i].name())
@@ -88,21 +88,32 @@ s32 Model::getSkeletalAnimationIndex(const std::string& name)
     return -1;
 }
 
-void Model::applyAnim(f32 time, s32 skl_anim_idx)
+void Model::applyAnim(f32 time, s32 skl_anim_idx, bool loop)
 {
     const res::SkeletalAnimation& skl_anim = mResModel.skeletalAnimation(skl_anim_idx);
 
     for (u32 i = 0; i < mNumMeshes; i++)
-        applyAnim_(mMeshes[i], time, skl_anim);
+        applyAnim_(mMeshes[i], time, skl_anim, loop);
 }
 
-void Model::applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim)
+void Model::applyAnim_(Mesh& mesh, f32 time, const res::SkeletalAnimation& skl_anim, bool loop)
 {
     if (!mSkeleton.root())
         return;
 
-    f32 frame = std::fmod(time * skl_anim.fps(), skl_anim.duration());
+    f32 frame = time * skl_anim.fps();
+    if (loop)
+        frame = std::fmod(frame, skl_anim.duration());
+    else if (frame >= skl_anim.duration())
+        return;
+
     mesh.applyAnim(frame, skl_anim, mSkeleton, *mSkeleton.root(), rio::Matrix34f::ident);
+}
+
+void Model::resetAnim()
+{
+    for (u32 i = 0; i < mNumMeshes; i++)
+        mMeshes[i].calcBoneBaseTransform(mSkeleton);
 }
 
 } }
