@@ -86,7 +86,7 @@ bool Window::initialize_()
     // Make context of window current
     glfwMakeContextCurrent(gWindowHandleWin);
 
-    const char* renderer_str;
+    [[maybe_unused]] const char* renderer_str;
     RIO_GL_CALL(renderer_str = (const char*)glGetString(GL_RENDERER));
     RIO_LOG("Renderer: %s\n", renderer_str);
 
