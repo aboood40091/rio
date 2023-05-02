@@ -6,7 +6,7 @@
 #if RIO_IS_CAFE
 #include <gx2/sampler.h>
 #elif RIO_IS_WIN
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 #endif
 
 namespace rio {

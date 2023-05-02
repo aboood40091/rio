@@ -4,7 +4,7 @@
 
 #include <gpu/rio_VertexArray.h>
 
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 
 namespace rio {
 
@@ -12,7 +12,7 @@ VertexArray::~VertexArray()
 {
     if (mHandle != GL_NONE)
     {
-        glDeleteVertexArrays(1, &mHandle);
+        RIO_GL_CALL(glDeleteVertexArrays(1, &mHandle));
         mHandle = GL_NONE;
     }
 }
@@ -21,7 +21,7 @@ void VertexArray::initialize()
 {
     if (mHandle != GL_NONE)
     {
-        glDeleteVertexArrays(1, &mHandle);
+        RIO_GL_CALL(glDeleteVertexArrays(1, &mHandle));
         mHandle = GL_NONE;
     }
 
@@ -34,20 +34,20 @@ void VertexArray::initialize()
 
     std::memset(mpVertexBuffer, 0, sizeof(VertexBuffer*) * VertexBuffer::NUM_MAX_BUFFERS);
 
-    glGenVertexArrays(1, &mHandle);
+    RIO_GL_CALL(glGenVertexArrays(1, &mHandle));
     RIO_ASSERT(mHandle != GL_NONE);
 }
 
 void VertexArray::process()
 {
-    glBindVertexArray(mHandle);
+    RIO_GL_CALL(glBindVertexArray(mHandle));
 
     for (u32 i = 0; i < VertexBuffer::NUM_MAX_BUFFERS; i++)
     {
         VertexBuffer* vb = mpVertexBuffer[i];
         if (vb != nullptr && !vb->mStreams.isEmpty())
         {
-            glBindBuffer(GL_ARRAY_BUFFER, vb->mHandle);
+            RIO_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vb->mHandle));
 
             RIO_ASSERT(vb->mStride != 0);
             u32 stride = vb->mStride;
@@ -58,34 +58,38 @@ void VertexArray::process()
 
                 RIO_ASSERT(stream->mFormat != VertexStream::FORMAT_INVALID);
 
-                glEnableVertexAttribArray(stream->mLocation);
+                RIO_GL_CALL(glEnableVertexAttribArray(stream->mLocation));
                 if (stream->mInternalFormat.integer)
                 {
-                    glVertexAttribIPointer(stream->mLocation,
-                                           stream->mInternalFormat.elem_count,
-                                           stream->mInternalFormat.type,
-                                           stride,
-                                           (void*)stream->mOffset);
+                    RIO_GL_CALL(glVertexAttribIPointer(
+                        stream->mLocation,
+                        stream->mInternalFormat.elem_count,
+                        stream->mInternalFormat.type,
+                        stride,
+                        (void*)stream->mOffset
+                    ));
                 }
                 else
                 {
-                    glVertexAttribPointer(stream->mLocation,
-                                          stream->mInternalFormat.elem_count,
-                                          stream->mInternalFormat.type,
-                                          stream->mInternalFormat.normalized,
-                                          stride,
-                                          (void*)stream->mOffset);
+                    RIO_GL_CALL(glVertexAttribPointer(
+                        stream->mLocation,
+                        stream->mInternalFormat.elem_count,
+                        stream->mInternalFormat.type,
+                        stream->mInternalFormat.normalized,
+                        stride,
+                        (void*)stream->mOffset
+                    ));
                 }
             }
         }
     }
 
-    glBindVertexArray(GL_NONE);
+    RIO_GL_CALL(glBindVertexArray(GL_NONE));
 }
 
 void VertexArray::bind() const
 {
-    glBindVertexArray(mHandle);
+    RIO_GL_CALL(glBindVertexArray(mHandle));
 }
 
 }

@@ -10,7 +10,7 @@ TextureSampler2D::TextureSampler2D()
 {
     init_();
 
-    glGenSamplers(1, &mSamplerInner);
+    RIO_GL_CALL(glGenSamplers(1, &mSamplerInner));
     RIO_ASSERT(mSamplerInner != GL_NONE);
 }
 
@@ -18,7 +18,7 @@ TextureSampler2D::~TextureSampler2D()
 {
     if (mSamplerInner != GL_NONE)
     {
-        glDeleteSamplers(1, &mSamplerInner);
+        RIO_GL_CALL(glDeleteSamplers(1, &mSamplerInner));
         mSamplerInner = GL_NONE;
     }
 }
@@ -31,13 +31,13 @@ void TextureSampler2D::updateFilter_() const
         switch (mMipFilter)
         {
         case TEX_MIP_FILTER_MODE_NONE:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_POINT:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_LINEAR:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
             break;
         }
         break;
@@ -45,13 +45,13 @@ void TextureSampler2D::updateFilter_() const
         switch (mMipFilter)
         {
         case TEX_MIP_FILTER_MODE_NONE:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
             break;
         case TEX_MIP_FILTER_MODE_POINT:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_LINEAR:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
             break;
         }
         break;
@@ -63,13 +63,13 @@ void TextureSampler2D::updateFilter_() const
         switch (mMipFilter)
         {
         case TEX_MIP_FILTER_MODE_NONE:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_POINT:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_LINEAR:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR));
             break;
         }
         break;
@@ -77,13 +77,13 @@ void TextureSampler2D::updateFilter_() const
         switch (mMipFilter)
         {
         case TEX_MIP_FILTER_MODE_NONE:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
             break;
         case TEX_MIP_FILTER_MODE_POINT:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST));
             break;
         case TEX_MIP_FILTER_MODE_LINEAR:
-            glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR));
             break;
         }
         break;
@@ -92,19 +92,19 @@ void TextureSampler2D::updateFilter_() const
     switch (mMaxAniso)
     {
     case TEX_ANISO_1_TO_1:
-        glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+        RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f));
         break;
     case TEX_ANISO_2_TO_1:
-        glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f);
+        RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f));
         break;
     case TEX_ANISO_4_TO_1:
-        glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+        RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f));
         break;
     case TEX_ANISO_8_TO_1:
-        glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f);
+        RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f));
         break;
     case TEX_ANISO_16_TO_1:
-        glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+        RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f));
         break;
     }
 }
@@ -114,98 +114,98 @@ void TextureSampler2D::updateWrap_() const
     switch (mWrapX)
     {
     case TEX_WRAP_MODE_REPEAT:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_REPEAT));
         break;
     case TEX_WRAP_MODE_MIRROR:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
         break;
     case TEX_WRAP_MODE_CLAMP:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_BORDER_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_BORDER_EXT));
         break;
     }
 
     switch (mWrapY)
     {
     case TEX_WRAP_MODE_REPEAT:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_REPEAT));
         break;
     case TEX_WRAP_MODE_MIRROR:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
         break;
     case TEX_WRAP_MODE_CLAMP:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_BORDER_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_BORDER_EXT));
         break;
     }
 
     switch (mWrapZ)
     {
     case TEX_WRAP_MODE_REPEAT:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_REPEAT));
         break;
     case TEX_WRAP_MODE_MIRROR:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT));
         break;
     case TEX_WRAP_MODE_CLAMP:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_TO_EDGE_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_HALF_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_EXT));
         break;
     case TEX_WRAP_MODE_CLAMP_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER));
         break;
     case TEX_WRAP_MODE_MIRROR_ONCE_BORDER:
-        glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_TO_BORDER_EXT);
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_WRAP_R, GL_MIRROR_CLAMP_TO_BORDER_EXT));
         break;
     }
 }
 
 void TextureSampler2D::updateBorderColor_() const
 {
-    glSamplerParameterfv(mSamplerInner, GL_TEXTURE_BORDER_COLOR, mBorderColor);
+    RIO_GL_CALL(glSamplerParameterfv(mSamplerInner, GL_TEXTURE_BORDER_COLOR, mBorderColor));
 }
 
 void TextureSampler2D::updateLOD_() const
 {
-    glSamplerParameterf(mSamplerInner, GL_TEXTURE_MIN_LOD, mMinLOD);
-    glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_LOD, mMaxLOD);
-    glSamplerParameterf(mSamplerInner, GL_TEXTURE_LOD_BIAS, mLODBias);
+    RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MIN_LOD, mMinLOD));
+    RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_MAX_LOD, mMaxLOD));
+    RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_LOD_BIAS, mLODBias));
 }
 
 void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
@@ -218,11 +218,11 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
 
     update();
 
-    glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, mpTexture2D->mHandle);
+    RIO_GL_CALL(glActiveTexture(GL_TEXTURE0 + slot));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mpTexture2D->mHandle));
 
-    glBindSampler(slot, mSamplerInner);
-    glUniform1i(location, slot);
+    RIO_GL_CALL(glBindSampler(slot, mSamplerInner));
+    RIO_GL_CALL(glUniform1i(location, slot));
 }
 
 }

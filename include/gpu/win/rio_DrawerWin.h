@@ -4,7 +4,7 @@
 // This file is included by rio_Drawer.h
 //#include <gpu/rio_Drawer.h>
 
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 
 namespace rio {
 
@@ -25,32 +25,32 @@ enum Drawer::PrimitiveMode : u32
 
 inline void Drawer::DrawArraysInstanced(PrimitiveMode mode, u32 count, u32 instanceCount, u32 first)
 {
-    glDrawArraysInstanced(mode, first, count, instanceCount);
+    RIO_GL_CALL(glDrawArraysInstanced(mode, first, count, instanceCount));
 }
 
 inline void Drawer::DrawElementsInstanced(PrimitiveMode mode, u32 count, const u32* indices, u32 instanceCount)
 {
-    glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, indices, instanceCount);
+    RIO_GL_CALL(glDrawElementsInstanced(mode, count, GL_UNSIGNED_INT, indices, instanceCount));
 }
 
 inline void Drawer::DrawElementsInstanced(PrimitiveMode mode, u32 count, const u16* indices, u32 instanceCount)
 {
-    glDrawElementsInstanced(mode, count, GL_UNSIGNED_SHORT, indices, instanceCount);
+    RIO_GL_CALL(glDrawElementsInstanced(mode, count, GL_UNSIGNED_SHORT, indices, instanceCount));
 }
 
 inline void Drawer::DrawArrays(PrimitiveMode mode, u32 count, u32 first)
 {
-    glDrawArrays(mode, first, count);
+    RIO_GL_CALL(glDrawArrays(mode, first, count));
 }
 
 inline void Drawer::DrawElements(PrimitiveMode mode, u32 count, const u32* indices)
 {
-    glDrawElements(mode, count, GL_UNSIGNED_INT, indices);
+    RIO_GL_CALL(glDrawElements(mode, count, GL_UNSIGNED_INT, indices));
 }
 
 inline void Drawer::DrawElements(PrimitiveMode mode, u32 count, const u16* indices)
 {
-    glDrawElements(mode, count, GL_UNSIGNED_SHORT, indices);
+    RIO_GL_CALL(glDrawElements(mode, count, GL_UNSIGNED_SHORT, indices));
 }
 
 }

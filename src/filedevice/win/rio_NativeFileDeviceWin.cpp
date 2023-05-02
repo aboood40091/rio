@@ -4,11 +4,12 @@
 
 #include <filedevice/rio_NativeFileDevice.h>
 
+#include <misc/win/rio_Windows.h>
+
 #include <algorithm>
 #include <cstdio>
 
 #include <sys/stat.h>
-#include <windows.h>
 
 namespace {
 

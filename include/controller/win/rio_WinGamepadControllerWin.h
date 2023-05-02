@@ -3,8 +3,7 @@
 
 #include <controller/rio_Controller.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <misc/gl/rio_GL.h>
 
 namespace rio {
 
