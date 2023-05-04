@@ -48,12 +48,14 @@ namespace rio {
 
 bool Window::foregroundAcquire_()
 {
+#ifdef RIO_DEBUG
     if (gIsRunning)
     {
         WHBInitCrashHandler();
         WHBLogCafeInit();
         WHBLogUdpInit();
     }
+#endif // RIO_DEBUG
 
     // Get the MEM1 heap and Foreground Bucket heap handles
     gMEM1HeapHandle = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
@@ -295,8 +297,10 @@ void Window::foregroundRelease_()
     gColorBufferImageData = nullptr;
     gDepthBufferImageData = nullptr;
 
+#ifdef RIO_DEBUG
     WHBLogCafeDeinit();
     WHBLogUdpDeinit();
+#endif // RIO_DEBUG
 }
 
 bool Window::initialize_()
