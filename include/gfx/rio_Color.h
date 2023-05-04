@@ -28,6 +28,9 @@ struct Color4f
         BaseVec4f   v;
     };
 
+    static Color4f lerp(const Color4f& from, const Color4f& to, f32 ratio);
+    void setLerp(const Color4f& from, const Color4f& to, f32 ratio);
+
     static constexpr f32    cElementMin = 0.0f;
     static constexpr f32    cElementMax = 1.0f;
 
@@ -41,6 +44,13 @@ struct Color4f
     static const Color4f    cMagenta;
     static const Color4f    cCyan;
 };
+
+inline Color4f Color4f::lerp(const Color4f& from, const Color4f& to, f32 ratio)
+{
+    Color4f color;
+    color.setLerp(from, to, ratio);
+    return color;
+}
 
 }
 
