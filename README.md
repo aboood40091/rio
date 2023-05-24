@@ -78,7 +78,13 @@ Structures that do not need each their own separate folder have been collected h
 Header that defines:
 * Macro `RIO_IS_WIN` on Windows and `RIO_IS_CAFE` on Wii U to 1 (0 otherwise). This is to be used to distinguish between host platforms at compile-time.  
 * Fixed-size types: `BOOL` as `int`, `s8`, `u8`, `s16`, `u16`, `s32`, `u32`, `s64`, `u64`, `f32` and `f64`.
-* `RIO_ASSERT` and `RIO_LOG` preprocessor functions. (Only have an effect if build target is `RIO_DEBUG`)  
+* `RIO_ASSERT` and `RIO_LOG` preprocessor functions (that only have an effect if build target is `RIO_DEBUG`).  
+
+#### gl/`rio_GL.h`
+Header that takes care of including GLEW and GLFW3 headers for GL targets. Additionally, header defines `RIO_GL_CHECK_ERROR` and `RIO_GL_CALL` preprocessor functions that help with error checking (and only have an effect if build target is `RIO_DEBUG`).  
+
+#### win/`rio_Windows.h`
+Header that takes care of including `windows.h` properly.  
 
 #### `BitFlag<T>`
 Class with fixed size (of `sizeof(T)`) that treats each bit as a flag. Copied directly from sead.  
