@@ -386,9 +386,14 @@ Class for general math-related functions with provided platform-specific impleme
 This header provides basic structures for vectors and matrices of different dimensions.
 
 #### `Vector{n}<T>`
-Classes storing `n` components of `T`, with useful mathematical operations (e.g. addition, scaling, calculating length, normalization, etc.) with provided platform-specific implementations.  
+Classes storing `n` components of `T`, with useful mathematical operations (e.g. addition, scaling, calculating length, normalization, etc.) and provided platform-specific implementations.  
 
-TODO: Note that, on Wii U, vectors use paired-singles, however, their usage may not be extremely efficient (especially when compile-time optimizations are expected) and should be investigated further.  
+TODO: Note that, on Wii U, vectors use paired-singles. However, their usage may not be extremely efficient (especially when compile-time optimizations are expected) and should be investigated further.  
+
+#### `Quat<T>`
+Class storing 4 components of `T`, representing a complex number (quaternion) commonly used for rotation in 3D space, with useful mathematical operations (e.g. multiplication, normalization, etc.) and provided platform-specific implementations.  
+
+TODO: Note that, on Wii U, quaternions use paired-singles. However, their usage may not be extremely efficient (especially when compile-time optimizations are expected) and should be investigated further.  
 
 #### `Matrix{n}{m}<T>`:
 Classes for storing `n` (rows) x `m` (columns) matrices of `T`, with basic matrix operations (e.g. addition, multiplication, transformations i.e. scaling, rotation and translation).  
