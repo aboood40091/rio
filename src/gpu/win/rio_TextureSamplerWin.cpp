@@ -60,32 +60,10 @@ void TextureSampler2D::updateFilter_() const
     switch (mMagFilter)
     {
     case TEX_XY_FILTER_MODE_POINT:
-        switch (mMipFilter)
-        {
-        case TEX_MIP_FILTER_MODE_NONE:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-            break;
-        case TEX_MIP_FILTER_MODE_POINT:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST));
-            break;
-        case TEX_MIP_FILTER_MODE_LINEAR:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR));
-            break;
-        }
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
         break;
     case TEX_XY_FILTER_MODE_LINEAR:
-        switch (mMipFilter)
-        {
-        case TEX_MIP_FILTER_MODE_NONE:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-            break;
-        case TEX_MIP_FILTER_MODE_POINT:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST));
-            break;
-        case TEX_MIP_FILTER_MODE_LINEAR:
-            RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-            break;
-        }
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
         break;
     }
 
