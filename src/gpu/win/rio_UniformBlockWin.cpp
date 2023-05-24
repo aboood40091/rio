@@ -4,7 +4,7 @@
 
 #include <gpu/rio_UniformBlock.h>
 
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 
 namespace rio {
 
@@ -15,7 +15,7 @@ UniformBlock::UniformBlock(ShaderStage stage, u32 index)
     , mSize(0)
     , mStage(stage)
 {
-    glGenBuffers(1, &mHandle);
+    RIO_GL_CALL(glGenBuffers(1, &mHandle));
     RIO_ASSERT(mHandle != GL_NONE);
 }
 
@@ -28,7 +28,7 @@ UniformBlock::UniformBlock(ShaderStage stage, u32 vs_index, u32 fs_index)
 {
     RIO_ASSERT(mVSIndex == mFSIndex);
 
-    glGenBuffers(1, &mHandle);
+    RIO_GL_CALL(glGenBuffers(1, &mHandle));
     RIO_ASSERT(mHandle != GL_NONE);
 }
 
@@ -36,7 +36,7 @@ UniformBlock::~UniformBlock()
 {
     if (mHandle != GL_NONE)
     {
-        glDeleteBuffers(1, &mHandle);
+        RIO_GL_CALL(glDeleteBuffers(1, &mHandle));
         mHandle = GL_NONE;
     }
 }
@@ -46,13 +46,13 @@ void UniformBlock::setData(const void* data, u32 size)
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
 
-    glBindBuffer(GL_UNIFORM_BUFFER, mHandle);
+    RIO_GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, mHandle));
 
     if (size == mSize)
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data);
+        RIO_GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data));
 
     else
-        glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
+        RIO_GL_CALL(glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW));
 
     mpData = data;
     mSize = size;
@@ -65,9 +65,9 @@ void UniformBlock::setSubData(const void* data, u32 offset, u32 size)
     RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
 
-    glBindBuffer(GL_UNIFORM_BUFFER, mHandle);
+    RIO_GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, mHandle));
 
-    glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    RIO_GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data));
 }
 
 void UniformBlock::bind() const
@@ -92,7 +92,7 @@ void UniformBlock::bind() const
 
     RIO_ASSERT(index != GL_INVALID_INDEX);
 
-    glBindBufferBase(GL_UNIFORM_BUFFER, index, mHandle);
+    RIO_GL_CALL(glBindBufferBase(GL_UNIFORM_BUFFER, index, mHandle));
 }
 
 }

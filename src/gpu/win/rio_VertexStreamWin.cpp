@@ -4,7 +4,7 @@
 
 #include <gpu/rio_VertexStream.h>
 
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 
 namespace rio {
 

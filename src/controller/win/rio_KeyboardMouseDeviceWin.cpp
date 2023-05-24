@@ -5,9 +5,8 @@
 #include <controller/win/rio_KeyboardMouseDeviceWin.h>
 #include <gfx/rio_Window.h>
 
-#include <GLFW/glfw3.h>
-
-#include <windows.h>
+#include <misc/gl/rio_GL.h>
+#include <misc/win/rio_Windows.h>
 
 namespace rio {
 

@@ -5,7 +5,7 @@
 
 #if RIO_IS_WIN
 
-#include <GL/glew.h>
+#include <misc/gl/rio_GL.h>
 #define ENUM_VAL(key, val_win, val_cafe) key = val_win
 
 #elif RIO_IS_CAFE

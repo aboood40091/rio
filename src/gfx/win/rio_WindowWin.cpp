@@ -7,7 +7,7 @@
 #include <gpu/rio_Shader.h>
 #include <gpu/rio_VertexArray.h>
 
-#include <GLFW/glfw3.h>
+#include <misc/gl/rio_GL.h>
 
 namespace {
 
@@ -86,7 +86,9 @@ bool Window::initialize_()
     // Make context of window current
     glfwMakeContextCurrent(gWindowHandleWin);
 
-    RIO_LOG("Renderer: %s\n", glGetString(GL_RENDERER));
+    [[maybe_unused]] const char* renderer_str;
+    RIO_GL_CALL(renderer_str = (const char*)glGetString(GL_RENDERER));
+    RIO_LOG("Renderer: %s\n", renderer_str);
 
     // Set swap interval to 1 by default
     setSwapInterval(1);
@@ -106,7 +108,7 @@ bool Window::initialize_()
     }
 
     // Change coordinate-system to be compliant with GX2
-    glClipControl(GL_UPPER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
+    RIO_GL_CALL(glClipControl(GL_UPPER_LEFT, GL_NEGATIVE_ONE_TO_ONE));
 
     // The screen will now be rendered upside-down.
     // Therefore, we will render it to our own frame buffer, then render that
@@ -137,7 +139,7 @@ bool Window::initialize_()
     gVertexArray->process();
 
     // Generate OpenGL Frame Buffer
-    glGenFramebuffers(1, &gFrameBuffer);
+    RIO_GL_CALL(glGenFramebuffers(1, &gFrameBuffer));
     if (gFrameBuffer == GL_NONE)
     {
         terminate_();
@@ -145,10 +147,10 @@ bool Window::initialize_()
     }
 
     // Bind it
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer));
 
     // Generate Color Buffer as OpenGL texture
-    glGenTextures(1, &gColorBuffer);
+    RIO_GL_CALL(glGenTextures(1, &gColorBuffer));
     if (gColorBuffer == GL_NONE)
     {
         terminate_();
@@ -156,19 +158,19 @@ bool Window::initialize_()
     }
 
     // Set Color Buffer dimensions and format
-    glBindTexture(GL_TEXTURE_2D, gColorBuffer);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glBindTexture(GL_TEXTURE_2D, GL_NONE);
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, gColorBuffer));
+    RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
+    RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
+    RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+    RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
 
     // Attach it to the Frame Buffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gColorBuffer, 0);
+    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gColorBuffer, 0));
 
     // Generate Depth-Stencil Buffer as OpenGL render target
-    glGenRenderbuffers(1, &gDepthBuffer);
+    RIO_GL_CALL(glGenRenderbuffers(1, &gDepthBuffer));
     if (gDepthBuffer == GL_NONE)
     {
         terminate_();
@@ -176,22 +178,24 @@ bool Window::initialize_()
     }
 
     // Set Depth-Stencil Buffer dimensions and format
-    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mWidth, mHeight);
-    glBindRenderbuffer(GL_RENDERBUFFER, GL_NONE);
+    RIO_GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer));
+    RIO_GL_CALL(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mWidth, mHeight));
+    RIO_GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, GL_NONE));
 
     // Attach it to the Frame Buffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
+    RIO_GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer));
 
     // Check Frame Buffer completeness
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    GLenum framebuffer_status;
+    RIO_GL_CALL(framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE)
     {
         terminate_();
         return false;
     }
 
     // Enable scissor test
-    glEnable(GL_SCISSOR_TEST);
+    RIO_GL_CALL(glEnable(GL_SCISSOR_TEST));
 
     return true;
 }
@@ -205,19 +209,19 @@ void Window::terminate_()
 {
     if (gDepthBuffer != GL_NONE)
     {
-        glDeleteRenderbuffers(1, &gDepthBuffer);
+        RIO_GL_CALL(glDeleteRenderbuffers(1, &gDepthBuffer));
         gDepthBuffer = GL_NONE;
     }
 
     if (gColorBuffer != GL_NONE)
     {
-        glDeleteTextures(1, &gColorBuffer);
+        RIO_GL_CALL(glDeleteTextures(1, &gColorBuffer));
         gColorBuffer = GL_NONE;
     }
 
     if (gFrameBuffer != GL_NONE)
     {
-        glDeleteFramebuffers(1, &gFrameBuffer);
+        RIO_GL_CALL(glDeleteFramebuffers(1, &gFrameBuffer));
         gFrameBuffer = GL_NONE;
     }
 
@@ -243,9 +247,9 @@ void Window::makeContextCurrent() const
     glfwMakeContextCurrent(gWindowHandleWin);
 
     // Bind our Frame Buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gColorBuffer, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer));
+    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gColorBuffer, 0));
+    RIO_GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer));
 }
 
 void Window::setSwapInterval(u32 swap_interval)
@@ -255,22 +259,22 @@ void Window::setSwapInterval(u32 swap_interval)
 
 void Window::setVpToFb_() const
 {
-    glViewport(0, 0, mWidth, mHeight);
-    glDepthRange(0.f, 1.f);
-    glScissor(0, 0, mWidth, mHeight);
+    RIO_GL_CALL(glViewport(0, 0, mWidth, mHeight));
+    RIO_GL_CALL(glDepthRange(0.f, 1.f));
+    RIO_GL_CALL(glScissor(0, 0, mWidth, mHeight));
 }
 
 void Window::restoreVp_() const
 {
-    glViewport(Graphics::sViewportX, Graphics::sViewportY, Graphics::sViewportWidth, Graphics::sViewportHeight);
-    glDepthRange(Graphics::sViewportNear, Graphics::sViewportFar);
-    glScissor(Graphics::sScissorX, Graphics::sScissorY, Graphics::sScissorWidth, Graphics::sScissorHeight);
+    RIO_GL_CALL(glViewport(Graphics::sViewportX, Graphics::sViewportY, Graphics::sViewportWidth, Graphics::sViewportHeight));
+    RIO_GL_CALL(glDepthRange(Graphics::sViewportNear, Graphics::sViewportFar));
+    RIO_GL_CALL(glScissor(Graphics::sScissorX, Graphics::sScissorY, Graphics::sScissorWidth, Graphics::sScissorHeight));
 }
 
 void Window::swapBuffers() const
 {
     // Bind the default (window) Frame Buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 
     // Set viewport and scissor
     setVpToFb_();
@@ -285,11 +289,11 @@ void Window::swapBuffers() const
     gVertexArray->bind();
 
     // Bind screen texture (Color Buffer texture)
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gColorBuffer);
+    RIO_GL_CALL(glActiveTexture(GL_TEXTURE0));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, gColorBuffer));
 
     // Draw it
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    RIO_GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
 
     // Swap front and back buffers
     glfwSwapBuffers(gWindowHandleWin);
@@ -297,7 +301,7 @@ void Window::swapBuffers() const
     glfwPollEvents();
 
     // Restore our Frame Buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -312,8 +316,8 @@ void Window::clearColor(f32 r, f32 g, f32 b, f32 a)
     setVpToFb_();
 
     // Clear using the given color
-    glClearColor(r, g, b, a);
-    glClear(GL_COLOR_BUFFER_BIT);
+    RIO_GL_CALL(glClearColor(r, g, b, a));
+    RIO_GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -328,9 +332,9 @@ void Window::clearDepth()
     setVpToFb_();
 
     // Clear
-    glDepthMask(GL_TRUE);
-    glClearDepth(1.0f);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    RIO_GL_CALL(glDepthMask(GL_TRUE));
+    RIO_GL_CALL(glClearDepth(1.0f));
+    RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -345,9 +349,9 @@ void Window::clearDepth(f32 depth)
     setVpToFb_();
 
     // Clear
-    glDepthMask(GL_TRUE);
-    glClearDepth(depth);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    RIO_GL_CALL(glDepthMask(GL_TRUE));
+    RIO_GL_CALL(glClearDepth(depth));
+    RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -362,8 +366,8 @@ void Window::clearStencil()
     setVpToFb_();
 
     // Clear
-    glClearStencil(0);
-    glClear(GL_STENCIL_BUFFER_BIT);
+    RIO_GL_CALL(glClearStencil(0));
+    RIO_GL_CALL(glClear(GL_STENCIL_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -378,8 +382,8 @@ void Window::clearStencil(u8 stencil)
     setVpToFb_();
 
     // Clear
-    glClearStencil(stencil);
-    glClear(GL_STENCIL_BUFFER_BIT);
+    RIO_GL_CALL(glClearStencil(stencil));
+    RIO_GL_CALL(glClear(GL_STENCIL_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -394,10 +398,10 @@ void Window::clearDepthStencil()
     setVpToFb_();
 
     // Clear
-    glDepthMask(GL_TRUE);
-    glClearDepth(1.0f);
-    glClearStencil(0);
-    glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    RIO_GL_CALL(glDepthMask(GL_TRUE));
+    RIO_GL_CALL(glClearDepth(1.0f));
+    RIO_GL_CALL(glClearStencil(0));
+    RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();
@@ -412,10 +416,10 @@ void Window::clearDepthStencil(f32 depth, u8 stencil)
     setVpToFb_();
 
     // Clear
-    glDepthMask(GL_TRUE);
-    glClearDepth(depth);
-    glClearStencil(stencil);
-    glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    RIO_GL_CALL(glDepthMask(GL_TRUE));
+    RIO_GL_CALL(glClearDepth(depth));
+    RIO_GL_CALL(glClearStencil(stencil));
+    RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
     // Restore viewport and scissor
     restoreVp_();

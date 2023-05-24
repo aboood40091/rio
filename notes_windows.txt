@@ -1,8 +1,8 @@
-* Requires OpenGL v3.3 Core Profile and GLFW3.
+* Requires OpenGL v3.3 (minimum) Core Profile and GLFW3.
 
-* Requires OpenGL v4.2 if uniform blocks are used.
+* Requires OpenGL v4.2 (or higher) if uniform blocks are used.
 
-* Requires OpenGL v4.5 or the following OpenGL extension:
+* Requires OpenGL v4.5 (or higher) or the following OpenGL extension:
   - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_clip_control.txt
 
 * Requires the following OpenGL extensions if the user wishes to use their corresponding features:
