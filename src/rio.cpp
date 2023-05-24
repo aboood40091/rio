@@ -21,11 +21,11 @@ ITask* sRootTask = nullptr;
 
 bool Initialize()
 {
-#if RIO_IS_CAFE
+#if RIO_IS_CAFE && defined(RIO_DEBUG)
     WHBInitCrashHandler();
     WHBLogCafeInit();
     WHBLogUdpInit();
-#endif // RIO_IS_CAFE
+#endif
 
     // Create the file device manager
     if (!FileDeviceMgr::createSingleton())
