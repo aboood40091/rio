@@ -30,6 +30,15 @@ struct BaseVec4
 };
 
 template <typename T>
+struct BaseQuat
+{
+    T   w;
+    T   x;
+    T   y;
+    T   z;
+};
+
+template <typename T>
 struct BaseMtx22
 {
     union
@@ -139,6 +148,8 @@ typedef BaseVec3<f32>   BaseVec3f;
 typedef BaseVec4<s32>   BaseVec4i;
 typedef BaseVec4<u32>   BaseVec4u;
 typedef BaseVec4<f32>   BaseVec4f;
+
+typedef BaseQuat<f32>   BaseQuatf;
 
 typedef BaseMtx22<f32>  BaseMtx22f;
 typedef BaseMtx32<f32>  BaseMtx32f;

@@ -344,6 +344,38 @@ Matrix34<T>::makeR(const Vec3& r)
 }
 
 template <typename T>
+void Matrix34<T>::makeQ(const Quat& q)
+{
+    // Assuming the quaternion "q" is normalized
+
+    const T yy = 2 * q.y * q.y;
+    const T zz = 2 * q.z * q.z;
+    const T xx = 2 * q.x * q.x;
+    const T xy = 2 * q.x * q.y;
+    const T xz = 2 * q.x * q.z;
+    const T yz = 2 * q.y * q.z;
+    const T wz = 2 * q.w * q.z;
+    const T wx = 2 * q.w * q.x;
+    const T wy = 2 * q.w * q.y;
+
+    this->m[0][0] = 1 - yy - zz;
+    this->m[0][1] =     xy - wz;
+    this->m[0][2] =     xz + wy;
+
+    this->m[1][0] =     xy + wz;
+    this->m[1][1] = 1 - xx - zz;
+    this->m[1][2] =     yz - wx;
+
+    this->m[2][0] =     xz - wy;
+    this->m[2][1] =     yz + wx;
+    this->m[2][2] = 1 - xx - yy;
+
+    this->m[0][3] = 0;
+    this->m[1][3] = 0;
+    this->m[2][3] = 0;
+}
+
+template <typename T>
 inline void
 Matrix34<T>::makeT(const Vec3& t)
 {
@@ -391,6 +423,17 @@ Matrix34<T>::makeSR(const Vec3& s, const Vec3& r)
     this->m[0][3] = 0;
     this->m[1][3] = 0;
     this->m[2][3] = 0;
+}
+
+template <typename T>
+inline void
+Matrix34<T>::makeSQ(const Vec3& s, const Quat& q)
+{
+    makeQ(q);
+
+    *(Vector3<T>*)(&this->m[0][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[1][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[2][0]) *= static_cast<const Vector3<T>&>(s);
 }
 
 template <typename T>
@@ -445,6 +488,17 @@ Matrix34<T>::makeRT(const Vec3& r, const Vec3& t)
 
 template <typename T>
 inline void
+Matrix34<T>::makeQT(const Quat& q, const Vec3& t)
+{
+    makeQ(q);
+
+    this->m[0][3] = t.x;
+    this->m[1][3] = t.y;
+    this->m[2][3] = t.z;
+}
+
+template <typename T>
+inline void
 Matrix34<T>::makeSRT(const Vec3& s, const Vec3& r, const Vec3& t)
 {
     const T sinV[3] = { std::sin(r.x),
@@ -466,6 +520,21 @@ Matrix34<T>::makeSRT(const Vec3& s, const Vec3& r, const Vec3& t)
     this->m[0][2] = s.z * (cosV[0] * cosV[2] * sinV[1] + sinV[0] * sinV[2]);
     this->m[1][2] = s.z * (cosV[0] * sinV[2] * sinV[1] - sinV[0] * cosV[2]);
     this->m[2][2] = s.z * (cosV[0] * cosV[1]);
+
+    this->m[0][3] = t.x;
+    this->m[1][3] = t.y;
+    this->m[2][3] = t.z;
+}
+
+template <typename T>
+inline void
+Matrix34<T>::makeSQT(const Vec3& s, const Quat& q, const Vec3& t)
+{
+    makeQ(q);
+
+    *(Vector3<T>*)(&this->m[0][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[1][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[2][0]) *= static_cast<const Vector3<T>&>(s);
 
     this->m[0][3] = t.x;
     this->m[1][3] = t.y;
@@ -1076,6 +1145,43 @@ Matrix44<T>::makeR(const Vec3& r)
 }
 
 template <typename T>
+void Matrix44<T>::makeQ(const Quat& q)
+{
+    // Assuming the quaternion "q" is normalized
+
+    const T yy = 2 * q.y * q.y;
+    const T zz = 2 * q.z * q.z;
+    const T xx = 2 * q.x * q.x;
+    const T xy = 2 * q.x * q.y;
+    const T xz = 2 * q.x * q.z;
+    const T yz = 2 * q.y * q.z;
+    const T wz = 2 * q.w * q.z;
+    const T wx = 2 * q.w * q.x;
+    const T wy = 2 * q.w * q.y;
+
+    this->m[0][0] = 1 - yy - zz;
+    this->m[0][1] =     xy - wz;
+    this->m[0][2] =     xz + wy;
+
+    this->m[1][0] =     xy + wz;
+    this->m[1][1] = 1 - xx - zz;
+    this->m[1][2] =     yz - wx;
+
+    this->m[2][0] =     xz - wy;
+    this->m[2][1] =     yz + wx;
+    this->m[2][2] = 1 - xx - yy;
+
+    this->m[3][0] = 0;
+    this->m[3][1] = 0;
+    this->m[3][2] = 0;
+
+    this->m[0][3] = 0;
+    this->m[1][3] = 0;
+    this->m[2][3] = 0;
+    this->m[3][3] = 1;
+}
+
+template <typename T>
 inline void
 Matrix44<T>::makeT(const Vec3& t)
 {
@@ -1131,6 +1237,17 @@ Matrix44<T>::makeSR(const Vec3& s, const Vec3& r)
     this->m[1][3] = 0;
     this->m[2][3] = 0;
     this->m[3][3] = 1;
+}
+
+template <typename T>
+inline void
+Matrix44<T>::makeSQ(const Vec3& s, const Quat& q)
+{
+    makeQ(q);
+
+    *(Vector3<T>*)(&this->m[0][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[1][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[2][0]) *= static_cast<const Vector3<T>&>(s);
 }
 
 template <typename T>
@@ -1193,6 +1310,17 @@ Matrix44<T>::makeRT(const Vec3& r, const Vec3& t)
 
 template <typename T>
 inline void
+Matrix44<T>::makeQT(const Quat& q, const Vec3& t)
+{
+    makeQ(q);
+
+    this->m[0][3] = t.x;
+    this->m[1][3] = t.y;
+    this->m[2][3] = t.z;
+}
+
+template <typename T>
+inline void
 Matrix44<T>::makeSRT(const Vec3& s, const Vec3& r, const Vec3& t)
 {
     const T sinV[3] = { std::sin(r.x),
@@ -1222,6 +1350,21 @@ Matrix44<T>::makeSRT(const Vec3& s, const Vec3& r, const Vec3& t)
     this->m[1][3] = t.y;
     this->m[2][3] = t.z;
     this->m[3][3] = 1;
+}
+
+template <typename T>
+inline void
+Matrix44<T>::makeSQT(const Vec3& s, const Quat& q, const Vec3& t)
+{
+    makeQ(q);
+
+    *(Vector3<T>*)(&this->m[0][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[1][0]) *= static_cast<const Vector3<T>&>(s);
+    *(Vector3<T>*)(&this->m[2][0]) *= static_cast<const Vector3<T>&>(s);
+
+    this->m[0][3] = t.x;
+    this->m[1][3] = t.y;
+    this->m[2][3] = t.z;
 }
 
 template <typename T>
