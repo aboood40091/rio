@@ -3,6 +3,12 @@
 
 #include <gpu/rio_Texture.h>
 
+#if RIO_IS_CAFE
+#include <gfx/cafe/rio_NativeWindowCafe.h>
+#elif RIO_IS_WIN
+#include <gfx/win/rio_NativeWindowWin.h>
+#endif
+
 namespace rio {
 
 class Window
@@ -28,6 +34,12 @@ public:
 
     // Get window current height
     u32 getHeight() const { return mHeight; }
+
+    // Get the native window instance
+    const NativeWindow& getNativeWindow() const
+    {
+        return mNativeWindow;
+    }
 
     // Make the context of this window the current context
     void makeContextCurrent() const;
@@ -62,10 +74,30 @@ public:
     void clearDepthStencil();
     void clearDepthStencil(f32 depth, u8 stencil = 0);
 
-    // Get the window's inner handle (For MS Windows)
-    static void* getWindowInner();
+#if RIO_IS_WIN
 
-    static NativeTexture2DHandle getWindowColorBuffer();
+    // Get the window's inner handle (deprecated)
+    static GLFWwindow* getWindowInner()
+    {
+        if (sInstance == nullptr)
+            return nullptr;
+
+        return sInstance->mNativeWindow.handle;
+    }
+
+#endif // RIO_IS_WIN
+
+    static NativeTexture2DHandle getWindowColorBuffer()
+    {
+        if (sInstance == nullptr)
+            return RIO_NATIVE_TEXTURE_2D_HANDLE_NULL;
+
+#if RIO_IS_CAFE
+        return &sInstance->mNativeWindow.color_buffer_texture;
+#elif RIO_IS_WIN
+        return sInstance->mNativeWindow.color_buffer_handle;
+#endif
+    }
 
 private:
     Window(u32 width, u32 height)
@@ -85,24 +117,28 @@ private:
     // Terminate the window
     void terminate_();
 
-    // Acquire and release foreground (For Cafe)
+#if RIO_IS_CAFE
+
+    // Acquire and release foreground
     bool foregroundAcquire_();
     void foregroundRelease_();
 
-private:
-#if RIO_IS_WIN
+#elif RIO_IS_WIN
+
     // Set viewport and scissor to framebuffer size
     inline void setVpToFb_() const;
     // Restore current viewport and scissor
     inline void restoreVp_() const;
-#endif // RIO_IS_WIN
+
+#endif
 
 private:
     // Window singleton instance
     static Window* sInstance;
 
-    u32 mWidth;   // Current width
-    u32 mHeight;  // Current height
+    u32             mWidth;         // Current width
+    u32             mHeight;        // Current height
+    NativeWindow    mNativeWindow;  // Native window instance
 };
 
 }

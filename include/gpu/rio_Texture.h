@@ -81,6 +81,8 @@ typedef GX2Surface  NativeSurface2D;
 typedef GX2Texture  NativeTexture2D;
 typedef GX2Texture* NativeTexture2DHandle;
 
+#define RIO_NATIVE_TEXTURE_2D_HANDLE_NULL nullptr
+
 #elif RIO_IS_WIN
 
 struct NativeTextureFormat
@@ -134,6 +136,8 @@ struct NativeTexture2D
 static_assert(sizeof(NativeTexture2D) == 0x80, "rio::NativeTexture2D size mismatch");
 
 typedef GLuint NativeTexture2DHandle;
+
+#define RIO_NATIVE_TEXTURE_2D_HANDLE_NULL GL_NONE
 
 #endif
 
