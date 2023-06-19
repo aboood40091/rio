@@ -26,7 +26,7 @@ void KeyboardMouseDevice::calc()
     mIsLastReadSuccess = GetKeyboardState(mKeyState);
 
     f64 pos_x, pos_y;
-    glfwGetCursorPos(Window::instance()->getNativeWindow().handle, &pos_x, &pos_y);
+    glfwGetCursorPos(Window::getWindowInner(), &pos_x, &pos_y);
     mCursorPos.set(pos_x, pos_y);
 }
 
