@@ -79,9 +79,24 @@ public:
         mDirty = true;
     }
 
+    f32 getTop() const;
+    f32 getBottom() const;
+    f32 getLeft() const;
+    f32 getRight() const;
+
 private:
     void setFovy_(f32 fovy);
     virtual void updateMatrix_() const;
+
+    f32 calcNearClipHeight_() const
+    {
+        return mNear * 2 * mFovyTan;
+    }
+
+    f32 calcNearClipWidth_() const
+    {
+        return calcNearClipHeight_() * mAspect;
+    }
 
 private:
     f32         mNear;

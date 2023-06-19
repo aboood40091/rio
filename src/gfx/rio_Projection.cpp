@@ -44,6 +44,34 @@ void PerspectiveProjection::setFovy_(f32 fovy)
     mDirty = true;
 }
 
+f32 PerspectiveProjection::getTop() const
+{
+    f32 clip_height = calcNearClipHeight_();
+    f32 center_y = mOffset.y * clip_height;
+    return clip_height * 0.5f + center_y;
+}
+
+f32 PerspectiveProjection::getBottom() const
+{
+    f32 clip_height = calcNearClipHeight_();
+    f32 center_y = mOffset.y * clip_height;
+    return -clip_height * 0.5f + center_y;
+}
+
+f32 PerspectiveProjection::getLeft() const
+{
+    f32 clip_width = calcNearClipWidth_();
+    f32 center_x = mOffset.x * clip_width;
+    return -clip_width * 0.5f + center_x;
+}
+
+f32 PerspectiveProjection::getRight() const
+{
+    f32 clip_width = calcNearClipWidth_();
+    f32 center_x = mOffset.x * clip_width;
+    return clip_width * 0.5f + center_x;
+}
+
 void PerspectiveProjection::updateMatrix_() const
 {
     f32 clip_height = mNear * 2 * mFovyTan;
