@@ -503,8 +503,6 @@ void Window::updateDepthBufferTexture_()
     RIO_GL_CALL(glBindFramebuffer(GL_READ_FRAMEBUFFER, mNativeWindow.mDepthBufferCopyFramebufferSrc));
     RIO_GL_CALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mNativeWindow.mDepthBufferCopyFramebufferDst));
     RIO_GL_CALL(glBlitFramebuffer(0, 0, mWidth, mHeight, 0, 0, mWidth, mHeight, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, GL_NEAREST));
-
-    makeContextCurrent();
 }
 
 }
