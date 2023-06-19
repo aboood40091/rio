@@ -79,7 +79,7 @@ enum TextureFormat : u32
 
 typedef GX2Surface  NativeSurface2D;
 typedef GX2Texture  NativeTexture2D;
-typedef GX2Texture* NativeTexture2DHandle;
+typedef const GX2Texture* NativeTexture2DHandle;
 
 #define RIO_NATIVE_TEXTURE_2D_HANDLE_NULL nullptr
 
@@ -184,8 +184,6 @@ private:
     NativeTexture2D         mTextureInner;  // Native texture.
     NativeTexture2DHandle   mHandle;        // Native texture handle.
     bool                    mSelfAllocated; // Is native texture allocated by this instance?
-
-    friend class TextureSampler2D;
 };
 
 }
