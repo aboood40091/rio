@@ -67,6 +67,8 @@ struct Matrix34 : BaseMtx34<T>
     //void setRotationWorld(const Vec3& r);
     //void applyRotationWorld(const Vec3& r);
 
+    void applyTranslationLocal(const Vec3& t);
+
     void setTranslationWorld(const Vec3& t);
     void applyTranslationWorld(const Vec3& t);
 

@@ -639,6 +639,15 @@ Matrix34<T>::applyScaleWorld(const Vec3& s)
 
 template <typename T>
 inline void
+Matrix34<T>::applyTranslationLocal(const Vec3& t)
+{
+    this->m[0][3] += this->m[0][0] * t.x + this->m[0][1] * t.y + this->m[0][2] * t.z;
+    this->m[1][3] += this->m[1][0] * t.x + this->m[1][1] * t.y + this->m[1][2] * t.z;
+    this->m[2][3] += this->m[2][0] * t.x + this->m[2][1] * t.y + this->m[2][2] * t.z;
+}
+
+template <typename T>
+inline void
 Matrix34<T>::setTranslationWorld(const Vec3& t)
 {
     this->m[0][3] = t.x;
