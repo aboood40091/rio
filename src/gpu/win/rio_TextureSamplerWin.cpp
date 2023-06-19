@@ -197,7 +197,7 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
     update();
 
     RIO_GL_CALL(glActiveTexture(GL_TEXTURE0 + slot));
-    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mpTexture2D->mHandle));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mTexture2DHandle));
 
     RIO_GL_CALL(glBindSampler(slot, mSamplerInner));
     RIO_GL_CALL(glUniform1i(location, slot));

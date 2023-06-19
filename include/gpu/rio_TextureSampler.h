@@ -63,6 +63,7 @@ private:
 
 public:
     void linkTexture2D(const Texture2D* texture);
+    void linkNativeTexture2D(NativeTexture2DHandle handle);
 
     void setMagFilter(TexXYFilterMode mag_filter);
     void setMinFilter(TexXYFilterMode min_filter);
@@ -90,7 +91,7 @@ public:
 
     bool isTextureAvailable() const
     {
-        return mpTexture2D && mpTexture2D->mHandle;
+        return mTexture2DHandle;
     }
 
     bool isBindable() const
@@ -151,13 +152,14 @@ private:
     f32                     mMaxLOD;
     f32                     mLODBias;
     mutable NativeSampler2D mSamplerInner;
-    const Texture2D*        mpTexture2D;
+
+    NativeTexture2DHandle   mTexture2DHandle;
 };
 
 inline void TextureSampler2D::init_()
 {
     mFlags = 0xFF;
-    mpTexture2D = nullptr;
+    mTexture2DHandle = RIO_NATIVE_TEXTURE_2D_HANDLE_NULL;
 
     mMagFilter = TEX_XY_FILTER_MODE_LINEAR;
     mMinFilter = TEX_XY_FILTER_MODE_LINEAR;
@@ -182,7 +184,13 @@ inline void TextureSampler2D::init_()
 inline void TextureSampler2D::linkTexture2D(const Texture2D* texture)
 {
     RIO_ASSERT(texture);
-    mpTexture2D = texture;
+    linkNativeTexture2D(texture->getNativeTextureHandle());
+}
+
+inline void TextureSampler2D::linkNativeTexture2D(NativeTexture2DHandle handle)
+{
+    RIO_ASSERT(handle);
+    mTexture2DHandle = handle;
 }
 
 inline void TextureSampler2D::setMagFilter(TexXYFilterMode mag_filter)

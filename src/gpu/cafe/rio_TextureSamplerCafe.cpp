@@ -106,7 +106,7 @@ void TextureSampler2D::bindVS(u32 location, u32) const
                                                  mBorderColor[2],
                                                  mBorderColor[3]);
 
-    GX2SetVertexTexture(mpTexture2D->mHandle, location);
+    GX2SetVertexTexture(mTexture2DHandle, location);
     GX2SetVertexSampler(&mSamplerInner, location);
 }
 
@@ -123,7 +123,7 @@ void TextureSampler2D::bindFS(u32 location, u32) const
                                                 mBorderColor[2],
                                                 mBorderColor[3]);
 
-    GX2SetPixelTexture(mpTexture2D->mHandle, location);
+    GX2SetPixelTexture(mTexture2DHandle, location);
     GX2SetPixelSampler(&mSamplerInner, location);
 }
 
@@ -140,7 +140,7 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32) const
                                                     mBorderColor[2],
                                                     mBorderColor[3]);
 
-    GX2SetVertexTexture(mpTexture2D->mHandle, vs_location);
+    GX2SetVertexTexture(mTexture2DHandle, vs_location);
     GX2SetVertexSampler(&mSamplerInner, vs_location);
 
     if (mHasBorder)
@@ -149,7 +149,7 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32) const
                                                    mBorderColor[2],
                                                    mBorderColor[3]);
 
-    GX2SetPixelTexture(mpTexture2D->mHandle, fs_location);
+    GX2SetPixelTexture(mTexture2DHandle, fs_location);
     GX2SetPixelSampler(&mSamplerInner, fs_location);
 }
 
