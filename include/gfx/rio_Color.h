@@ -31,6 +31,14 @@ struct Color4f
     static Color4f lerp(const Color4f& from, const Color4f& to, f32 ratio);
     void setLerp(const Color4f& from, const Color4f& to, f32 ratio);
 
+    Color4f& operator+=(const Color4f& rhs);
+    Color4f& operator*=(const Color4f& rhs);
+
+    friend Color4f operator+(const Color4f& lhs, const Color4f& rhs);
+    friend Color4f operator*(const Color4f& lhs, const Color4f& rhs);
+
+    friend bool operator==(const Color4f& lhs, const Color4f& rhs);
+
     static constexpr f32    cElementMin = 0.0f;
     static constexpr f32    cElementMax = 1.0f;
 
