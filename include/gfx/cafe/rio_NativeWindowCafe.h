@@ -9,37 +9,55 @@
 
 namespace rio {
 
-struct NativeWindow
+class Window;
+
+class NativeWindow
 {
+public:
     NativeWindow()
-        : p_cmd_list(nullptr)
-        , p_context_state(nullptr)
-        , p_tv_scan_buffer(nullptr)
-        , p_drc_scan_buffer(nullptr)
-        , p_color_buffer_image_data(nullptr)
-        , p_depth_buffer_image_data(nullptr)
-        , is_running(false)
+        : mpCmdList(nullptr)
+        , mpContextState(nullptr)
+        , mpTvScanBuffer(nullptr)
+        , mpDrcScanBuffer(nullptr)
+        , mpColorBufferImageData(nullptr)
+        , mpDepthBufferImageData(nullptr)
+        , mIsRunning(false)
     {
     }
 
-    void* p_cmd_list;
+    GX2ContextState* getContextState() const { return mpContextState; }
 
-    GX2ContextState* p_context_state;
+    const GX2ColorBuffer& getColorBuffer() const { return mColorBuffer; }
+    const GX2Texture& getColorBufferTexture() const { return mColorBufferTexture; }
 
-    void* p_tv_scan_buffer;
-    void* p_drc_scan_buffer;
+    const GX2DepthBuffer& getDepthBuffer() const { return mDepthBuffer; }
+    const GX2Texture& getDepthBufferTexture() const { return mDepthBufferTexture; }
 
-    GX2ColorBuffer color_buffer;
-    GX2Texture color_buffer_texture;
-    void* p_color_buffer_image_data;
+private:
+    void* mpCmdList;
 
-    GX2DepthBuffer depth_buffer;
-    void* p_depth_buffer_image_data;
+    GX2ContextState* mpContextState;
 
-    MEMHeapHandle heap_handle_MEM1;
-    MEMHeapHandle heap_handle_Fg;
+    void* mpTvScanBuffer;
+    void* mpDrcScanBuffer;
 
-    bool is_running;
+    GX2ColorBuffer mColorBuffer;
+    void* mpColorBufferImageData;
+
+    GX2Texture mColorBufferTexture;
+
+    GX2DepthBuffer mDepthBuffer;
+    void* mpDepthBufferImageData;
+
+    GX2Texture mDepthBufferTexture;
+    void* mpDepthBufferTextureImageData;
+
+    MEMHeapHandle mHeapHandle_MEM1;
+    MEMHeapHandle mHeapHandle_Fg;
+
+    bool mIsRunning;
+
+    friend class Window;
 };
 
 }

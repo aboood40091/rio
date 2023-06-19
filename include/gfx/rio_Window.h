@@ -82,20 +82,44 @@ public:
         if (sInstance == nullptr)
             return nullptr;
 
-        return sInstance->mNativeWindow.handle;
+        return sInstance->mNativeWindow.mpGLFWwindow;
     }
 
 #endif // RIO_IS_WIN
 
+    NativeTexture2DHandle getWindowColorBufferTexture() const
+    {
+#if RIO_IS_CAFE
+        return &mNativeWindow.mColorBufferTexture;
+#elif RIO_IS_WIN
+        return mNativeWindow.mColorBufferTextureHandle;
+#endif
+    }
+
+    // For backwards compatibility
     static NativeTexture2DHandle getWindowColorBuffer()
     {
         if (sInstance == nullptr)
             return RIO_NATIVE_TEXTURE_2D_HANDLE_NULL;
 
+        return sInstance->getWindowColorBufferTexture();
+    }
+
+    void updateDepthBufferTexture()
+    {
+        updateDepthBufferTexture_();
+        makeContextCurrent();
+    }
+
+    NativeTexture2DHandle getWindowDepthBufferTexture()
+    {
+        if (sInstance == nullptr)
+            return RIO_NATIVE_TEXTURE_2D_HANDLE_NULL;
+
 #if RIO_IS_CAFE
-        return &sInstance->mNativeWindow.color_buffer_texture;
+        return &mNativeWindow.mDepthBufferTexture;
 #elif RIO_IS_WIN
-        return sInstance->mNativeWindow.color_buffer_handle;
+        return mNativeWindow.mDepthBufferTextureHandle;
 #endif
     }
 
@@ -131,6 +155,8 @@ private:
     inline void restoreVp_() const;
 
 #endif
+
+    void updateDepthBufferTexture_();
 
 private:
     // Window singleton instance

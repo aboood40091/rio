@@ -5,21 +5,54 @@
 
 namespace rio {
 
-struct NativeWindow
+class Window;
+
+class NativeWindow
 {
+public:
     NativeWindow()
-        : handle(nullptr)
-        , frame_buffer_handle(GL_NONE)
-        , color_buffer_handle(GL_NONE)
-        , depth_buffer_handle(GL_NONE)
+        : mpGLFWwindow(nullptr)
+        , mFramebufferHandle(GL_NONE)
+        , mColorBufferTextureHandle(GL_NONE)
+        , mColorBufferTextureFormat(TEXTURE_FORMAT_INVALID)
+        , mDepthBufferHandle(GL_NONE)
+        , mDepthBufferTextureHandle(GL_NONE)
+        , mDepthBufferTextureFormat(TEXTURE_FORMAT_INVALID)
+        , mDepthBufferCopyFramebufferSrc(GL_NONE)
+        , mDepthBufferCopyFramebufferDst(GL_NONE)
     {
     }
 
-    GLFWwindow* handle;
+    GLFWwindow* getGLFWwindow() const { return mpGLFWwindow; }
 
-    GLuint frame_buffer_handle;
-    GLuint color_buffer_handle;
-    GLuint depth_buffer_handle;
+    GLuint getFramebufferHandle() const { return mFramebufferHandle; }
+
+    GLuint getColorBufferTextureHandle() const { return mColorBufferTextureHandle; }
+    TextureFormat getColorBufferTextureFormat() const { return mColorBufferTextureFormat; }
+
+    GLuint getDepthBufferHandle() const { return mDepthBufferHandle; }
+
+    GLuint getDepthBufferTextureHandle() const { return mDepthBufferTextureHandle; }
+    TextureFormat getDepthBufferTextureFormat() const { return mDepthBufferTextureFormat; }
+
+
+private:
+    GLFWwindow* mpGLFWwindow;
+
+    GLuint mFramebufferHandle;
+
+    GLuint mColorBufferTextureHandle;
+    TextureFormat mColorBufferTextureFormat;
+
+    GLuint mDepthBufferHandle;
+
+    GLuint mDepthBufferTextureHandle;
+    TextureFormat mDepthBufferTextureFormat;
+
+    GLuint mDepthBufferCopyFramebufferSrc;
+    GLuint mDepthBufferCopyFramebufferDst;
+
+    friend class Window;
 };
 
 }
