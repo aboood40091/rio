@@ -3,6 +3,7 @@
 #if RIO_IS_WIN
 
 #include <gpu/rio_UniformBlock.h>
+#include <misc/rio_MemUtil.h>
 
 #include <misc/gl/rio_GL.h>
 
@@ -43,16 +44,19 @@ UniformBlock::~UniformBlock()
 
 void UniformBlock::setData(const void* data, u32 size)
 {
-    RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
 
     RIO_GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, mHandle));
 
     if (size == mSize)
-        RIO_GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data));
-
+    {
+        if (data != nullptr)
+            RIO_GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data));
+    }
     else
+    {
         RIO_GL_CALL(glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW));
+    }
 
     mpData = data;
     mSize = size;
@@ -62,8 +66,10 @@ void UniformBlock::setSubData(const void* data, u32 offset, u32 size)
 {
     RIO_ASSERT(data != nullptr);
     RIO_ASSERT(size != 0);
-    RIO_ASSERT(mpData != nullptr);
     RIO_ASSERT(offset + size <= mSize);
+
+    if (mpData != nullptr)
+        rio::MemUtil::copy((void*)(uintptr_t(mpData) + offset), data, size);
 
     RIO_GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, mHandle));
 
