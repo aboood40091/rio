@@ -167,7 +167,7 @@ bool Window::foregroundAcquire_()
     mNativeWindow.mColorBuffer.surface.use = GX2_SURFACE_USE_TEXTURE_COLOR_BUFFER_TV;
     mNativeWindow.mColorBuffer.surface.mipmaps = nullptr;
     mNativeWindow.mColorBuffer.surface.tileMode = GX2_TILE_MODE_DEFAULT;
-    mNativeWindow.mColorBuffer.surface.swizzle  = 0;
+    mNativeWindow.mColorBuffer.surface.swizzle = 0;
     mNativeWindow.mColorBuffer.viewMip = 0;
     mNativeWindow.mColorBuffer.viewFirstSlice = 0;
     mNativeWindow.mColorBuffer.viewNumSlices = 1;
@@ -187,7 +187,7 @@ bool Window::foregroundAcquire_()
     mNativeWindow.mColorBuffer.surface.image = mNativeWindow.mpColorBufferImageData;
 
     // Flush allocated buffer from CPU cache
-    GX2Invalidate(GX2_INVALIDATE_MODE_CPU, mNativeWindow.mpColorBufferImageData, mNativeWindow.mColorBuffer.surface.imageSize);
+    GX2Invalidate(GX2_INVALIDATE_MODE_CPU_TEXTURE, mNativeWindow.mpColorBufferImageData, mNativeWindow.mColorBuffer.surface.imageSize);
 
     // Copy color buffer to a texture
     mNativeWindow.mColorBufferTexture.surface = mNativeWindow.mColorBuffer.surface;
@@ -205,12 +205,12 @@ bool Window::foregroundAcquire_()
     mNativeWindow.mDepthBuffer.surface.height = mHeight;
     mNativeWindow.mDepthBuffer.surface.depth = 1;
     mNativeWindow.mDepthBuffer.surface.mipLevels = 1;
-    mNativeWindow.mDepthBuffer.surface.format = GX2_SURFACE_FORMAT_FLOAT_R32;
+    mNativeWindow.mDepthBuffer.surface.format = GX2_SURFACE_FORMAT_FLOAT_D24_S8;
     mNativeWindow.mDepthBuffer.surface.aa = GX2_AA_MODE1X;
-    mNativeWindow.mDepthBuffer.surface.use = GX2_SURFACE_USE_DEPTH_BUFFER | GX2_SURFACE_USE_TEXTURE;
+    mNativeWindow.mDepthBuffer.surface.use = GX2_SURFACE_USE_DEPTH_BUFFER;
     mNativeWindow.mDepthBuffer.surface.mipmaps = nullptr;
     mNativeWindow.mDepthBuffer.surface.tileMode = GX2_TILE_MODE_DEFAULT;
-    mNativeWindow.mDepthBuffer.surface.swizzle  = 0;
+    mNativeWindow.mDepthBuffer.surface.swizzle = 0;
     mNativeWindow.mDepthBuffer.viewMip = 0;
     mNativeWindow.mDepthBuffer.viewFirstSlice = 0;
     mNativeWindow.mDepthBuffer.viewNumSlices = 1;
@@ -237,19 +237,25 @@ bool Window::foregroundAcquire_()
     GX2Invalidate(GX2_INVALIDATE_MODE_CPU, mNativeWindow.mpDepthBufferImageData, mNativeWindow.mDepthBuffer.surface.imageSize);
 
     // Initialize depth buffer texture
-    mNativeWindow.mDepthBufferTexture.surface = mNativeWindow.mDepthBuffer.surface;
-  //mNativeWindow.mDepthBufferTexture.surface.format = GX2_SURFACE_FORMAT_UNORM_R24_X8;
-  //mNativeWindow.mDepthBufferTexture.surface.use = GX2_SURFACE_USE_TEXTURE;
-  //mNativeWindow.mDepthBufferTexture.surface.image = nullptr;
-  //GX2CalcSurfaceSizeAndAlignment(&mNativeWindow.mDepthBufferTexture.surface);
+    mNativeWindow.mDepthBufferTexture.surface.dim = GX2_SURFACE_DIM_TEXTURE_2D;
+    mNativeWindow.mDepthBufferTexture.surface.width = mWidth;
+    mNativeWindow.mDepthBufferTexture.surface.height = mHeight;
+    mNativeWindow.mDepthBufferTexture.surface.depth = 1;
+    mNativeWindow.mDepthBufferTexture.surface.mipLevels = 1;
+    mNativeWindow.mDepthBufferTexture.surface.format = GX2_SURFACE_FORMAT_FLOAT_R32;
+    mNativeWindow.mDepthBufferTexture.surface.aa = GX2_AA_MODE1X;
+    mNativeWindow.mDepthBufferTexture.surface.use = GX2_SURFACE_USE_TEXTURE;
+    mNativeWindow.mDepthBufferTexture.surface.mipmaps = nullptr;
+    mNativeWindow.mDepthBufferTexture.surface.tileMode = GX2_TILE_MODE_DEFAULT;
+    mNativeWindow.mDepthBufferTexture.surface.swizzle = 0;
     mNativeWindow.mDepthBufferTexture.viewFirstMip = 0;
     mNativeWindow.mDepthBufferTexture.viewNumMips = 1;
     mNativeWindow.mDepthBufferTexture.viewFirstSlice = 0;
     mNativeWindow.mDepthBufferTexture.viewNumSlices = 1;
     mNativeWindow.mDepthBufferTexture.compMap = 0x00040405;
+    GX2CalcSurfaceSizeAndAlignment(&mNativeWindow.mDepthBufferTexture.surface);
     GX2InitTextureRegs(&mNativeWindow.mDepthBufferTexture);
 
-    /*
     // Allocate depth buffer texture data
     mNativeWindow.mpDepthBufferTextureImageData = MEMAllocFromFrmHeapEx(
         mNativeWindow.mHeapHandle_MEM1,
@@ -263,8 +269,7 @@ bool Window::foregroundAcquire_()
     mNativeWindow.mDepthBufferTexture.surface.image = mNativeWindow.mpDepthBufferTextureImageData;
 
     // Flush allocated buffer from CPU cache
-    GX2Invalidate(GX2_INVALIDATE_MODE_CPU, mNativeWindow.mpDepthBufferTextureImageData, mNativeWindow.mDepthBufferTexture.surface.imageSize);
-    */
+    GX2Invalidate(GX2_INVALIDATE_MODE_CPU_TEXTURE, mNativeWindow.mpDepthBufferTextureImageData, mNativeWindow.mDepthBufferTexture.surface.imageSize);
 
     // Enable TV and DRC
     GX2SetTVEnable(true);
@@ -568,14 +573,16 @@ void Window::clearDepthStencil(f32 depth, u8 stencil)
 
 void Window::updateDepthBufferTexture_()
 {
-    /*
+    GX2Invalidate(GX2_INVALIDATE_MODE_DEPTH_BUFFER, mNativeWindow.mDepthBuffer.surface.image, mNativeWindow.mDepthBuffer.surface.imageSize);
+
     GX2ConvertDepthBufferToTextureSurface(
         &mNativeWindow.mDepthBuffer,
         &mNativeWindow.mDepthBufferTexture.surface,
         0,
         0
     );
-    */
+
+    GX2Invalidate(GX2_INVALIDATE_MODE_TEXTURE, mNativeWindow.mDepthBufferTexture.surface.image, mNativeWindow.mDepthBufferTexture.surface.imageSize);
 }
 
 }
