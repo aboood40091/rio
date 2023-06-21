@@ -43,6 +43,12 @@ public:
     // Load shader resource by filename and expected shader mode (MODE_INVALID = Don't care).
     // The expected shader mode is used on Cafe to verify that the loaded shader matches that shader mode.
     void load(const char* base_fname, ShaderMode exp_mode = MODE_INVALID);
+
+#if RIO_IS_WIN
+    // Load shader resource by source strings.
+    void load(const char* c_vertex_shader_src, const char* c_fragment_shader_src);
+#endif // RIO_IS_WIN
+
     // Unload the shader resource.
     void unload();
 

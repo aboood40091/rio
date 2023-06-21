@@ -35,24 +35,9 @@ void Shader::initialize_()
     mShaderProgram = GL_NONE;
 }
 
-void Shader::load(const char* base_fname, ShaderMode)
+void Shader::load(const char* c_vertex_shader_src, const char* c_fragment_shader_src)
 {
     unload();
-
-    const std::string base_path = std::string("shaders/") + base_fname;
-
-    char* vertex_shader_src_file;
-    u32 vertex_shader_src_file_len;
-    {
-        FileDevice::LoadArg arg;
-        arg.path = base_path + ".vert";
-
-        vertex_shader_src_file = (char*)FileDeviceMgr::instance()->load(arg);
-        vertex_shader_src_file_len = arg.read_size;
-    }
-
-    const std::string vertex_shader_src = std::string(vertex_shader_src_file, vertex_shader_src_file_len);
-    const char* const c_vertex_shader_src = vertex_shader_src.c_str();
 
     u32 vertex_shader;
     RIO_GL_CALL(vertex_shader = glCreateShader(GL_VERTEX_SHADER));
@@ -73,19 +58,6 @@ void Shader::load(const char* base_fname, ShaderMode)
         }
     }
 #endif // RIO_DEBUG
-
-    char* fragment_shader_src_file;
-    u32 fragment_shader_src_file_len;
-    {
-        FileDevice::LoadArg arg;
-        arg.path = base_path + ".frag";
-
-        fragment_shader_src_file = (char*)FileDeviceMgr::instance()->load(arg);
-        fragment_shader_src_file_len = arg.read_size;
-    }
-
-    const std::string fragment_shader_src = std::string(fragment_shader_src_file, fragment_shader_src_file_len);
-    const char* const c_fragment_shader_src = fragment_shader_src.c_str();
 
     u32 fragment_shader;
     RIO_GL_CALL(fragment_shader = glCreateShader(GL_FRAGMENT_SHADER));
@@ -130,9 +102,6 @@ void Shader::load(const char* base_fname, ShaderMode)
     RIO_GL_CALL(glDeleteShader(vertex_shader));
     RIO_GL_CALL(glDeleteShader(fragment_shader));
 
-    MemUtil::free(vertex_shader_src_file);
-    MemUtil::free(fragment_shader_src_file);
-
     mLoaded = true;
 
     s32 uniform_block_num;
@@ -146,6 +115,42 @@ void Shader::load(const char* base_fname, ShaderMode)
 
     for (s32 i = 0; i < uniform_block_num; i++)
         RIO_GL_CALL(glUniformBlockBinding(mShaderProgram, i, i));
+}
+
+void Shader::load(const char* base_fname, ShaderMode)
+{
+    const std::string base_path = std::string("shaders/") + base_fname;
+
+    char* vertex_shader_src_file;
+    u32 vertex_shader_src_file_len;
+    {
+        FileDevice::LoadArg arg;
+        arg.path = base_path + ".vert";
+
+        vertex_shader_src_file = (char*)FileDeviceMgr::instance()->load(arg);
+        vertex_shader_src_file_len = arg.read_size;
+    }
+
+    const std::string vertex_shader_src = std::string(vertex_shader_src_file, vertex_shader_src_file_len);
+    const char* const c_vertex_shader_src = vertex_shader_src.c_str();
+
+    char* fragment_shader_src_file;
+    u32 fragment_shader_src_file_len;
+    {
+        FileDevice::LoadArg arg;
+        arg.path = base_path + ".frag";
+
+        fragment_shader_src_file = (char*)FileDeviceMgr::instance()->load(arg);
+        fragment_shader_src_file_len = arg.read_size;
+    }
+
+    const std::string fragment_shader_src = std::string(fragment_shader_src_file, fragment_shader_src_file_len);
+    const char* const c_fragment_shader_src = fragment_shader_src.c_str();
+
+    load(c_vertex_shader_src, c_fragment_shader_src);
+
+    MemUtil::free(vertex_shader_src_file);
+    MemUtil::free(fragment_shader_src_file);
 }
 
 void Shader::unload()
