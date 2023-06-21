@@ -52,6 +52,9 @@ public:
     // Unload the shader resource.
     void unload();
 
+    // Check if the shader resource has been loaded.
+    bool isLoaded() const { return mLoaded; }
+
 #if RIO_IS_CAFE
 
     // Get the GX2 Vertex Shader pointer.
