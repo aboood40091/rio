@@ -186,6 +186,19 @@ void TextureSampler2D::updateLOD_() const
     RIO_GL_CALL(glSamplerParameterf(mSamplerInner, GL_TEXTURE_LOD_BIAS, mLODBias));
 }
 
+void TextureSampler2D::updateDepthComp_() const
+{
+    if (mDepthCompareEnable)
+    {
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE));
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_COMPARE_FUNC, mDepthCompareFunc));
+    }
+    else
+    {
+        RIO_GL_CALL(glSamplerParameteri(mSamplerInner, GL_TEXTURE_COMPARE_MODE, GL_NONE));
+    }
+}
+
 void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
 {
     RIO_ASSERT(vs_location == fs_location);

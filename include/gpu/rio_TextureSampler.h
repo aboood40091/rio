@@ -1,6 +1,7 @@
 #ifndef RIO_GPU_SAMPLER_H
 #define RIO_GPU_SAMPLER_H
 
+#include <gfx/rio_Graphics.h>
 #include <gpu/rio_Texture.h>
 
 #if RIO_IS_CAFE
@@ -87,6 +88,9 @@ public:
 
     void setLOD(f32 min_lod, f32 max_lod, f32 lod_bias);
 
+    void setDepthCompareEnable(bool enable);
+    void setDepthCompareFunc(Graphics::CompareFunc func);
+
     void update() const;
 
     bool isTextureAvailable() const
@@ -136,10 +140,12 @@ private:
     void updateWrap_() const;
     void updateBorderColor_() const;
     void updateLOD_() const;
+    void updateDepthComp_() const;
 
 private:
     mutable u8              mFlags;
     mutable bool            mHasBorder;
+    bool                    mDepthCompareEnable;
     TexXYFilterMode         mMagFilter;
     TexXYFilterMode         mMinFilter;
     TexMipFilterMode        mMipFilter;
@@ -151,6 +157,7 @@ private:
     f32                     mMinLOD;
     f32                     mMaxLOD;
     f32                     mLODBias;
+    Graphics::CompareFunc   mDepthCompareFunc;
     mutable NativeSampler2D mSamplerInner;
 
     NativeTexture2DHandle   mTexture2DHandle;
@@ -179,6 +186,9 @@ inline void TextureSampler2D::init_()
     mMinLOD = 0.0f;
     mMaxLOD = 14.0f;
     mLODBias = 0.0f;
+
+    mDepthCompareFunc = Graphics::COMPARE_FUNC_NEVER;
+    mDepthCompareEnable = false;
 }
 
 inline void TextureSampler2D::linkTexture2D(const Texture2D* texture)
@@ -297,6 +307,20 @@ inline void TextureSampler2D::setLOD(f32 min_lod, f32 max_lod, f32 lod_bias)
     mFlags |= 1 << 3;
 }
 
+inline void TextureSampler2D::setDepthCompareEnable(bool enable)
+{
+    mDepthCompareEnable = enable;
+
+    mFlags |= 1 << 4;
+}
+
+inline void TextureSampler2D::setDepthCompareFunc(Graphics::CompareFunc func)
+{
+    mDepthCompareFunc = func;
+
+    mFlags |= 1 << 4;
+}
+
 inline void TextureSampler2D::update() const
 {
     if (mFlags)
@@ -312,6 +336,9 @@ inline void TextureSampler2D::update() const
 
         if (mFlags >> 3 & 1)
             updateLOD_();
+
+        if (mFlags >> 3 & 1)
+            updateDepthComp_();
 
         mFlags = 0;
     }

@@ -93,6 +93,11 @@ void TextureSampler2D::updateLOD_() const
     GX2InitSamplerLOD(&mSamplerInner, mMinLOD, mMaxLOD, mLODBias);
 }
 
+void TextureSampler2D::updateDepthComp_() const
+{
+    GX2InitSamplerDepthCompare(&mSamplerInner, (GX2CompareFunction)mDepthCompareFunc);
+}
+
 void TextureSampler2D::bindVS(u32 location, u32) const
 {
     RIO_ASSERT(location != 0xFFFFFFFF);
