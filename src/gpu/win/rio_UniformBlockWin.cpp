@@ -69,7 +69,12 @@ void UniformBlock::setSubData(const void* data, u32 offset, u32 size)
     RIO_ASSERT(offset + size <= mSize);
 
     if (mpData != nullptr)
-        rio::MemUtil::copy((void*)(uintptr_t(mpData) + offset), data, size);
+    {
+        const uintptr_t dst = uintptr_t(mpData) + offset;
+        const uintptr_t src = uintptr_t(data);
+        if (src != dst)
+            MemUtil::copy((void*)dst, (const void*)src, size);
+    }
 
     RIO_GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, mHandle));
 
