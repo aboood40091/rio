@@ -48,7 +48,7 @@ public:
 private:
     s32 mRelaOffset; // Offset to object
 };
-static_assert(std::is_pod<OffsetPtr<u8>>::value);
+static_assert(std::is_standard_layout<OffsetPtr<u8>>::value && std::is_trivial<OffsetPtr<u8>>::value);
 static_assert(sizeof(OffsetPtr<u8>) == 4);
 
 template <typename T>
@@ -81,7 +81,7 @@ private:
     OffsetPtr<T>    mOffset;      // Buffer offset.
     u32             mBufferCount; // Buffer element count.
 };
-static_assert(std::is_pod<Buffer<u8>>::value);
+static_assert(std::is_standard_layout<Buffer<u8>>::value && std::is_trivial<Buffer<u8>>::value);
 static_assert(sizeof(Buffer<u8>) == 8);
 
 typedef Buffer<u8>          BufferU8;

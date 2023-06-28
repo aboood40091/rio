@@ -60,7 +60,7 @@ private:
 
     friend class ModelCacher;
 };
-static_assert(std::is_pod<Model>::value);
+static_assert(std::is_standard_layout<Model>::value && std::is_trivial<Model>::value);
 static_assert(sizeof(Model) == 0x20);
 
 } } }

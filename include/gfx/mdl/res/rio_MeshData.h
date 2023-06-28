@@ -12,7 +12,7 @@ struct Vertex
     BaseVec2f   tex_coord;
     BaseVec3f   normal;
 };
-static_assert(std::is_pod<Vertex>::value);
+static_assert(std::is_standard_layout<Vertex>::value && std::is_trivial<Vertex>::value);
 static_assert(sizeof(Vertex) == 0x20);
 
 typedef Buffer<Vertex> VertexBuffer;
@@ -60,7 +60,7 @@ private:
 
     u32             mMatIdx;    // Material index
 };
-static_assert(std::is_pod<Mesh>::value);
+static_assert(std::is_standard_layout<Mesh>::value && std::is_trivial<Mesh>::value);
 static_assert(sizeof(Mesh) == 0x38);
 
 } } }

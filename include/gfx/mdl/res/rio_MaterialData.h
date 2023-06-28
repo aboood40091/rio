@@ -75,7 +75,7 @@ private:
     u32         mOffset;    // Uniform offset in uniform block data. (Only valid if variable IS part of a uniform block.)
     BufferU8    mValuesBuf; // Uniform default value buffer.
 };
-static_assert(std::is_pod<UniformVar>::value);
+static_assert(std::is_standard_layout<UniformVar>::value && std::is_trivial<UniformVar>::value);
 static_assert(sizeof(UniformVar) == 0x18);
 
 class UniformBlock
@@ -111,7 +111,7 @@ private:
     u32                                 mSize;      // Total block size.
     Buffer<UniformVar>                  mUniforms;  // List of variables.
 };
-static_assert(std::is_pod<UniformBlock>::value);
+static_assert(std::is_standard_layout<UniformBlock>::value && std::is_trivial<UniformBlock>::value);
 static_assert(sizeof(UniformBlock) == 0x1C);
 
 class TextureRef
@@ -162,7 +162,7 @@ private:
 
     // ------------------------------------------------------------------------------------------
 };
-static_assert(std::is_pod<TextureRef>::value);
+static_assert(std::is_standard_layout<TextureRef>::value && std::is_trivial<TextureRef>::value);
 static_assert(sizeof(TextureRef) == 0x48);
 
 class Material
@@ -372,7 +372,7 @@ private:
 
     // ----------------------------------------------------------------------------------------------------------------------------------------
 };
-static_assert(std::is_pod<Material>::value);
+static_assert(std::is_standard_layout<Material>::value && std::is_trivial<Material>::value);
 static_assert(sizeof(Material) == 0x80);
 
 } } }
