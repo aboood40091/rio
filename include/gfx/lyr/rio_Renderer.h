@@ -26,12 +26,29 @@ private:
 
 public:
     // Create layer with the given name and render priority (Smaller value = drawn later)
-    Layer::iterator addLayer(const char* name, s32 priority = 0);
+    template <typename T = Layer>
+    Layer::iterator addLayer(const char* name, s32 priority = 0)
+    {
+        Layer* p_layer = new T(name, priority);
+        return mLayers.insert(p_layer);
+    }
 
     // Remove layer
-    void removeLayer(Layer::iterator it);
+    void removeLayer(Layer::iterator it)
+    {
+        Layer* p_layer = Layer::peelIterator(it);
+        mLayers.erase(it);
+        delete p_layer;
+    }
+
     // Remove all layers
-    void clearLayers();
+    void clearLayers()
+    {
+        for (Layer* p_layer : mLayers)
+            delete p_layer;
+
+        mLayers.clear();
+    }
 
     // Render all layers
     void render() const;

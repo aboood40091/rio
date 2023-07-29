@@ -1,5 +1,6 @@
-#include <gfx/lyr/rio_Renderer.h>
+#include <gfx/rio_Graphics.h>
 #include <gfx/rio_Window.h>
+#include <gfx/lyr/rio_Renderer.h>
 
 namespace rio { namespace lyr {
 
@@ -29,40 +30,54 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-}
-
-Layer::iterator Renderer::addLayer(const char* name, s32 priority)
-{
-    return mLayers.emplace(name, priority);
-}
-
-void Renderer::removeLayer(Layer::iterator it)
-{
-    mLayers.erase(it);
-}
-
-void Renderer::clearLayers()
-{
-    mLayers.clear();
+    clearLayers();
 }
 
 void Renderer::render() const
 {
-    Window* const window = Window::instance();
+    Window* const p_window = Window::instance();
 
-    for (const Layer& layer : mLayers)
+    rio::Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
+    rio::Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
+
+    bool viewport_changed = false;
+    bool scissor_changed = false;
+
+    for (const Layer* p_layer : mLayers)
     {
-        if (layer.mClearFlags.isOn(Layer::FLAGS_CLEAR_COLOR_BUFFER))
-            window->clearColor(layer.mClearColor.r, layer.mClearColor.g, layer.mClearColor.b, layer.mClearColor.a);
+        const Layer& layer = *p_layer;
 
-        if (layer.mClearFlags.isOn(Layer::FLAGS_CLEAR_DEPTH_STENCIL_BUFFER))
-            window->clearDepthStencil(layer.mClearDepth, layer.mClearDepth);
+        if (layer.mFlags.isOn(Layer::FLAGS_CLEAR_COLOR_BUFFER))
+            p_window->clearColor(layer.mClearColor.r, layer.mClearColor.g, layer.mClearColor.b, layer.mClearColor.a);
 
-        else if (layer.mClearFlags.isOn(Layer::FLAGS_CLEAR_DEPTH_BUFFER))
-            window->clearDepth(layer.mClearDepth);
+        if (layer.mFlags.isOn(Layer::FLAGS_CLEAR_DEPTH_STENCIL_BUFFER))
+            p_window->clearDepthStencil(layer.mClearDepth, layer.mClearDepth);
 
-        else if (layer.mClearFlags.isOn(Layer::FLAGS_CLEAR_STENCIL_BUFFER))
-            window->clearStencil(layer.mClearDepth);
+        else if (layer.mFlags.isOn(Layer::FLAGS_CLEAR_DEPTH_BUFFER))
+            p_window->clearDepth(layer.mClearDepth);
+
+        else if (layer.mFlags.isOn(Layer::FLAGS_CLEAR_STENCIL_BUFFER))
+            p_window->clearStencil(layer.mClearDepth);
+
+        if (layer.mFlags.isOn(Layer::FLAGS_SET_VIEWPORT))
+        {
+            rio::Graphics::setViewport(layer.mViewport.x, layer.mViewport.y, layer.mViewport.width, layer.mViewport.height, layer.mViewport.near, layer.mViewport.far);
+            viewport_changed = true;
+        }
+        else if (viewport_changed)
+        {
+            rio::Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
+        }
+
+        if (layer.mFlags.isOn(Layer::FLAGS_SET_SCISSOR))
+        {
+            rio::Graphics::setScissor(layer.mScissor.x, layer.mScissor.y, layer.mScissor.width, layer.mScissor.height);
+            scissor_changed = true;
+        }
+        else if (scissor_changed)
+        {
+            rio::Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
+        }
 
         u32 render_step_idx = 0;
 

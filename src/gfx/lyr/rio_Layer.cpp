@@ -26,7 +26,7 @@ Layer::Layer(const char* name, s32 priority)
     , mClearColor{ Color4f::cBlack }
     , mClearDepth(1.0f)
     , mClearStencil(0)
-    , mClearFlags(0)
+    , mFlags(0)
 {
     static IdentityCamera sDefaultCamera;
 
@@ -66,46 +66,76 @@ void Layer::setProjection(const Projection* projection)
 void Layer::setClearColor(const Color4f& color)
 {
     mClearColor = color;
-    mClearFlags.set(FLAGS_CLEAR_COLOR_BUFFER);
+    mFlags.set(FLAGS_CLEAR_COLOR_BUFFER);
 }
 
 void Layer::setClearDepth(f32 depth)
 {
     mClearDepth = depth;
-    mClearFlags.set(FLAGS_CLEAR_DEPTH_BUFFER);
+    mFlags.set(FLAGS_CLEAR_DEPTH_BUFFER);
 }
 
 void Layer::setClearStencil(u8 stencil)
 {
     mClearStencil = stencil;
-    mClearFlags.set(FLAGS_CLEAR_STENCIL_BUFFER);
+    mFlags.set(FLAGS_CLEAR_STENCIL_BUFFER);
 }
 
 void Layer::setClearDepthStencil(f32 depth, u8 stencil)
 {
     mClearDepth = depth;
     mClearStencil = stencil;
-    mClearFlags.set(FLAGS_CLEAR_DEPTH_STENCIL_BUFFER);
+    mFlags.set(FLAGS_CLEAR_DEPTH_STENCIL_BUFFER);
+}
+
+void Layer::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far)
+{
+    mViewport.x = x;
+    mViewport.y = y;
+    mViewport.width = width;
+    mViewport.height = height;
+    mViewport.near = near;
+    mViewport.far = far;
+    mFlags.set(FLAGS_SET_VIEWPORT);
+}
+
+void Layer::setScissor(s32 x, s32 y, u32 width, u32 height)
+{
+    mScissor.x = x;
+    mScissor.y = y;
+    mScissor.width = width;
+    mScissor.height = height;
+    mFlags.set(FLAGS_SET_SCISSOR);
 }
 
 void Layer::resetClearColor()
 {
-    mClearFlags.reset(FLAGS_CLEAR_COLOR_BUFFER);
+    mFlags.reset(FLAGS_CLEAR_COLOR_BUFFER);
 }
 
 void Layer::resetClearDepth()
 {
-    mClearFlags.reset(FLAGS_CLEAR_DEPTH_BUFFER);
+    mFlags.reset(FLAGS_CLEAR_DEPTH_BUFFER);
 }
 
 void Layer::resetClearStencil()
 {
-    mClearFlags.reset(FLAGS_CLEAR_STENCIL_BUFFER);
+    mFlags.reset(FLAGS_CLEAR_STENCIL_BUFFER);
 }
 
 void Layer::resetClearDepthStencil()
 {
-    mClearFlags.reset(FLAGS_CLEAR_DEPTH_STENCIL_BUFFER);
+    mFlags.reset(FLAGS_CLEAR_DEPTH_STENCIL_BUFFER);
+}
+
+void Layer::resetViewport()
+{
+    mFlags.reset(FLAGS_SET_VIEWPORT);
+}
+
+void Layer::resetScissor()
+{
+    mFlags.reset(FLAGS_SET_SCISSOR);
 }
 
 void Layer::addRenderStep(const char* name)

@@ -41,29 +41,41 @@ class Layer
     // Class for separating the rendering process into several phases, i.e., “layers”.
     // Layers can intersect or be made to strictly appear on top of each other (regardless of objects' Z ordering).
 
+private:
+    struct Comparator
+    {
+        bool operator()(const Layer* lhs, const Layer* rhs) const
+        {
+            return *lhs < *rhs;
+        }
+    };
+
 public:
-    typedef std::multiset<Layer> List;
+    typedef std::multiset<Layer*, Comparator> List;
     typedef List::iterator iterator;
 
     static Layer* peelIterator(List::iterator& itr)
     {
-        return const_cast<Layer*>(&(*itr));
+        return const_cast<Layer*>(*itr);
     }
 
     static const Layer* peelIterator(const List::iterator& itr)
     {
-        return &(*itr);
+        return *itr;
     }
 
 public:
     Layer(const char* name, s32 priority);
-    ~Layer();
+    virtual ~Layer();
 
 public:
     bool operator<(const Layer& rhs) const;
 
     // Get the layer's name.
     const char* name() const { return mName; }
+
+    // Get the layer's priority.
+    s32 priority() const { return mPriority; }
 
     // Get the active camera for the layer.
     const Camera* camera() const { return mpCamera; }
@@ -85,6 +97,11 @@ public:
     // Enable depth and stencil clear prior to rendering the layer and set their values.
     void setClearDepthStencil(f32 depth = 1.0f, u8 stencil = 0);
 
+    // Set the viewport to use when drawing this layer
+    void setViewport(s32 x, s32 y, u32 width, u32 height, f32 near = 0.0f, f32 far = 1.0f);
+    // Set the scissor box to use when drawing this layer
+    void setScissor(s32 x, s32 y, u32 width, u32 height);
+
     // Disable color clear.
     void resetClearColor();
 
@@ -94,6 +111,11 @@ public:
     void resetClearStencil();
     // Disable depth and stencil clear.
     void resetClearDepthStencil();
+
+    // Reset the viewport to use when drawing this layer (to Window size)
+    void resetViewport();
+    // Reset the scissor box to use when drawing this layer (to Window size)
+    void resetScissor();
 
     // Create a render step with the given name.
     void addRenderStep(const char* name);
@@ -126,14 +148,17 @@ public:
     void clearDrawMethods(const char* render_step_name);
     */
 
-private:
-    enum ClearFlags
+protected:
+    enum Flags
     {
-        FLAGS_CLEAR_COLOR_BUFFER         = (1 << 0),
-        FLAGS_CLEAR_DEPTH_BUFFER         = (1 << 1),
-        FLAGS_CLEAR_STENCIL_BUFFER       = (1 << 2),
+        FLAGS_CLEAR_COLOR_BUFFER            = (1 << 0),
+        FLAGS_CLEAR_DEPTH_BUFFER            = (1 << 1),
+        FLAGS_CLEAR_STENCIL_BUFFER          = (1 << 2),
 
-        FLAGS_CLEAR_DEPTH_STENCIL_BUFFER = FLAGS_CLEAR_DEPTH_BUFFER | FLAGS_CLEAR_STENCIL_BUFFER
+        FLAGS_CLEAR_DEPTH_STENCIL_BUFFER    = FLAGS_CLEAR_DEPTH_BUFFER | FLAGS_CLEAR_STENCIL_BUFFER,
+
+        FLAGS_SET_VIEWPORT                  = (1 << 3),
+        FLAGS_SET_SCISSOR                   = (1 << 4)
     };
 
     const char*             mName;          // Layer name.
@@ -145,7 +170,26 @@ private:
     Color4f                 mClearColor;    // Color clear value.
     f32                     mClearDepth;    // Depth clear value.
     u8                      mClearStencil;  // Stencil clear value.
-    BitFlag8                mClearFlags;    // Flags of enabled clear modes.
+
+    struct
+    {
+        s32 x;
+        s32 y;
+        u32 width;
+        u32 height;
+        f32 near;
+        f32 far;
+    } mViewport;
+
+    struct
+    {
+        s32 x;
+        s32 y;
+        u32 width;
+        u32 height;
+    } mScissor;
+
+    BitFlag8                mFlags;         // Flags.
 
     std::vector<RenderStep> mRenderSteps;   // Layer render steps.
 
