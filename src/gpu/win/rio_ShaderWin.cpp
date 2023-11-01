@@ -164,7 +164,7 @@ void Shader::unload()
     mLoaded = false;
 }
 
-void Shader::setShaderMode(ShaderMode)
+void Shader::setShaderMode(ShaderMode, bool)
 {
 }
 
@@ -173,7 +173,7 @@ Shader::ShaderMode Shader::getShaderMode()
     return Shader::MODE_INVALID;
 }
 
-void Shader::bind() const
+void Shader::bind(bool) const
 {
     RIO_ASSERT(mLoaded);
 

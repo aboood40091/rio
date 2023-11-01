@@ -111,6 +111,7 @@ Shader::ShaderMode Shader::sCurrentShaderMode = Shader::MODE_INVALID;
 
 void Shader::initialize_()
 {
+    mSelfAllocated = false;
     mpVertexShader = nullptr;
     mpPixelShader  = nullptr;
 }
@@ -150,6 +151,26 @@ void Shader::load(const char* base_fname, ShaderMode exp_mode)
 
     mShaderMode = exp_mode;
     mLoaded = true;
+    mSelfAllocated = true;
+}
+
+void Shader::load(GX2VertexShader* p_vertex_shader, GX2PixelShader* p_pixel_shader)
+{
+    unload();
+
+    mpVertexShader = p_vertex_shader;
+    RIO_ASSERT(mpVertexShader);
+
+    RIO_ASSERT(mpVertexShader->mode == GX2_SHADER_MODE_UNIFORM_REGISTER || mpVertexShader->mode == GX2_SHADER_MODE_UNIFORM_BLOCK);
+    ShaderMode exp_mode = (ShaderMode)mpVertexShader->mode;
+
+    mpPixelShader = p_pixel_shader;
+    RIO_ASSERT(mpPixelShader);
+    RIO_ASSERT(mpPixelShader->mode == (GX2ShaderMode)exp_mode);
+
+    mShaderMode = exp_mode;
+    mLoaded = true;
+    mSelfAllocated = false;
 }
 
 void Shader::unload()
@@ -157,20 +178,27 @@ void Shader::unload()
     if (!mLoaded)
         return;
 
-    WHBGfxFreeVertexShader(mpVertexShader);
-    mpVertexShader = nullptr;
+    RIO_ASSERT(mpVertexShader != nullptr);
+    RIO_ASSERT(mpPixelShader != nullptr);
 
-    WHBGfxFreePixelShader(mpPixelShader);
+    if (mSelfAllocated)
+    {
+        WHBGfxFreeVertexShader(mpVertexShader);
+        WHBGfxFreePixelShader(mpPixelShader);
+        mSelfAllocated = false;
+    }
+
+    mpVertexShader = nullptr;
     mpPixelShader = nullptr;
 
     mLoaded = false;
 }
 
-void Shader::setShaderMode(ShaderMode mode)
+void Shader::setShaderMode(ShaderMode mode, bool force)
 {
     RIO_ASSERT(mode == MODE_UNIFORM_REGISTER || mode == MODE_UNIFORM_BLOCK);
 
-    if (sCurrentShaderMode != mode)
+    if (force || sCurrentShaderMode != mode)
     {
         sCurrentShaderMode = mode;
         GX2SetShaderModeEx((GX2ShaderMode)mode, 48, 64, 0, 0, 200, 192);
@@ -182,11 +210,11 @@ Shader::ShaderMode Shader::getShaderMode()
     return sCurrentShaderMode;
 }
 
-void Shader::bind() const
+void Shader::bind(bool forceSetShaderMode) const
 {
     RIO_ASSERT(mLoaded);
 
-    setShaderMode(mShaderMode);
+    setShaderMode(mShaderMode, forceSetShaderMode);
 
     GX2SetVertexShader(mpVertexShader);
     GX2SetPixelShader(mpPixelShader);

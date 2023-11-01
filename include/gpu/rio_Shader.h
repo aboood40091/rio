@@ -44,10 +44,17 @@ public:
     // The expected shader mode is used on Cafe to verify that the loaded shader matches that shader mode.
     void load(const char* base_fname, ShaderMode exp_mode = MODE_INVALID);
 
-#if RIO_IS_WIN
+#if RIO_IS_CAFE
+
+    // Wrap pre-existing GX2VertexShader and GX2PixelShader instances
+    void load(GX2VertexShader* p_vertex_shader, GX2PixelShader* p_pixel_shader);
+
+#elif RIO_IS_WIN
+
     // Load shader resource by source strings.
     void load(const char* c_vertex_shader_src, const char* c_fragment_shader_src);
-#endif // RIO_IS_WIN
+
+#endif
 
     // Unload the shader resource.
     void unload();
@@ -72,11 +79,11 @@ public:
 #endif
 
     // Set the current global shader mode.
-    static void setShaderMode(ShaderMode mode);
+    static void setShaderMode(ShaderMode mode, bool force = false);
     // Get the current global shader mode.
     static ShaderMode getShaderMode();
 
-    void bind() const;
+    void bind(bool forceSetShaderMode = false) const;
 
     u32 getVertexAttribLocation(const char* name) const;
 
@@ -260,6 +267,7 @@ private:
 private:
     bool                mLoaded;
 #if RIO_IS_CAFE
+    bool                mSelfAllocated;
     GX2VertexShader*    mpVertexShader;
     GX2PixelShader*     mpPixelShader;
     ShaderMode          mShaderMode;
