@@ -32,29 +32,35 @@ private:
 public:
     FileDevice* findDeviceFromPath(const std::string& path, std::string* no_drive_path) const;
 
-    FileDevice* open(FileHandle* handle, const std::string& filename, FileDevice::FileOpenFlag flag)
-    {
-        FileDevice* device = tryOpen(handle, filename, flag);
-        RIO_ASSERT(device);
-        return device;
-    }
-
-    FileDevice* tryOpen(FileHandle* handle, const std::string& filename, FileDevice::FileOpenFlag flag);
-
     u8* load(FileDevice::LoadArg& arg)
     {
         u8* ret = tryLoad(arg);
-        RIO_ASSERT(ret);
+        if (!ret)
+        {
+            RIO_LOG("FileDeviceMgr::load(): Failure. [%s]\n", arg.path.c_str());
+            RIO_ASSERT(false);
+        }
         return ret;
     }
 
-    u8* tryLoad(FileDevice::LoadArg& arg);
-
-    void unload(u8* data)
+    static void unload(u8* data)
     {
-        RIO_ASSERT(data);
-        delete[] data;
+        FileDevice::unload(data);
     }
+
+    FileDevice* open(FileHandle* handle, const std::string& filename, FileDevice::FileOpenFlag flag)
+    {
+        FileDevice* device = tryOpen(handle, filename, flag);
+        if (!device)
+        {
+            RIO_LOG("FileDeviceMgr::open(): Failure. [%s]\n", filename.c_str());
+            RIO_ASSERT(false);
+        }
+        return device;
+    }
+
+    u8* tryLoad(FileDevice::LoadArg& arg);
+    FileDevice* tryOpen(FileHandle* handle, const std::string& filename, FileDevice::FileOpenFlag flag);
 
     void mount(FileDevice* device, const std::string& drive_name = "");
     void unmount(const std::string& drive);

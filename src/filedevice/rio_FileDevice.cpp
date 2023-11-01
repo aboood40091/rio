@@ -4,6 +4,14 @@
 
 namespace {
 
+static inline u32 max(u32 x, u32 y)
+{
+    if (x >= y)
+        return x;
+
+    return y;
+}
+
 static inline u32 align(u32 x, u32 y)
 {
     RIO_ASSERT(((y - 1) & y) == 0);
@@ -20,6 +28,11 @@ FileDevice::~FileDevice()
         FileDeviceMgr::instance()->unmount(this);
 }
 
+RawErrorCode FileDevice::getLastRawError() const
+{
+    return doGetLastRawError_();
+}
+
 u8* FileDevice::tryLoad(FileDevice::LoadArg& arg)
 {
     return doLoad_(arg);
@@ -27,7 +40,12 @@ u8* FileDevice::tryLoad(FileDevice::LoadArg& arg)
 
 FileDevice* FileDevice::tryOpen(FileHandle* handle, const std::string& filename, FileDevice::FileOpenFlag flag)
 {
-    RIO_ASSERT(handle);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryOpen(): handle is null.\n");
+        RIO_ASSERT(false);
+        return nullptr;
+    }
 
     FileDevice* device = doOpen_(handle, filename, flag);
     handle->mDevice = device;
@@ -39,8 +57,19 @@ FileDevice* FileDevice::tryOpen(FileHandle* handle, const std::string& filename,
 
 bool FileDevice::tryClose(FileHandle* handle)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryClose(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::tryClose(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     bool success = doClose_(handle);
     if (success)
@@ -54,9 +83,26 @@ bool FileDevice::tryClose(FileHandle* handle)
 
 bool FileDevice::tryRead(u32* read_size, FileHandle* handle, u8* buf, u32 size)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
-    RIO_ASSERT(buf);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryRead(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::tryRead(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (buf == nullptr)
+    {
+        RIO_LOG("FileDevice::tryRead(): buf is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     bool success = doRead_(read_size, handle, buf, size);
     RIO_ASSERT(!read_size || *read_size <= size);
@@ -65,9 +111,26 @@ bool FileDevice::tryRead(u32* read_size, FileHandle* handle, u8* buf, u32 size)
 
 bool FileDevice::tryWrite(u32* write_size, FileHandle* handle, const u8* buf, u32 size)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
-    RIO_ASSERT(buf);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryWrite(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::tryWrite(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (buf == nullptr)
+    {
+        RIO_LOG("FileDevice::tryWrite(): buf is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     bool success = doWrite_(write_size, handle, buf, size);
     RIO_ASSERT(!write_size || *write_size <= size);
@@ -76,41 +139,108 @@ bool FileDevice::tryWrite(u32* write_size, FileHandle* handle, const u8* buf, u3
 
 bool FileDevice::trySeek(FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::trySeek(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::trySeek(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     return doSeek_(handle, offset, origin);
 }
 
 bool FileDevice::tryGetCurrentSeekPos(u32* pos, FileHandle* handle)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
-    RIO_ASSERT(pos);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryGetCurrentSeekPos(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::tryGetCurrentSeekPos(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (pos == nullptr)
+    {
+        RIO_LOG("FileDevice::tryGetCurrentSeekPos(): pos is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     return doGetCurrentSeekPos_(pos, handle);
 }
 
 bool FileDevice::tryGetFileSize(u32* size, const std::string& path)
 {
-    RIO_ASSERT(size);
+    if (size == nullptr)
+    {
+        RIO_LOG("FileDevice::tryGetFileSize(): size is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     return doGetFileSize_(size, path);
 }
 
 bool FileDevice::tryGetFileSize(u32* size, FileHandle* handle)
 {
-    RIO_ASSERT(handle);
-    RIO_ASSERT(handle->mDevice == this);
-    RIO_ASSERT(size);
+    if (handle == nullptr)
+    {
+        RIO_LOG("FileDevice::tryGetFileSize(): handle is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (handle->mDevice != this)
+    {
+        RIO_LOG("FileDevice::tryGetFileSize(): handle device miss match.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    if (size == nullptr)
+    {
+        RIO_LOG("FileDevice::tryGetFileSize(): size is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
 
     return doGetFileSize_(size, handle);
 }
 
+bool FileDevice::tryIsExistFile(bool* is_exist, const std::string& path)
+{
+    if (is_exist == nullptr)
+    {
+        RIO_LOG("FileDevice::tryIsExistFile(): is_exist is null.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
+    return doIsExistFile_(is_exist, path);
+}
+
 u8* FileDevice::doLoad_(FileDevice::LoadArg& arg)
 {
-    RIO_ASSERT(!arg.buffer || arg.buffer_size);
-    RIO_ASSERT(arg.alignment);
+    if (arg.buffer && arg.buffer_size == 0)
+    {
+        RIO_LOG("FileDevice::doLoad_(): arg.buffer is specified, but arg.buffer_size is zero.\n");
+        return nullptr;
+    }
+
+    arg.alignment = max(arg.alignment, 1);
 
     FileHandle handle;
     if (!tryOpen(&handle, arg.path, FileDevice::FILE_OPEN_FLAG_READ))
@@ -120,15 +250,20 @@ u8* FileDevice::doLoad_(FileDevice::LoadArg& arg)
     if (!tryGetFileSize(&file_size, &handle))
         return nullptr;
 
-    RIO_ASSERT(file_size != 0);
+    if (file_size == 0)
+    {
+        RIO_ASSERT(false);
+        return nullptr;
+    }
 
     u32 buffer_size = arg.buffer_size;
     if (buffer_size == 0)
         buffer_size = align(file_size, FileDevice::cBufferMinAlignment);
 
-    else
+    else if (buffer_size < file_size)
     {
-        RIO_ASSERT(buffer_size >= file_size);
+        RIO_LOG("FileDevice::doLoad_(): arg.buffer_size[%u] is smaller than file size[%u].\n", buffer_size, file_size);
+        return nullptr;
     }
 
     u8* buffer = arg.buffer;
@@ -164,75 +299,141 @@ u8* FileDevice::doLoad_(FileDevice::LoadArg& arg)
     return buffer;
 }
 
-bool FileHandle::close()
+void FileHandle::close()
 {
-    RIO_ASSERT(isOpen());
-    return mDevice->close(this);
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::close(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return;
+    }
+
+    mDevice->close(this);
 }
 
 bool FileHandle::tryClose()
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::tryClose(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->tryClose(this);
 }
 
 u32 FileHandle::read(u8* buf, u32 size)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::read(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return 0;
+    }
+
     return mDevice->read(this, buf, size);
 }
 
 bool FileHandle::tryRead(u32* read_size, u8* buf, u32 size)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::tryRead(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->tryRead(read_size, this, buf, size);
 }
 
 u32 FileHandle::write(const u8* buf, u32 size)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::write(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return 0;
+    }
+
     return mDevice->write(this, buf, size);
 }
 
 bool FileHandle::tryWrite(u32* write_size, const u8* buf, u32 size)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::tryWrite(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->tryWrite(write_size, this, buf, size);
 }
 
-bool FileHandle::seek(s32 offset, FileDevice::SeekOrigin origin)
+void FileHandle::seek(s32 offset, FileDevice::SeekOrigin origin)
 {
     RIO_ASSERT(isOpen());
-    return mDevice->seek(this, offset, origin);
+    mDevice->seek(this, offset, origin);
 }
 
 bool FileHandle::trySeek(s32 offset, FileDevice::SeekOrigin origin)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::trySeek(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->trySeek(this, offset, origin);
 }
 
 u32 FileHandle::getCurrentSeekPos()
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::getCurrentSeekPos(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return 0;
+    }
+
     return mDevice->getCurrentSeekPos(this);
 }
 
 bool FileHandle::tryGetCurrentSeekPos(u32* pos)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::tryGetCurrentSeekPos(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->tryGetCurrentSeekPos(pos, this);
 }
 
 u32 FileHandle::getFileSize()
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::getFileSize(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return 0;
+    }
+
     return mDevice->getFileSize(this);
 }
 
 bool FileHandle::tryGetFileSize(u32* size)
 {
-    RIO_ASSERT(isOpen());
+    if (!isOpen())
+    {
+        RIO_LOG("FileHandle::tryGetFileSize(): Handle not opened.\n");
+        RIO_ASSERT(false);
+        return false;
+    }
+
     return mDevice->tryGetFileSize(size, this);
 }
 

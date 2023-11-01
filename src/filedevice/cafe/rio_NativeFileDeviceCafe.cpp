@@ -10,12 +10,14 @@ namespace rio {
 NativeFileDevice::NativeFileDevice()
     : FileDevice("native")
     , mCWD(".")
+    , mLastRawError(RAW_ERROR_OK)
 {
 }
 
 NativeFileDevice::NativeFileDevice(const std::string& drive_name)
     : FileDevice(drive_name)
     , mCWD(".")
+    , mLastRawError(RAW_ERROR_OK)
 {
 }
 
@@ -28,7 +30,7 @@ NativeFileDevice::doOpen_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     const char* mode = "r";
@@ -52,10 +54,12 @@ NativeFileDevice::doOpen_(
 
     std::string file_path = getNativePath(filename);
 
-    FSStatus status = FSOpenFile(client, &block, file_path.c_str(), mode, &handle_inner->handle, FS_ERROR_FLAG_NONE);
+    FSStatus status = FSOpenFile(client, &block, file_path.c_str(), mode, &handle_inner->handle, FSErrorFlag(FS_ERROR_FLAG_PERMISSION_ERROR | FS_ERROR_FLAG_ACCESS_ERROR |
+                                                                                                             FS_ERROR_FLAG_NOT_FILE | FS_ERROR_FLAG_NOT_FOUND |
+                                                                                                             FS_ERROR_FLAG_ALREADY_OPEN));
     handle_inner->position = 0;
 
-    if (status != FS_STATUS_OK)
+    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
     {
         handle_inner->handle = 0;
         return nullptr;
@@ -70,11 +74,11 @@ NativeFileDevice::doClose_(FileHandle* handle)
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     FSStatus status = FSCloseFile(client, &block, handle_inner->handle, FS_ERROR_FLAG_NONE);
-    if (status != FS_STATUS_OK)
+    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     return true;
@@ -91,12 +95,13 @@ NativeFileDevice::doRead_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     s32 result = FSReadFile(client, &block, buf, sizeof(u8), size, handle_inner->handle, 0, FS_ERROR_FLAG_NONE);
     if (result >= FS_STATUS_OK)
     {
+        mLastRawError = RAW_ERROR_OK;
         handle_inner->position += result;
 
         if (read_size)
@@ -105,6 +110,7 @@ NativeFileDevice::doRead_(
         return true;
     }
 
+    mLastRawError = rio::RawErrorCode(result);
     return false;
 }
 
@@ -119,12 +125,13 @@ NativeFileDevice::doWrite_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     s32 result = FSWriteFile(client, &block, (u8*)buf, sizeof(u8), size, handle_inner->handle, 0, FS_ERROR_FLAG_NONE);
     if (result >= FS_STATUS_OK)
     {
+        mLastRawError = RAW_ERROR_OK;
         handle_inner->position += result;
 
         if (write_size)
@@ -133,6 +140,7 @@ NativeFileDevice::doWrite_(
         return true;
     }
 
+    mLastRawError = rio::RawErrorCode(result);
     return false;
 }
 
@@ -144,7 +152,7 @@ NativeFileDevice::doSeek_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     switch (origin)
@@ -170,7 +178,7 @@ NativeFileDevice::doSeek_(
     }
 
     FSStatus status = FSSetPosFile(client, &block, handle_inner->handle, offset, FS_ERROR_FLAG_NONE);
-    if (status == FS_STATUS_OK)
+    if (mLastRawError = rio::RawErrorCode(status), status == FS_STATUS_OK)
     {
         handle_inner->position = offset;
         return true;
@@ -197,14 +205,14 @@ NativeFileDevice::doGetFileSize_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
 
     std::string file_path = getNativePath(path);
 
     FSStat stat;
     FSStatus status = FSGetStat(client, &block, file_path.c_str(), &stat, FS_ERROR_FLAG_NONE);
 
-    if (status != FS_STATUS_OK)
+    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     *size = stat.size;
@@ -219,26 +227,52 @@ NativeFileDevice::doGetFileSize_(
     FSCmdBlock block;
     FSInitCmdBlock(&block);
 
-    FSClient* client = getUsableFSClient_();
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     FSStat stat;
     FSStatus status = FSGetStatFile(client, &block, handle_inner->handle, &stat, FS_ERROR_FLAG_NONE);
 
-    if (status != FS_STATUS_OK)
+    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     *size = stat.size;
     return true;
 }
 
-FSClient*
-NativeFileDevice::getUsableFSClient_() const
+bool
+NativeFileDevice::doIsExistFile_(
+    bool* is_exist, const std::string& path
+)
 {
-    if (!mFSClient)
-        return FileDeviceMgr::instance()->getFSClient();
+    FSCmdBlock block;
+    FSInitCmdBlock(&block);
 
-    return mFSClient;
+    FSClient* client = FileDeviceMgr::instance()->getFSClient();
+
+    std::string file_path = getNativePath(path);
+
+    FSStat stat;
+    FSStatus status = FSGetStat(client, &block, file_path.c_str(), &stat, FSErrorFlag(FS_ERROR_FLAG_PERMISSION_ERROR | FS_ERROR_FLAG_NOT_FOUND));
+
+    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    {
+        if (status != FS_STATUS_NOT_FOUND)
+            return false;
+
+        *is_exist = false;
+    }
+    else
+    {
+        *is_exist = (stat.flags & (FS_STAT_DIRECTORY | FS_STAT_QUOTA)) == 0;
+    }
+
+    return true;
+}
+
+RawErrorCode NativeFileDevice::doGetLastRawError_() const
+{
+    return mLastRawError;
 }
 
 }

@@ -1,36 +1,21 @@
-#ifndef RIO_FILE_NATIVE_DEVICE_H
-#define RIO_FILE_NATIVE_DEVICE_H
+#ifndef RIO_FILE_STD_IO_DEVICE_H
+#define RIO_FILE_STD_IO_DEVICE_H
 
-#include <misc/rio_Types.h>
-
-#if RIO_IS_WIN
-#include <filedevice/rio_StdIOFileDevice.h>
-#else
 #include <filedevice/rio_FileDevice.h>
-#endif // RIO_IS_WIN
 
 namespace rio {
 
-#if RIO_IS_WIN
-class NativeFileDevice : public StdIOFileDevice
-#else
-class NativeFileDevice : public FileDevice
-#endif // RIO_IS_WIN
+class StdIOFileDevice : public FileDevice
 {
 public:
-    NativeFileDevice();
-    virtual ~NativeFileDevice() {}
-
-    virtual std::string getNativePath(const std::string& path) const
+    const std::string& getCWD() const
     {
-        return path;
+        return mCWD;
     }
 
 protected:
-    NativeFileDevice(const std::string& drive_name);
+    StdIOFileDevice(const std::string& drive_name, const std::string& cwd);
 
-#if !RIO_IS_WIN
-private:
     virtual FileDevice* doOpen_(FileHandle* handle, const std::string& filename, FileOpenFlag flag);
     virtual bool doClose_(FileHandle* handle);
     virtual bool doRead_(u32* read_size, FileHandle* handle, u8* buf, u32 size);
@@ -42,18 +27,11 @@ private:
     virtual bool doIsExistFile_(bool* is_exist, const std::string& path);
     virtual RawErrorCode doGetLastRawError_() const;
 
-public:
-    const std::string& getCWD() const
-    {
-        return mCWD;
-    }
-
-private:
+protected:
     std::string     mCWD;
     RawErrorCode    mLastRawError;
-#endif
 };
 
 }
 
-#endif // RIO_FILE_NATIVE_DEVICE_H
+#endif // RIO_FILE_STD_IO_DEVICE_H

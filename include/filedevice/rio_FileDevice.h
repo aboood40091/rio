@@ -8,6 +8,22 @@
 
 namespace rio {
 
+enum RawErrorCode
+{
+    RAW_ERROR_OK                =     0,
+    RAW_ERROR_CANCELED          =    -1,
+    RAW_ERROR_END               =    -2,
+    RAW_ERROR_ALREADY_OPEN      =    -4,
+    RAW_ERROR_NOT_FOUND         =    -6,
+    RAW_ERROR_NOT_FILE          =    -7,
+    RAW_ERROR_ACCESS_ERROR      =    -9,
+    RAW_ERROR_PERMISSION_ERROR  =   -10,
+    RAW_ERROR_FILE_TOO_BIG      =   -11,
+    RAW_ERROR_STORAGE_FULL      =   -12,
+
+    RAW_ERROR_FATAL_ERROR       = -1024,
+};
+
 class FileHandle;
 
 class FileDevice : public TListNode<FileDevice*>
@@ -83,7 +99,11 @@ public:
     u8* load(LoadArg& arg)
     {
         u8* ret = tryLoad(arg);
-        RIO_ASSERT(ret);
+        if (!ret)
+        {
+            RIO_LOG("FileDevice::load(): Failure. [%s]\n", arg.path.c_str());
+            RIO_ASSERT(false);
+        }
         return ret;
     }
 
@@ -96,15 +116,18 @@ public:
     FileDevice* open(FileHandle* handle, const std::string& filename, FileOpenFlag flag)
     {
         FileDevice* device = tryOpen(handle, filename, flag);
-        RIO_ASSERT(device);
+        if (!device)
+        {
+            RIO_LOG("FileDevice::open(): Failure. [%s]\n", filename.c_str());
+            RIO_ASSERT(false);
+        }
         return device;
     }
 
-    bool close(FileHandle* handle)
+    void close(FileHandle* handle)
     {
-        bool success = tryClose(handle);
+        [[maybe_unused]] bool success = tryClose(handle);
         RIO_ASSERT(success);
-        return success;
     }
 
     u32 read(FileHandle* handle, u8* buf, u32 size)
@@ -123,11 +146,10 @@ public:
         return write_size;
     }
 
-    bool seek(FileHandle* handle, s32 offset, SeekOrigin origin)
+    void seek(FileHandle* handle, s32 offset, SeekOrigin origin)
     {
-        bool success = trySeek(handle, offset, origin);
+        [[maybe_unused]] bool success = trySeek(handle, offset, origin);
         RIO_ASSERT(success);
-        return success;
     }
 
     u32 getCurrentSeekPos(FileHandle* handle)
@@ -154,6 +176,20 @@ public:
         return size;
     }
 
+    bool isExistFile(const std::string& path)
+    {
+        bool is_exist = false;
+        bool success = tryIsExistFile(&is_exist, path);
+        if (!success)
+        {
+            RIO_LOG("FileDevice::isExistFile(): Failure. [%s]\n", path.c_str());
+            RIO_ASSERT(false);
+        }
+        return is_exist;
+    }
+
+    RawErrorCode getLastRawError() const;
+
     u8* tryLoad(LoadArg& arg);
     FileDevice* tryOpen(FileHandle* handle, const std::string& filename, FileOpenFlag flag);
     bool tryClose(FileHandle* handle);
@@ -163,6 +199,7 @@ public:
     bool tryGetCurrentSeekPos(u32* pos, FileHandle* handle);
     bool tryGetFileSize(u32* size, const std::string& path);
     bool tryGetFileSize(u32* size, FileHandle* handle);
+    bool tryIsExistFile(bool* is_exist, const std::string& path);
 
 protected:
     virtual u8* doLoad_(LoadArg& arg);
@@ -174,6 +211,8 @@ protected:
     virtual bool doGetCurrentSeekPos_(u32* pos, FileHandle* handle) = 0;
     virtual bool doGetFileSize_(u32* size, const std::string& path) = 0;
     virtual bool doGetFileSize_(u32* size, FileHandle* handle) = 0;
+    virtual bool doIsExistFile_(bool* is_exist, const std::string& path) = 0;
+    virtual RawErrorCode doGetLastRawError_() const = 0;
 
 public:
     virtual std::string getNativePath(const std::string& path) const
@@ -222,10 +261,10 @@ public:
     FileDevice* getOriginalDevice() const { return mOriginalDevice; }
     bool isOpen() const { return mDevice != nullptr; }
 
-    bool close();
+    void close();
     u32 read(u8* buf, u32 size);
     u32 write(const u8* buf, u32 size);
-    bool seek(s32 offset, FileDevice::SeekOrigin origin);
+    void seek(s32 offset, FileDevice::SeekOrigin origin);
     u32 getCurrentSeekPos();
     u32 getFileSize();
 
