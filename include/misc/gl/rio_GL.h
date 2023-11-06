@@ -8,10 +8,17 @@
 
 #ifdef RIO_DEBUG
 
-inline void GLClearError()
+inline void GLClearError(const char* file, s32 line)
 {
+    bool printed = false;
+
     while (GLenum error = glGetError())
     {
+        if (!printed)
+        {
+            RIO_LOG("File \"%s\", line %d\n", file, line);
+            printed = true;
+        }
         RIO_LOG("[OpenGL Error] (%u): Clear\n", error);
     }
 }
@@ -48,7 +55,7 @@ inline void GLCheckError(const char* file, s32 line, const char* arg = nullptr)
 #define RIO_GL_CALL(ARG)                        \
     do                                          \
     {                                           \
-        GLClearError();                         \
+        GLClearError(__FILE__, __LINE__);       \
         ARG;                                    \
         GLCheckError(__FILE__, __LINE__, #ARG); \
     } while (0)
