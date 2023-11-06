@@ -206,6 +206,7 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
 
     RIO_ASSERT(location != 0xFFFFFFFF);
     RIO_ASSERT(isBindable());
+    RIO_ASSERT(slot < 16);
 
     update();
 
@@ -214,6 +215,9 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
 
     RIO_GL_CALL(glBindSampler(slot, mSamplerInner));
     RIO_GL_CALL(glUniform1i(location, slot));
+
+    RIO_GL_CALL(glActiveTexture(GL_TEXTURE0 + 16)); // Make sure subsequent calls to glBindTexture
+                                                    // don't affect the current unit slot
 }
 
 }
