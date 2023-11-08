@@ -32,6 +32,8 @@ enum TextureFormat : u32
 
     /*              16 bits              */
 
+    DEPTH_TEXTURE_FORMAT_R16_UNORM      = 0x005,
+
     TEXTURE_FORMAT_R8_G8_UNORM          = 0x007,
     TEXTURE_FORMAT_R8_G8_UINT           = 0x107,
     TEXTURE_FORMAT_R8_G8_SNORM          = 0x207,
@@ -44,6 +46,8 @@ enum TextureFormat : u32
     TEXTURE_FORMAT_R4_G4_B4_A4_UNORM    = 0x00B,
 
     /*              32 bits              */
+
+    DEPTH_TEXTURE_FORMAT_R32_FLOAT      = 0x80E,
 
     TEXTURE_FORMAT_R8_G8_B8_A8_UNORM    = 0x01A,
     TEXTURE_FORMAT_R8_G8_B8_A8_UINT     = 0x11A,
@@ -73,6 +77,12 @@ enum TextureFormat : u32
 
     TEXTURE_FORMAT_BC5_UNORM            = 0x035,
     TEXTURE_FORMAT_BC5_SNORM            = 0x235,
+
+    /*      depth-stencil formats      */
+
+    DEPTH_FORMAT_D24_S8_UNORM           = 0x011,
+    DEPTH_FORMAT_D24_S8_FLOAT           = 0x811,
+    DEPTH_FORMAT_D32_FLOAT_S8_UINT_X24  = 0x81C
 };
 
 #if RIO_IS_CAFE
@@ -141,6 +151,24 @@ typedef GLuint NativeTexture2DHandle;
 
 #endif
 
+class TextureFormatUtil
+{
+public:
+    static u8 getPixelByteSize(TextureFormat format);
+    static bool isCompressed(TextureFormat format);
+    static bool isUsableAsRenderTargetColor(TextureFormat format);
+    static bool isUsableAsRenderTargetDepth(TextureFormat format);
+    static bool hasStencil(TextureFormat format);
+    static u32 getDefaultCompMap(TextureFormat format);
+
+#if RIO_IS_WIN
+    static bool getNativeTextureFormat(
+        NativeTextureFormat& nativeFormat,
+        TextureFormat format
+    );
+#endif // RIO_IS_WIN
+};
+
 class TextureSampler2D;
 
 class Texture2D
@@ -160,6 +188,8 @@ public:
         mTextureInner = native_texture;
         createHandle_();
     }
+
+    Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMips);
 
     ~Texture2D();
 

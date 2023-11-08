@@ -21,6 +21,59 @@ Texture2D::Texture2D(const char* base_fname)
     MemUtil::free(file);
 }
 
+Texture2D::Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMips)
+    : mSelfAllocated(true)
+{
+    mTextureInner.surface.dim = GX2_SURFACE_DIM_TEXTURE_2D;
+    mTextureInner.surface.width = width;
+    mTextureInner.surface.height = height;
+    mTextureInner.surface.depth = 1;
+    mTextureInner.surface.mipLevels = numMips;
+    mTextureInner.surface.format = (GX2SurfaceFormat)format;
+    mTextureInner.surface.aa = GX2_AA_MODE1X;
+    mTextureInner.surface.use = GX2_SURFACE_USE_TEXTURE;
+    mTextureInner.surface.tileMode = GX2_TILE_MODE_DEFAULT;
+    mTextureInner.surface.swizzle = 0;
+    GX2CalcSurfaceSizeAndAlignment(&mTextureInner.surface);
+
+    mTextureInner.viewFirstMip = 0;
+    mTextureInner.viewNumMips = numMips;
+    mTextureInner.viewFirstSlice = 0;
+    mTextureInner.viewNumSlices = 1;
+    mTextureInner.compMap = rio::TextureFormatUtil::getDefaultCompMap(format);
+    GX2InitTextureRegs(&mTextureInner);
+
+    u32 alignment = mTextureInner.surface.alignment;
+
+    u32 imageSize = mTextureInner.surface.imageSize;
+    void* image = imageSize ? MemUtil::alloc(imageSize, alignment) : nullptr;
+
+    u32 mipSize = mTextureInner.surface.mipmapSize;
+    void* mipmaps = mipSize ? MemUtil::alloc(mipSize, alignment) : nullptr;
+
+    if (imageSize)
+    {
+        RIO_ASSERT(image);
+        RIO_ASSERT((uintptr_t)image % alignment == 0);
+
+        GX2Invalidate(GX2_INVALIDATE_MODE_TEXTURE, image, imageSize);
+    }
+
+    RIO_ASSERT(mTextureInner.surface.mipmapSize == mipSize);
+    if (mipSize)
+    {
+        RIO_ASSERT(mipmaps);
+        RIO_ASSERT((uintptr_t)mipmaps % alignment == 0);
+
+        GX2Invalidate(GX2_INVALIDATE_MODE_TEXTURE, mipmaps, mipSize);
+    }
+
+    mTextureInner.surface.image = image;
+    mTextureInner.surface.mipmaps = mipmaps;
+
+    createHandle_();
+}
+
 void Texture2D::load_(const u8* file, u32)
 {
     u32 alignment = GFDGetTextureAlignmentSize(0, file);
