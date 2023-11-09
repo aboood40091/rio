@@ -168,7 +168,7 @@ void Texture2DUtil::uploadTextureCurrent(
                         std::max(height >> (i + 1), 1u),
                         0,
                         mipLevelOffset[i + 1] - mipLevelOffset[i],
-                        (u8*)mipmaps + mipLevelOffset[i]
+                        mipmaps ? ((u8*)mipmaps + mipLevelOffset[i]) : nullptr
                     ));
 
                 RIO_GL_CALL(glCompressedTexImage2D(
@@ -179,7 +179,7 @@ void Texture2DUtil::uploadTextureCurrent(
                     std::max(height >> ((mipLevels - 2) + 1), 1u),
                     0,
                     mipmapSize - mipLevelOffset[(mipLevels - 2)],
-                    (u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]
+                    mipmaps ? ((u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]) : nullptr
                 ));
             }
         }
@@ -210,7 +210,7 @@ void Texture2DUtil::uploadTextureCurrent(
                         std::max(height >> (i + 1), 1u),
                         0,
                         mipLevelOffset[i + 1] - mipLevelOffset[i],
-                        (u8*)mipmaps + mipLevelOffset[i]
+                        mipmaps ? ((u8*)mipmaps + mipLevelOffset[i]) : nullptr
                     ));
 
                 RIO_GL_CALL(glCompressedTexImage2DARB(
@@ -221,7 +221,7 @@ void Texture2DUtil::uploadTextureCurrent(
                     std::max(height >> ((mipLevels - 2) + 1), 1u),
                     0,
                     mipmapSize - mipLevelOffset[(mipLevels - 2)],
-                    (u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]
+                    mipmaps ? ((u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]) : nullptr
                 ));
             }
         }
@@ -252,7 +252,7 @@ void Texture2DUtil::uploadTextureCurrent(
                         0,
                         nativeFormat.format,
                         nativeFormat.type,
-                        (u8*)mipmaps + mipLevelOffset[i]
+                        mipmaps ? ((u8*)mipmaps + mipLevelOffset[i]) : nullptr
                     ));
 
                 RIO_GL_CALL(glTexImage2D(
@@ -264,7 +264,7 @@ void Texture2DUtil::uploadTextureCurrent(
                     0,
                     nativeFormat.format,
                     nativeFormat.type,
-                    (u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]
+                    mipmaps ? ((u8*)mipmaps + mipLevelOffset[(mipLevels - 2)]) : nullptr
                 ));
             }
         }
