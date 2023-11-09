@@ -108,6 +108,12 @@ public:
     // GLSL type: uint
     static void setUniform(u32 v, u32 vs_location, u32 fs_location);
 
+    // GLSL type: bool
+    static void setUniform(bool v, u32 vs_location, u32 fs_location)
+    {
+        setUniform((s32)v, vs_location, fs_location);
+    }
+
     // GLSL type: vec2
     static void setUniform(const BaseVec2f& v, u32 vs_location, u32 fs_location);
     static void setUniform(f32 v0, f32 v1, u32 vs_location, u32 fs_location)
@@ -173,30 +179,39 @@ public:
 
     // GLSL type: mtx2
     static void setUniform(const BaseMtx22f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx22f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx32
     static void setUniform(const BaseMtx23f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx32f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx42
     static void setUniform(const BaseMtx24f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx42f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx23
     static void setUniform(const BaseMtx32f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx23f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx3
     static void setUniform(const BaseMtx33f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx33f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx43
     static void setUniform(const BaseMtx34f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx43f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx24
     static void setUniform(const BaseMtx42f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx24f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx34
     static void setUniform(const BaseMtx43f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx34f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: mtx4
     static void setUniform(const BaseMtx44f& v, u32 vs_location, u32 fs_location);
+    static void setUniformColumnMajor(const BaseMtx44f& v, u32 vs_location, u32 fs_location);
 
     // GLSL type: float[]
     //static void setUniformArray(u32 count, f32* v, u32 vs_location, u32 fs_location);

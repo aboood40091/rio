@@ -365,6 +365,25 @@ void Shader::setUniform(const BaseMtx22f& v, u32 vs_location, u32 fs_location)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx22f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 2;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1] },
+        { v.m[1][0], v.m[1][1] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
+}
+
 void Shader::setUniform(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
 {
     if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
@@ -383,6 +402,26 @@ void Shader::setUniform(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
 
     if (fs_location != 0xFFFFFFFF)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 3;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1] },
+        { v.m[1][0], v.m[1][1] },
+        { v.m[2][0], v.m[2][1] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
 }
 
 void Shader::setUniform(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
@@ -406,6 +445,27 @@ void Shader::setUniform(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 4;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1] },
+        { v.m[1][0], v.m[1][1] },
+        { v.m[2][0], v.m[2][1] },
+        { v.m[3][0], v.m[3][1] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
+}
+
 void Shader::setUniform(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
 {
     if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
@@ -423,6 +483,25 @@ void Shader::setUniform(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
 
     if (fs_location != 0xFFFFFFFF)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 2;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1], v.m[0][2] },
+        { v.m[1][0], v.m[1][1], v.m[1][2] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
 }
 
 void Shader::setUniform(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
@@ -443,6 +522,26 @@ void Shader::setUniform(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
 
     if (fs_location != 0xFFFFFFFF)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 3;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1], v.m[0][2] },
+        { v.m[1][0], v.m[1][1], v.m[1][2] },
+        { v.m[2][0], v.m[2][1], v.m[2][2] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
 }
 
 void Shader::setUniform(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
@@ -466,6 +565,27 @@ void Shader::setUniform(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 4;
+
+    f32 mat[NUM_COL][4] = {
+        { v.m[0][0], v.m[0][1], v.m[0][2] },
+        { v.m[1][0], v.m[1][1], v.m[1][2] },
+        { v.m[2][0], v.m[2][1], v.m[2][2] },
+        { v.m[3][0], v.m[3][1], v.m[3][2] }
+    };
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, mat);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat);
+}
+
 void Shader::setUniform(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
 {
     if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
@@ -483,6 +603,20 @@ void Shader::setUniform(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
 
     if (fs_location != 0xFFFFFFFF)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 2;
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, v.a);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, v.a);
 }
 
 void Shader::setUniform(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
@@ -505,6 +639,20 @@ void Shader::setUniform(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 3;
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, v.a);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, v.a);
+}
+
 void Shader::setUniform(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
 {
     if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
@@ -524,6 +672,20 @@ void Shader::setUniform(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
 
     if (fs_location != 0xFFFFFFFF)
         GX2SetPixelUniformReg(fs_location, NUM_COL*4, mat_trans);
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
+{
+    if (vs_location == 0xFFFFFFFF && fs_location == 0xFFFFFFFF)
+        return;
+
+    const u32 NUM_COL = 4;
+
+    if (vs_location != 0xFFFFFFFF)
+        GX2SetVertexUniformReg(vs_location, NUM_COL*4, v.a);
+
+    if (fs_location != 0xFFFFFFFF)
+        GX2SetPixelUniformReg(fs_location, NUM_COL*4, v.a);
 }
 
 // GLSL type: float[]

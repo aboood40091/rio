@@ -522,6 +522,28 @@ void Shader::setUniform(const BaseMtx22f& v, u32 vs_location, u32 fs_location)
     RIO_GL_CALL(glUniformMatrix2fv(location, 1, GL_TRUE, v.a));
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx22f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix2fv(location, 1, GL_FALSE, v.a));
+}
+
 void Shader::setUniform(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
 {
     u32 location;
@@ -542,6 +564,28 @@ void Shader::setUniform(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
     }
 
     RIO_GL_CALL(glUniformMatrix3x2fv(location, 1, GL_TRUE, v.a));
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix3x2fv(location, 1, GL_FALSE, v.a));
 }
 
 void Shader::setUniform(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
@@ -566,6 +610,28 @@ void Shader::setUniform(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
     RIO_GL_CALL(glUniformMatrix4x2fv(location, 1, GL_TRUE, v.a));
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix4x2fv(location, 1, GL_FALSE, v.a));
+}
+
 void Shader::setUniform(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
 {
     u32 location;
@@ -586,6 +652,28 @@ void Shader::setUniform(const BaseMtx32f& v, u32 vs_location, u32 fs_location)
     }
 
     RIO_GL_CALL(glUniformMatrix2x3fv(location, 1, GL_TRUE, v.a));
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx23f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix2x3fv(location, 1, GL_FALSE, v.a));
 }
 
 void Shader::setUniform(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
@@ -610,6 +698,28 @@ void Shader::setUniform(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
     RIO_GL_CALL(glUniformMatrix3fv(location, 1, GL_TRUE, v.a));
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx33f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix3fv(location, 1, GL_FALSE, v.a));
+}
+
 void Shader::setUniform(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
 {
     u32 location;
@@ -630,6 +740,28 @@ void Shader::setUniform(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
     }
 
     RIO_GL_CALL(glUniformMatrix4x3fv(location, 1, GL_TRUE, v.a));
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix4x3fv(location, 1, GL_FALSE, v.a));
 }
 
 void Shader::setUniform(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
@@ -654,6 +786,28 @@ void Shader::setUniform(const BaseMtx42f& v, u32 vs_location, u32 fs_location)
     RIO_GL_CALL(glUniformMatrix2x4fv(location, 1, GL_TRUE, v.a));
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx24f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix2x4fv(location, 1, GL_FALSE, v.a));
+}
+
 void Shader::setUniform(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
 {
     u32 location;
@@ -676,6 +830,28 @@ void Shader::setUniform(const BaseMtx43f& v, u32 vs_location, u32 fs_location)
     RIO_GL_CALL(glUniformMatrix3x4fv(location, 1, GL_TRUE, v.a));
 }
 
+void Shader::setUniformColumnMajor(const BaseMtx34f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix3x4fv(location, 1, GL_FALSE, v.a));
+}
+
 void Shader::setUniform(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
 {
     u32 location;
@@ -696,6 +872,28 @@ void Shader::setUniform(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
     }
 
     RIO_GL_CALL(glUniformMatrix4fv(location, 1, GL_TRUE, v.a));
+}
+
+void Shader::setUniformColumnMajor(const BaseMtx44f& v, u32 vs_location, u32 fs_location)
+{
+    u32 location;
+
+    if (vs_location != 0xFFFFFFFF)
+    {
+        if (fs_location != 0xFFFFFFFF)
+            RIO_ASSERT(vs_location == fs_location);
+
+        location = vs_location;
+    }
+    else
+    {
+        if (fs_location == 0xFFFFFFFF)
+            return;
+
+        location = fs_location;
+    }
+
+    RIO_GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, v.a));
 }
 
 // GLSL type: float[]
