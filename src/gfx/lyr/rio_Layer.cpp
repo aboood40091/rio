@@ -20,6 +20,24 @@ public:
 
 namespace rio { namespace lyr {
 
+const Camera& Layer::defaultCamera()
+{
+    static const IdentityCamera cDefaultCamera;
+    return cDefaultCamera;
+}
+
+const Projection& Layer::defaultProjection()
+{
+    Window* const window = Window::instance();
+    RIO_ASSERT(window);
+
+    const f32 window_width_2 = window->getWidth() * 0.5f;
+    const f32 window_height_2 = window->getHeight() * 0.5f;
+
+    static const OrthoProjection cDefaultProjection(-1000.0f, 1000.0f, window_height_2, -window_height_2, -window_width_2, window_width_2);
+    return cDefaultProjection;
+}
+
 Layer::Layer(const char* name, s32 priority)
     : mName(name)
     , mPriority(priority)
@@ -28,18 +46,8 @@ Layer::Layer(const char* name, s32 priority)
     , mClearStencil(0)
     , mFlags(0)
 {
-    static IdentityCamera sDefaultCamera;
-
-    Window* const window = Window::instance();
-    RIO_ASSERT(window);
-
-    const f32 window_width_2 = window->getWidth() * 0.5f;
-    const f32 window_height_2 = window->getHeight() * 0.5f;
-
-    static OrthoProjection sDefaultProjection(-1000.0f, 1000.0f, window_height_2, -window_height_2, -window_width_2, window_width_2);
-
-    mpCamera = &sDefaultCamera;
-    mpProjection = &sDefaultProjection;
+    mpCamera = &defaultCamera();
+    mpProjection = &defaultProjection();
 }
 
 Layer::~Layer()

@@ -65,6 +65,12 @@ public:
     }
 
 public:
+    // Get the default camera (identity)
+    static const Camera& defaultCamera();
+    // Get the default projection (ortho projection with Window size, center at (0,0), near as -1000 and far as 1000)
+    static const Projection& defaultProjection();
+
+public:
     Layer(const char* name, s32 priority);
     virtual ~Layer();
 
