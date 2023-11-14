@@ -13,7 +13,7 @@ u8 TextureFormatUtil::getPixelByteSize(TextureFormat format)
     case TEXTURE_FORMAT_R8_SINT:
   //case TEXTURE_FORMAT_R4_G4_UNORM:
         return 1;
-  //case DEPTH_TEXTURE_FORMAT_R16_UNORM:
+    case DEPTH_TEXTURE_FORMAT_R16_UNORM:
     case TEXTURE_FORMAT_R8_G8_UNORM:
     case TEXTURE_FORMAT_R8_G8_UINT:
     case TEXTURE_FORMAT_R8_G8_SNORM:
@@ -22,7 +22,7 @@ u8 TextureFormatUtil::getPixelByteSize(TextureFormat format)
     case TEXTURE_FORMAT_R5_G5_B5_A1_UNORM:
     case TEXTURE_FORMAT_R4_G4_B4_A4_UNORM:
         return 2;
-  //case DEPTH_TEXTURE_FORMAT_R32_FLOAT:
+    case DEPTH_TEXTURE_FORMAT_R32_FLOAT:
     case TEXTURE_FORMAT_R8_G8_B8_A8_UNORM:
     case TEXTURE_FORMAT_R8_G8_B8_A8_UINT:
     case TEXTURE_FORMAT_R8_G8_B8_A8_SNORM:
