@@ -44,11 +44,20 @@ void Window::resizeCallback_(s32 width, s32 height)
     mWidth = width;
     mHeight = height;
 
-    {
-        destroyFb_();
-        [[maybe_unused]] bool success = createFb_();
-        RIO_ASSERT(success);
-    }
+    // Set Color Buffer dimensions and format
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mColorBufferTextureHandle));
+    RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
+
+    // Set Depth-Stencil Buffer dimensions and format
+    RIO_GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, mNativeWindow.mDepthBufferHandle));
+    RIO_GL_CALL(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mWidth, mHeight));
+    RIO_GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, GL_NONE));
+
+    // Set Depth-Stencil Buffer dimensions and format
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mDepthBufferTextureHandle));
+    RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, mWidth, mHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr));
+    RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
 
     rio::lyr::Layer::onResize_(width, height);
 
@@ -223,7 +232,7 @@ bool Window::createFb_()
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mColorBufferTextureHandle));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
-    RIO_GL_CALL(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, mWidth, mHeight));
+    RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
@@ -260,7 +269,7 @@ bool Window::createFb_()
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mDepthBufferTextureHandle));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
-    RIO_GL_CALL(glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, mWidth, mHeight));
+    RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, mWidth, mHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     RIO_GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
