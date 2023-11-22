@@ -20,7 +20,13 @@ public:
     // Parameters:
     // - width: The desired width
     // - height: The desired height
-    static bool createSingleton(u32 width = 1280, u32 height = 720);
+    // - resizable: Should window be resizable
+    static bool createSingleton(
+        u32 width = 1280, u32 height = 720
+#if RIO_IS_WIN
+        , bool resizable = false
+#endif // RIO_IS_WIN
+    );
 
     // Destroy window singleton instance
     static void destroySingleton();
@@ -123,6 +129,14 @@ public:
 #endif
     }
 
+#if RIO_IS_WIN
+    typedef NativeWindow::OnResizeCallback OnResizeCallback;
+    void setOnResizeCallback(OnResizeCallback callback)
+    {
+        mNativeWindow.mpOnResizeCallback = callback;
+    }
+#endif // RIO_IS_WIN
+
 private:
     Window(u32 width, u32 height)
     {
@@ -137,7 +151,11 @@ private:
     Window& operator=(const Window&);
 
     // Initialize the window
-    bool initialize_();
+    bool initialize_(
+#if RIO_IS_WIN
+        bool resizable
+#endif // RIO_IS_WIN
+    );
     // Terminate the window
     void terminate_();
 
@@ -153,6 +171,12 @@ private:
     inline void setVpToFb_() const;
     // Restore current viewport and scissor
     inline void restoreVp_() const;
+
+    bool createFb_();
+    void destroyFb_();
+
+    void resizeCallback_(s32 width, s32 height);
+    static void resizeCallback_(GLFWwindow* glfw_window, s32 width, s32 height);
 
 #endif
 

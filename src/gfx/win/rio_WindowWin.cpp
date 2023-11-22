@@ -3,6 +3,7 @@
 #if RIO_IS_WIN
 
 #include <gfx/rio_Window.h>
+#include <gfx/lyr/rio_Layer.h>
 #include <gpu/rio_RenderState.h>
 #include <gpu/rio_Shader.h>
 #include <gpu/rio_VertexArray.h>
@@ -35,14 +36,49 @@ static const Vertex vertices[] = {
 
 namespace rio {
 
-bool Window::initialize_()
+void Window::resizeCallback_(s32 width, s32 height)
+{
+    width  = std::max<s32>(1, width );
+    height = std::max<s32>(1, height);
+
+    mWidth = width;
+    mHeight = height;
+
+    {
+        destroyFb_();
+        [[maybe_unused]] bool success = createFb_();
+        RIO_ASSERT(success);
+    }
+
+    rio::lyr::Layer::onResize_(width, height);
+
+    const auto& callback = mNativeWindow.mpOnResizeCallback;
+    if (callback == nullptr)
+        return;
+
+    (*callback)(width, height);
+}
+
+void Window::resizeCallback_(GLFWwindow* glfw_window, s32 width, s32 height)
+{
+    rio::Window* const window = rio::Window::instance();
+    if (window == nullptr || window->getNativeWindow().getGLFWwindow() != glfw_window)
+        return;
+
+    window->resizeCallback_(width, height);
+}
+
+bool Window::initialize_(bool resizable)
 {
     // Initialize GLFW
     if (!glfwInit())
         return false;
 
-    // Disable resizing
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    if (!resizable)
+    {
+        // Disable resizing
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    }
 
     // Request OpenGL v3.3 Core Profile
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -121,13 +157,59 @@ bool Window::initialize_()
     gVertexArray->addAttribute(gTexCoordStream, *gVertexBuffer);
     gVertexArray->process();
 
-    // Generate OpenGL Frame Buffer
-    RIO_GL_CALL(glGenFramebuffers(1, &mNativeWindow.mFramebufferHandle));
-    if (mNativeWindow.mFramebufferHandle == GL_NONE)
+    // Create Frame Buffer
+    if (!createFb_())
     {
         terminate_();
         return false;
     }
+
+    // Bind our Frame Buffer
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mNativeWindow.mFramebufferHandle));
+    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mNativeWindow.mColorBufferTextureHandle, 0));
+    RIO_GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mNativeWindow.mDepthBufferHandle));
+
+    // Enable scissor test
+    RIO_GL_CALL(glEnable(GL_SCISSOR_TEST));
+
+    if (resizable)
+        glfwSetFramebufferSizeCallback(mNativeWindow.mpGLFWwindow, &Window::resizeCallback_);
+
+    return true;
+}
+
+bool Window::isRunning() const
+{
+    return !glfwWindowShouldClose(mNativeWindow.mpGLFWwindow);
+}
+
+void Window::terminate_()
+{
+    destroyFb_();
+
+    if (gVertexBuffer)
+    {
+        delete gVertexBuffer;
+        gVertexBuffer = nullptr;
+    }
+
+    if (gVertexArray)
+    {
+        delete gVertexArray;
+        gVertexArray = nullptr;
+    }
+
+    gScreenShader.unload();
+
+    glfwTerminate();
+}
+
+bool Window::createFb_()
+{
+    // Generate OpenGL Frame Buffer
+    RIO_GL_CALL(glGenFramebuffers(1, &mNativeWindow.mFramebufferHandle));
+    if (mNativeWindow.mFramebufferHandle == GL_NONE)
+        return false;
 
     // Bind it
     RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mNativeWindow.mFramebufferHandle));
@@ -135,10 +217,7 @@ bool Window::initialize_()
     // Generate Color Buffer as OpenGL texture
     RIO_GL_CALL(glGenTextures(1, &mNativeWindow.mColorBufferTextureHandle));
     if (mNativeWindow.mColorBufferTextureHandle == GL_NONE)
-    {
-        terminate_();
         return false;
-    }
 
     // Set Color Buffer dimensions and format
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mColorBufferTextureHandle));
@@ -156,10 +235,7 @@ bool Window::initialize_()
     // Generate Depth-Stencil Buffer as OpenGL render target
     RIO_GL_CALL(glGenRenderbuffers(1, &mNativeWindow.mDepthBufferHandle));
     if (mNativeWindow.mDepthBufferHandle == GL_NONE)
-    {
-        terminate_();
         return false;
-    }
 
     // Set Depth-Stencil Buffer dimensions and format
     RIO_GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, mNativeWindow.mDepthBufferHandle));
@@ -173,18 +249,12 @@ bool Window::initialize_()
     GLenum framebuffer_status;
     RIO_GL_CALL(framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
     if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        terminate_();
         return false;
-    }
 
     // Generate Depth-Stencil Buffer copy texture
     RIO_GL_CALL(glGenTextures(1, &mNativeWindow.mDepthBufferTextureHandle));
     if (mNativeWindow.mDepthBufferTextureHandle == GL_NONE)
-    {
-        terminate_();
         return false;
-    }
 
     // Set Depth-Stencil Buffer dimensions and format
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, mNativeWindow.mDepthBufferTextureHandle));
@@ -199,10 +269,7 @@ bool Window::initialize_()
     // Create the source framebuffer with a depth-stencil renderbuffer
     RIO_GL_CALL(glGenFramebuffers(1, &mNativeWindow.mDepthBufferCopyFramebufferSrc));
     if (mNativeWindow.mDepthBufferCopyFramebufferSrc == GL_NONE)
-    {
-        terminate_();
         return false;
-    }
 
     // Bind it
     RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mNativeWindow.mDepthBufferCopyFramebufferSrc));
@@ -213,18 +280,12 @@ bool Window::initialize_()
     // Check Frame Buffer completeness
     RIO_GL_CALL(framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
     if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        terminate_();
         return false;
-    }
 
     // Create the destination framebuffer with a depth-stencil texture
     RIO_GL_CALL(glGenFramebuffers(1, &mNativeWindow.mDepthBufferCopyFramebufferDst));
     if (mNativeWindow.mDepthBufferCopyFramebufferDst == GL_NONE)
-    {
-        terminate_();
         return false;
-    }
 
     // Bind it
     RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mNativeWindow.mDepthBufferCopyFramebufferDst));
@@ -235,28 +296,12 @@ bool Window::initialize_()
     // Check Frame Buffer completeness
     RIO_GL_CALL(framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
     if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        terminate_();
         return false;
-    }
-
-    // Bind our Frame Buffer
-    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mNativeWindow.mFramebufferHandle));
-    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mNativeWindow.mColorBufferTextureHandle, 0));
-    RIO_GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mNativeWindow.mDepthBufferHandle));
-
-    // Enable scissor test
-    RIO_GL_CALL(glEnable(GL_SCISSOR_TEST));
 
     return true;
 }
 
-bool Window::isRunning() const
-{
-    return !glfwWindowShouldClose(mNativeWindow.mpGLFWwindow);
-}
-
-void Window::terminate_()
+void Window::destroyFb_()
 {
     if (mNativeWindow.mDepthBufferCopyFramebufferDst != GL_NONE)
     {
@@ -293,22 +338,6 @@ void Window::terminate_()
         RIO_GL_CALL(glDeleteFramebuffers(1, &mNativeWindow.mFramebufferHandle));
         mNativeWindow.mFramebufferHandle = GL_NONE;
     }
-
-    if (gVertexBuffer)
-    {
-        delete gVertexBuffer;
-        gVertexBuffer = nullptr;
-    }
-
-    if (gVertexArray)
-    {
-        delete gVertexArray;
-        gVertexArray = nullptr;
-    }
-
-    gScreenShader.unload();
-
-    glfwTerminate();
 }
 
 void Window::makeContextCurrent() const

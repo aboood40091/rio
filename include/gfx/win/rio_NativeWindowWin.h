@@ -10,8 +10,12 @@ class Window;
 class NativeWindow
 {
 public:
+    typedef void (*OnResizeCallback)(s32 width, s32 height);
+
+public:
     NativeWindow()
         : mpGLFWwindow(nullptr)
+        , mpOnResizeCallback(nullptr)
         , mFramebufferHandle(GL_NONE)
         , mColorBufferTextureHandle(GL_NONE)
         , mColorBufferTextureFormat(TEXTURE_FORMAT_INVALID)
@@ -38,6 +42,7 @@ public:
 
 private:
     GLFWwindow* mpGLFWwindow;
+    OnResizeCallback mpOnResizeCallback;
 
     GLuint mFramebufferHandle;
 

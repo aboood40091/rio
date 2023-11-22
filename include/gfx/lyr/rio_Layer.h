@@ -12,6 +12,7 @@ namespace rio {
 
 class Camera;
 class Projection;
+class Window;
 
 }
 
@@ -69,6 +70,14 @@ public:
     static const Camera& defaultCamera();
     // Get the default projection (ortho projection with Window size, center at (0,0), near as -1000 and far as 1000)
     static const Projection& defaultProjection();
+
+private:
+    static Projection& defaultProjection_();
+
+#if RIO_IS_WIN
+    static void onResize_(s32 width, s32 height);
+#endif // RIO_IS_WIN
+    friend class ::rio::Window;
 
 public:
     Layer(const char* name, s32 priority);

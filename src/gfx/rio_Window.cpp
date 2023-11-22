@@ -6,7 +6,12 @@ namespace rio {
 
 Window* Window::sInstance = nullptr;
 
-bool Window::createSingleton(u32 width, u32 height)
+bool Window::createSingleton(
+    u32 width, u32 height
+#if RIO_IS_WIN
+    , bool resizable
+#endif // RIO_IS_WIN
+)
 {
     if (sInstance)
         return false;
@@ -15,7 +20,11 @@ bool Window::createSingleton(u32 width, u32 height)
         return false;
 
     Window* window = new Window(width, height);
-    if (!window->initialize_())
+    if (!window->initialize_(
+#if RIO_IS_WIN
+        resizable
+#endif // RIO_IS_WIN
+    ))
     {
         delete window;
         return false;

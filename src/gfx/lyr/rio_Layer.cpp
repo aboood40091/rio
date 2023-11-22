@@ -28,15 +28,32 @@ const Camera& Layer::defaultCamera()
 
 const Projection& Layer::defaultProjection()
 {
+    return defaultProjection_();
+}
+
+Projection& Layer::defaultProjection_()
+{
     Window* const window = Window::instance();
     RIO_ASSERT(window);
 
     const f32 window_width_2 = window->getWidth() * 0.5f;
     const f32 window_height_2 = window->getHeight() * 0.5f;
 
-    static const OrthoProjection cDefaultProjection(-1000.0f, 1000.0f, window_height_2, -window_height_2, -window_width_2, window_width_2);
-    return cDefaultProjection;
+    static OrthoProjection sDefaultProjection(-1000.0f, 1000.0f, window_height_2, -window_height_2, -window_width_2, window_width_2);
+    return sDefaultProjection;
 }
+
+#if RIO_IS_WIN
+
+void Layer::onResize_(s32 width, s32 height)
+{
+    const f32 window_width_2 = width * 0.5f;
+    const f32 window_height_2 = height * 0.5f;
+
+    static_cast<OrthoProjection&>(defaultProjection_()).setTBLR(window_height_2, -window_height_2, -window_width_2, window_width_2);
+}
+
+#endif // RIO_IS_WIN
 
 Layer::Layer(const char* name, s32 priority)
     : mName(name)
