@@ -1,6 +1,7 @@
 #include <controller/rio_ControlDevice.h>
 #include <controller/rio_ControllerMgr.h>
 #include <filedevice/rio_FileDeviceMgr.h>
+#include <task/rio_TaskMgr.h>
 
 #if RIO_IS_CAFE
 
@@ -24,6 +25,24 @@
 namespace rio {
 
 ControllerMgr* ControllerMgr::sInstance = nullptr;
+
+bool ControllerMgr::createSingleton()
+{
+    if (sInstance)
+        return false;
+
+    sInstance = TaskMgr::instance()->createTask<ControllerMgr>();
+    return sInstance;
+}
+
+void ControllerMgr::destroySingleton()
+{
+    if (!sInstance)
+        return;
+
+    TaskMgr::instance()->destroyTask(sInstance);
+    sInstance = nullptr;
+}
 
 ControllerMgr::ControllerMgr()
     : ITask("rio::ControllerMgr")

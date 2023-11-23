@@ -10,6 +10,7 @@ namespace rio {
 
 class ControlDevice;
 class Controller;
+class TaskMgr;
 
 class ControllerMgr : public ITask
 {
@@ -35,25 +36,20 @@ public:
     static constexpr u32 cNumGamepadMaxCommon = 4;
 
 public:
+    static bool createSingleton();
+    static void destroySingleton();
     static ControllerMgr* instance() { return sInstance; }
 
 private:
     static ControllerMgr* sInstance;
-
-    static void setInstance_(ControllerMgr* instance)
-    {
-        RIO_ASSERT(sInstance == nullptr);
-        sInstance = instance;
-    }
-
-    friend bool Initialize();
-    friend class TaskMgr;
 
     ControllerMgr();
     virtual ~ControllerMgr();
 
     ControllerMgr(const ControllerMgr&);
     ControllerMgr& operator=(const ControllerMgr&);
+
+    friend class TaskMgr;
 
 private:
     virtual void calc_();

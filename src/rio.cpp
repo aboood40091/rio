@@ -47,9 +47,7 @@ bool Initialize()
     }
 
     // Create the controller manager
-    ControllerMgr::setInstance_(TaskMgr::instance()->createTask<ControllerMgr>());
-
-    if (ControllerMgr::instance() == nullptr)
+    if (!ControllerMgr::createSingleton())
     {
         TaskMgr::destroySingleton();
         Window::destroySingleton();
@@ -60,7 +58,7 @@ bool Initialize()
     // Create the primitive renderer
     if (!PrimitiveRenderer::createSingleton())
     {
-        TaskMgr::instance()->destroyTask(ControllerMgr::instance());
+        ControllerMgr::destroySingleton();
         TaskMgr::destroySingleton();
         Window::destroySingleton();
         FileDeviceMgr::destroySingleton();
@@ -71,7 +69,7 @@ bool Initialize()
     if (!lyr::Renderer::createSingleton())
     {
         PrimitiveRenderer::destroySingleton();
-        TaskMgr::instance()->destroyTask(ControllerMgr::instance());
+        ControllerMgr::destroySingleton();
         TaskMgr::destroySingleton();
         Window::destroySingleton();
         FileDeviceMgr::destroySingleton();
@@ -83,7 +81,7 @@ bool Initialize()
     {
         lyr::Renderer::destroySingleton();
         PrimitiveRenderer::destroySingleton();
-        TaskMgr::instance()->destroyTask(ControllerMgr::instance());
+        ControllerMgr::destroySingleton();
         TaskMgr::destroySingleton();
         Window::destroySingleton();
         FileDeviceMgr::destroySingleton();
@@ -120,7 +118,10 @@ void Exit()
 {
     // Destroy the root task upon quitting
     if (sRootTask)
+    {
         TaskMgr::instance()->destroyTask(sRootTask);
+        sRootTask = nullptr;
+    }
 
     // Destroy the audio manager upon quitting
     AudioMgr::destroySingleton();
@@ -135,7 +136,7 @@ void Exit()
     PrimitiveRenderer::destroySingleton();
 
     // Destroy the controller manager upon quitting
-    TaskMgr::instance()->destroyTask(ControllerMgr::instance());
+    ControllerMgr::destroySingleton();
 
     // Destroy the task manager upon quitting
     TaskMgr::destroySingleton();
