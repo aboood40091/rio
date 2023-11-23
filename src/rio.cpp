@@ -18,8 +18,9 @@
 namespace rio {
 
 ITask* sRootTask = nullptr;
+const InitializeArg cDefaultInitializeArg;
 
-bool Initialize()
+bool Initialize(const InitializeArg& arg)
 {
 #if RIO_IS_CAFE && defined(RIO_DEBUG)
     WHBInitCrashHandler();
@@ -32,7 +33,12 @@ bool Initialize()
         return false;
 
     // Create the window
-    if (!Window::createSingleton())
+    if (!Window::createSingleton(
+        arg.window.width, arg.window.height
+#if RIO_IS_WIN
+        , arg.window.resizable
+#endif // RIO_IS_WIN
+    ))
     {
         FileDeviceMgr::destroySingleton();
         return false;
@@ -56,7 +62,7 @@ bool Initialize()
     }
 
     // Create the primitive renderer
-    if (!PrimitiveRenderer::createSingleton())
+    if (!PrimitiveRenderer::createSingleton(arg.primitive_renderer.shader_path))
     {
         ControllerMgr::destroySingleton();
         TaskMgr::destroySingleton();

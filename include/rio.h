@@ -8,17 +8,35 @@ namespace rio {
 // The created root task
 extern ITask* sRootTask;
 
+struct InitializeArg
+{
+    struct
+    {
+        u32 width = 1280;
+        u32 height = 720;
+#if RIO_IS_WIN
+        bool resizable = false;
+#endif // RIO_IS_WIN
+    } window;
+    struct
+    {
+        const char* shader_path = "primitive_renderer";
+    } primitive_renderer;
+};
+
+extern const InitializeArg cDefaultInitializeArg;
+
 // Initialize RIO and its global managers
-bool Initialize();
+bool Initialize(const InitializeArg& arg = cDefaultInitializeArg);
 
 // Initialize RIO and its global managers, followed by the root task of type "T"
 template <typename T>
-bool Initialize()
+bool Initialize(const InitializeArg& arg = cDefaultInitializeArg)
 {
     // Prevent double initialization
     RIO_ASSERT(sRootTask == nullptr);
 
-    if (!Initialize())
+    if (!Initialize(arg))
         return false;
 
     // Create the root task
