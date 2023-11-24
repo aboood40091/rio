@@ -361,7 +361,8 @@ void Window::makeContextCurrent() const
 
 void Window::setSwapInterval(u32 swap_interval)
 {
-    glfwSwapInterval(swap_interval);
+    glfwSwapInterval(0);
+    mNativeWindow.setSwapInterval_(swap_interval);
 }
 
 void Window::setVpToFb_() const
@@ -404,6 +405,7 @@ void Window::swapBuffers() const
 
     // Swap front and back buffers
     glfwSwapBuffers(mNativeWindow.mpGLFWwindow);
+    mNativeWindow.onSwapBuffers_();
     // Poll for and process events
     glfwPollEvents();
 
