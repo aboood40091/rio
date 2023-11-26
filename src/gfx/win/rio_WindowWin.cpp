@@ -83,7 +83,12 @@ bool Window::initialize_(bool resizable)
     if (!glfwInit())
         return false;
 
-    if (!resizable)
+    if (resizable)
+    {
+        // Start maximized if resizable
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+    }
+    else
     {
         // Disable resizing
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
