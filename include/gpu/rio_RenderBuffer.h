@@ -55,17 +55,49 @@ public:
     {
         mSize.x = w;
         mSize.y = h;
+        resetScissor();
     }
 
     void setSize(const rio::BaseVec2i& size)
     {
         mSize = size;
+        resetScissor();
+    }
+
+    void setScissor(s32 x, s32 y, u32 w, u32 h)
+    {
+        mScissorPos.x = x;
+        mScissorPos.y = y;
+        mScissorSize.x = w;
+        mScissorSize.y = h;
+    }
+
+    void setScissor(const rio::BaseVec2i& pos, const rio::BaseVec2i& size)
+    {
+        mScissorPos = pos;
+        mScissorSize = size;
+    }
+
+    void resetScissor()
+    {
+        mScissorPos.x = 0;
+        mScissorPos.y = 0;
+        mScissorSize = mSize;
     }
 
     void bind() const;
+    void bindColorClear(f32 r, f32 g, f32 b, f32 a = 1.0f);
+    void bindDepthClear(f32 depth = 1.0f);
+    void bindStencilClear(u8 stencil = 0);
+    void bindDepthStencilClear(f32 depth = 1.0f, u8 stencil = 0);
+
+private:
+    void bind_() const;
 
 private:
     rio::BaseVec2i      mSize;
+    rio::BaseVec2i      mScissorPos;
+    rio::BaseVec2i      mScissorSize;
     RenderTargetColor*  mpColorTarget;
     RenderTargetDepth*  mpDepthTarget;
 #if RIO_IS_WIN

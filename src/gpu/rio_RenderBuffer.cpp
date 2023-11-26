@@ -6,6 +6,8 @@ namespace rio {
 
 RenderBuffer::RenderBuffer()
     : mSize { 1, 1 }
+    , mScissorPos { 0, 0 }
+    , mScissorSize { mSize }
     , mpColorTarget(nullptr)
     , mpDepthTarget(nullptr)
 {
@@ -16,6 +18,8 @@ RenderBuffer::RenderBuffer()
 
 RenderBuffer::RenderBuffer(u32 w, u32 h)
     : mSize { s32(w), s32(h) }
+    , mScissorPos { 0, 0 }
+    , mScissorSize { mSize }
     , mpColorTarget(nullptr)
     , mpDepthTarget(nullptr)
 {
@@ -26,6 +30,8 @@ RenderBuffer::RenderBuffer(u32 w, u32 h)
 
 RenderBuffer::RenderBuffer(const rio::BaseVec2i& size)
     : mSize(size)
+    , mScissorPos { 0, 0 }
+    , mScissorSize { mSize }
     , mpColorTarget(nullptr)
     , mpDepthTarget(nullptr)
 {
@@ -56,8 +62,13 @@ RenderBuffer::~RenderBuffer()
 void RenderBuffer::bind() const
 {
     rio::Graphics::setViewport(0, 0, mSize.x, mSize.y);
-    rio::Graphics::setScissor(0, 0, mSize.x, mSize.y);
+    rio::Graphics::setScissor(mScissorPos.x, mScissorPos.y, mScissorSize.x, mScissorSize.y);
 
+    bind_();
+}
+
+void RenderBuffer::bind_() const
+{
 #if RIO_IS_WIN
     RIO_ASSERT(mHandle != GL_NONE);
     RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mHandle));
