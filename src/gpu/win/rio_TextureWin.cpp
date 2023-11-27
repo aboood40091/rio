@@ -136,6 +136,12 @@ Texture2D::~Texture2D()
     }
 }
 
+void Texture2D::setCompMap(u32 compMap)
+{
+    mTextureInner.compMap = compMap;
+    rio::Texture2DUtil::setSwizzle(mHandle, compMap);
+}
+
 }
 
 #endif // RIO_IS_WIN

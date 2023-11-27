@@ -203,6 +203,9 @@ public:
     u32 getNumMips() const { return mTextureInner.surface.mipLevels; }
     TextureFormat getTextureFormat() const { return (TextureFormat)mTextureInner.surface.format; }
 
+    u32 getCompMap() const { return mTextureInner.compMap; }
+    void setCompMap(u32 compMap);
+
     const NativeTexture2D& getNativeTexture() const { return mTextureInner; }
     NativeTexture2DHandle getNativeTextureHandle() const { return mHandle; }
 

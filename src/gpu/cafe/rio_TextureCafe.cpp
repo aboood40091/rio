@@ -138,6 +138,12 @@ Texture2D::~Texture2D()
     }
 }
 
+void Texture2D::setCompMap(u32 compMap)
+{
+    mTextureInner.compMap = compMap;
+    GX2InitTextureRegs(&mTextureInner);
+}
+
 }
 
 #endif // RIO_IS_CAFE
