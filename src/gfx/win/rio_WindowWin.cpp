@@ -480,6 +480,7 @@ void Window::clearStencil()
     setVpToFb_();
 
     // Clear
+    RIO_GL_CALL(glStencilMask(0xFF));
     RIO_GL_CALL(glClearStencil(0));
     RIO_GL_CALL(glClear(GL_STENCIL_BUFFER_BIT));
 
@@ -496,6 +497,7 @@ void Window::clearStencil(u8 stencil)
     setVpToFb_();
 
     // Clear
+    RIO_GL_CALL(glStencilMask(0xFF));
     RIO_GL_CALL(glClearStencil(stencil));
     RIO_GL_CALL(glClear(GL_STENCIL_BUFFER_BIT));
 
@@ -514,6 +516,7 @@ void Window::clearDepthStencil()
     // Clear
     RIO_GL_CALL(glDepthMask(GL_TRUE));
     RIO_GL_CALL(glClearDepth(1.0f));
+    RIO_GL_CALL(glStencilMask(0xFF));
     RIO_GL_CALL(glClearStencil(0));
     RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
@@ -532,6 +535,7 @@ void Window::clearDepthStencil(f32 depth, u8 stencil)
     // Clear
     RIO_GL_CALL(glDepthMask(GL_TRUE));
     RIO_GL_CALL(glClearDepth(depth));
+    RIO_GL_CALL(glStencilMask(0xFF));
     RIO_GL_CALL(glClearStencil(stencil));
     RIO_GL_CALL(glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
