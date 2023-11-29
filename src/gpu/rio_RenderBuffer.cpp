@@ -1,6 +1,11 @@
 #include <gfx/rio_Graphics.h>
+#include <gfx/rio_Window.h>
 #include <gpu/rio_RenderBuffer.h>
 #include <gpu/rio_RenderTarget.h>
+
+#if RIO_IS_CAFE
+#include <gx2/clear.h>
+#endif // RIO_IS_CAFE
 
 namespace rio {
 
@@ -57,6 +62,12 @@ RenderBuffer::~RenderBuffer()
     }
 }
 
+void RenderBuffer::bindFBO_() const
+{
+    RIO_ASSERT(mHandle != GL_NONE);
+    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mHandle));
+}
+
 #endif // RIO_IS_WIN
 
 void RenderBuffer::bind() const
@@ -64,21 +75,130 @@ void RenderBuffer::bind() const
     rio::Graphics::setViewport(0, 0, mSize.x, mSize.y);
     rio::Graphics::setScissor(mScissorPos.x, mScissorPos.y, mScissorSize.x, mScissorSize.y);
 
-    bind_();
+#if RIO_IS_WIN
+    bindFBO_();
+#endif // RIO_IS_WIN
+    bindRenderTargetColor_();
+    bindRenderTargetDepth_();
 }
 
-void RenderBuffer::bind_() const
+void RenderBuffer::bindRenderTargetColor_() const
 {
-#if RIO_IS_WIN
-    RIO_ASSERT(mHandle != GL_NONE);
-    RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mHandle));
-#endif // RIO_IS_WIN
+    for (u32 i = 0; i < Graphics::RENDER_TARGET_MAX_NUM; i++)
+        if (mpColorTarget[i])
+            mpColorTarget[i]->bind(i);
+}
 
-    if (mpColorTarget)
-        mpColorTarget->bind();
-
+void RenderBuffer::bindRenderTargetDepth_() const
+{
     if (mpDepthTarget)
         mpDepthTarget->bind();
+}
+
+void RenderBuffer::clear(u32 color_target_index, u32 clear_flag, const rio::Color4f& color, f32 depth, u8 stencil)
+{
+    const RenderTargetColor* p_color_target = getRenderTargetColor(color_target_index);
+    const RenderTargetDepth* p_depth_target = color_target_index == 0 ? getRenderTargetDepth() : nullptr;
+
+    clear_flag &= CLEAR_FLAG_COLOR_DEPTH_STENCIL;
+    if (clear_flag & CLEAR_FLAG_COLOR && p_color_target == nullptr)
+        clear_flag &= ~CLEAR_FLAG_COLOR;
+    if (clear_flag & CLEAR_FLAG_DEPTH_STENCIL && p_depth_target == nullptr)
+        clear_flag &= ~CLEAR_FLAG_DEPTH_STENCIL;
+
+    if (clear_flag)
+    {
+#if RIO_IS_CAFE
+        u32 depth_stencil_clear_flag = 0;
+        if (clear_flag & CLEAR_FLAG_DEPTH)
+        {
+            depth_stencil_clear_flag |= GX2_CLEAR_FLAGS_DEPTH;
+            p_depth_target->getNativeDepthBuffer().depthClear = depth;
+        }
+        if (clear_flag & CLEAR_FLAG_STENCIL)
+        {
+            depth_stencil_clear_flag |= GX2_CLEAR_FLAGS_STENCIL;
+            p_depth_target->getNativeDepthBuffer().stencilClear = stencil;
+        }
+
+        if (clear_flag & CLEAR_FLAG_COLOR)
+        {
+            if (depth_stencil_clear_flag)
+            {
+                GX2ClearBuffersEx(
+                    &p_color_target->getNativeColorBuffer(),
+                    &p_depth_target->getNativeDepthBuffer(),
+                    color.r, color.g, color.b, color.a,
+                    depth, stencil, GX2ClearFlags(depth_stencil_clear_flag)
+                );
+            }
+            else
+            {
+                GX2ClearColor(
+                    &p_color_target->getNativeColorBuffer(),
+                    color.r, color.g, color.b, color.a
+                );
+            }
+        }
+        else
+        {
+            RIO_ASSERT(depth_stencil_clear_flag);
+            GX2ClearDepthStencilEx(
+                &p_depth_target->getNativeDepthBuffer(),
+                depth, stencil, GX2ClearFlags(depth_stencil_clear_flag)
+            );
+        }
+#elif RIO_IS_WIN
+        rio::Graphics::setViewport(0, 0, mSize.x, mSize.y);
+        rio::Graphics::setScissor(0, 0, mSize.x, mSize.y);
+
+        bindFBO_();
+
+        if (clear_flag & CLEAR_FLAG_COLOR)
+        {
+            p_color_target->bind(color_target_index);
+            RIO_GL_CALL(glDrawBuffer(GL_COLOR_ATTACHMENT0 + color_target_index));
+        }
+
+        if (clear_flag & CLEAR_FLAG_DEPTH_STENCIL)
+            p_depth_target->bind();
+
+        GLbitfield clear_mask = 0;
+
+        if (clear_flag & CLEAR_FLAG_COLOR)
+        {
+            RIO_GL_CALL(glClearColor(color.r, color.g, color.b, color.a));
+            clear_mask |= GL_COLOR_BUFFER_BIT;
+        }
+
+        if (clear_flag & CLEAR_FLAG_DEPTH)
+        {
+            RIO_GL_CALL(glDepthMask(GL_TRUE));
+            RIO_GL_CALL(glClearDepth(depth));
+            clear_mask |= GL_DEPTH_BUFFER_BIT;
+        }
+
+        if (clear_flag & CLEAR_FLAG_STENCIL)
+        {
+            RIO_GL_CALL(glStencilMask(0xFF));
+            RIO_GL_CALL(glClearStencil(stencil));
+            clear_mask |= GL_STENCIL_BUFFER_BIT;
+        }
+
+        RIO_ASSERT(clear_mask != 0);
+        RIO_GL_CALL(glClear(clear_mask));
+
+        RIO_GL_CALL(glDrawBuffer(GL_COLOR_ATTACHMENT0));
+#endif
+    }
+
+    rio::Window::instance()->makeContextCurrent();
+
+    u32 width = rio::Window::instance()->getWidth();
+    u32 height = rio::Window::instance()->getHeight();
+
+    rio::Graphics::setViewport(0, 0, width, height);
+    rio::Graphics::setScissor(0, 0, width, height);
 }
 
 }

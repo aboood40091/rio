@@ -40,7 +40,7 @@ void RenderTargetColor::invalidateGPUCache() const
 #endif // RIO_IS_CAFE
 }
 
-void RenderTargetColor::bind() const
+void RenderTargetColor::bind(u32 index) const
 {
     if (mUpdateRegs)
     {
@@ -49,10 +49,10 @@ void RenderTargetColor::bind() const
     }
 
 #if RIO_IS_CAFE
-    GX2SetColorBuffer(&mInnerBuffer, GX2_RENDER_TARGET_0);
+    GX2SetColorBuffer(&mInnerBuffer, static_cast<GX2RenderTarget>(GX2_RENDER_TARGET_0 + index));
 #elif RIO_IS_WIN
     RIO_ASSERT(mHandle != GL_NONE);
-    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mHandle, mMipLevel));
+    RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, mHandle, mMipLevel));
 #endif
 }
 

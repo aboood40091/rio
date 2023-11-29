@@ -58,7 +58,12 @@ public:
 
     void linkNativeTexture2D(NativeTexture2DHandle handle) override;
     void invalidateGPUCache() const override;
-    void bind() const override;
+    void bind() const override
+    {
+        bind(0);
+    }
+
+    void bind(u32 index) const;
 
 #if RIO_IS_CAFE
     GX2ColorBuffer& getNativeColorBuffer() const

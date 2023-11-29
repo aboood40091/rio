@@ -1,7 +1,8 @@
 #ifndef RIO_GPU_RENDER_BUFFER_H
 #define RIO_GPU_RENDER_BUFFER_H
 
-#include <math/rio_Vector.h>
+#include <gfx/rio_Color.h>
+#include <gfx/rio_Graphics.h>
 
 namespace rio {
 
@@ -23,9 +24,10 @@ private:
     RenderBuffer& operator=(const RenderBuffer&);
 
 public:
-    RenderTargetColor* getRenderTargetColor() const
+    RenderTargetColor* getRenderTargetColor(u32 index = 0) const
     {
-        return mpColorTarget;
+        RIO_ASSERT(index < Graphics::RENDER_TARGET_MAX_NUM);
+        return mpColorTarget[index];
     }
 
     RenderTargetDepth* getRenderTargetDepth() const
@@ -33,9 +35,10 @@ public:
         return mpDepthTarget;
     }
 
-    void setRenderTargetColor(RenderTargetColor* target)
+    void setRenderTargetColor(RenderTargetColor* target, u32 index = 0)
     {
-        mpColorTarget = target;
+        RIO_ASSERT(index < Graphics::RENDER_TARGET_MAX_NUM);
+        mpColorTarget[index] = target;
     }
 
     void setRenderTargetDepth(RenderTargetDepth* target)
@@ -43,7 +46,13 @@ public:
         mpDepthTarget = target;
     }
 
-    void setRenderTargetColorNull() { setRenderTargetColor(nullptr); }
+    void setRenderTargetColorNullAll()
+    {
+        for (u32 i = 0; i < Graphics::RENDER_TARGET_MAX_NUM; i++)
+            setRenderTargetColorNull(i);
+    }
+
+    void setRenderTargetColorNull(u32 index = 0) { setRenderTargetColor(nullptr, index); }
     void setRenderTargetDepthNull() { setRenderTargetDepth(nullptr); }
 
     const rio::BaseVec2i& getSize() const
@@ -86,19 +95,33 @@ public:
     }
 
     void bind() const;
-    void bindColorClear(f32 r, f32 g, f32 b, f32 a = 1.0f);
-    void bindDepthClear(f32 depth = 1.0f);
-    void bindStencilClear(u8 stencil = 0);
-    void bindDepthStencilClear(f32 depth = 1.0f, u8 stencil = 0);
+
+    enum ClearFlag
+    {
+        CLEAR_FLAG_COLOR    = 1 << 0,
+        CLEAR_FLAG_DEPTH    = 1 << 1,
+        CLEAR_FLAG_STENCIL  = 1 << 2,
+
+        CLEAR_FLAG_COLOR_DEPTH          = CLEAR_FLAG_COLOR | CLEAR_FLAG_DEPTH                     ,
+        CLEAR_FLAG_COLOR_DEPTH_STENCIL  = CLEAR_FLAG_COLOR | CLEAR_FLAG_DEPTH | CLEAR_FLAG_STENCIL,
+        CLEAR_FLAG_DEPTH_STENCIL        =                    CLEAR_FLAG_DEPTH | CLEAR_FLAG_STENCIL
+    };
+
+    void clear(u32 color_target_index, u32 clear_flag, const rio::Color4f& color = rio::Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0);
+    void clear(u32 clear_flag, const rio::Color4f& color = rio::Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0) { clear(0, clear_flag, color, depth, stencil); }
 
 private:
-    void bind_() const;
+#if RIO_IS_WIN
+    void bindFBO_() const;
+#endif // RIO_IS_WIN
+    void bindRenderTargetColor_() const;
+    void bindRenderTargetDepth_() const;
 
 private:
     rio::BaseVec2i      mSize;
     rio::BaseVec2i      mScissorPos;
     rio::BaseVec2i      mScissorSize;
-    RenderTargetColor*  mpColorTarget;
+    RenderTargetColor*  mpColorTarget[Graphics::RENDER_TARGET_MAX_NUM];
     RenderTargetDepth*  mpDepthTarget;
 #if RIO_IS_WIN
     u32                 mHandle;
