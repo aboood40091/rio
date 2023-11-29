@@ -97,6 +97,11 @@ public:
         ENUM_VAL(POLYGON_MODE_FILL,     GL_FILL,    GX2_POLYGON_MODE_TRIANGLE)
     };
 
+    enum
+    {
+        RENDER_TARGET_MAX_NUM   = 8
+    };
+
 private:
     static s32  sViewportX,     sViewportY;
     static u32  sViewportWidth, sViewportHeight;
