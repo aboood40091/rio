@@ -47,6 +47,7 @@ enum TextureFormat : u32
 
     /*              32 bits              */
 
+    TEXTURE_FORMAT_R32_UINT             = 0x10D,
     DEPTH_TEXTURE_FORMAT_R32_FLOAT      = 0x80E,
 
     TEXTURE_FORMAT_R8_G8_B8_A8_UNORM    = 0x01A,
@@ -189,7 +190,7 @@ public:
         createHandle_();
     }
 
-    Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMips);
+    Texture2D(TextureFormat format, u32 width, u32 height, u32 numMips);
 
     ~Texture2D();
 

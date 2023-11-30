@@ -1,4 +1,4 @@
-* Requires OpenGL v3.3 (minimum) Core Profile and GLFW3.
+* Requires OpenGL v4.0 (minimum) Core Profile and GLFW3.
 
 * Requires OpenGL v4.2 (or higher) if uniform blocks are used.
 

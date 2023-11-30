@@ -21,7 +21,7 @@ Texture2D::Texture2D(const char* base_fname)
     MemUtil::free(file);
 }
 
-Texture2D::Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMips)
+Texture2D::Texture2D(TextureFormat format, u32 width, u32 height, u32 numMips)
     : mSelfAllocated(true)
 {
     mTextureInner.surface.dim = GX2_SURFACE_DIM_TEXTURE_2D;
@@ -40,7 +40,7 @@ Texture2D::Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMi
     mTextureInner.viewNumMips = numMips;
     mTextureInner.viewFirstSlice = 0;
     mTextureInner.viewNumSlices = 1;
-    mTextureInner.compMap = rio::TextureFormatUtil::getDefaultCompMap(format);
+    mTextureInner.compMap = TextureFormatUtil::getDefaultCompMap(format);
     GX2InitTextureRegs(&mTextureInner);
 
     u32 alignment = mTextureInner.surface.alignment;

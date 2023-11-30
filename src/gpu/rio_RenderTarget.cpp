@@ -11,7 +11,7 @@ namespace rio {
 RenderTargetColor::RenderTargetColor()
 {
 #if RIO_IS_CAFE
-    rio::MemUtil::set(&mInnerBuffer, 0, sizeof(GX2ColorBuffer));
+    MemUtil::set(&mInnerBuffer, 0, sizeof(GX2ColorBuffer));
 #elif RIO_IS_WIN
     mHandle = GL_NONE;
 #endif
@@ -71,7 +71,7 @@ void RenderTargetColor::initRegs_() const
 RenderTargetDepth::RenderTargetDepth()
 {
 #if RIO_IS_CAFE
-    rio::MemUtil::set(&mInnerBuffer, 0, sizeof(GX2DepthBuffer));
+    MemUtil::set(&mInnerBuffer, 0, sizeof(GX2DepthBuffer));
     GX2InitDepthBufferHiZEnable(&mInnerBuffer, GX2_DISABLE);
 #elif RIO_IS_WIN
     mHandle = GL_NONE;

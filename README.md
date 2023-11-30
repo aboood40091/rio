@@ -20,7 +20,7 @@ Docs can be found... nowhere yet as I am still working on it. In the meantime, I
 
 Dependencies:
 ##### Windows
-* OpenGL (Minimum: v3.3 Core Profile, see `notes_windows.txt` for more)  
+* OpenGL (Minimum: v4.0 Core Profile, see `notes_windows.txt` for more)  
 * GLEW  
 * GLFW3  
 ##### Wii U

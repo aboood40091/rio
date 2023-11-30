@@ -37,7 +37,7 @@ u32 Texture2DUtil::calcMipmapSize(
 )
 {
     if (mipLevelOffset)
-        rio::MemUtil::set(mipLevelOffset, 0, sizeof(u32) * 13);
+        MemUtil::set(mipLevelOffset, 0, sizeof(u32) * 13);
 
     mipLevels = std::min(std::max(mipLevels, 1u), 14u);
 

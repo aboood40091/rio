@@ -52,7 +52,7 @@ public:
 
     void linkTexture2D(const Texture2D& texture)
     {
-        RIO_ASSERT(rio::TextureFormatUtil::isUsableAsRenderTargetColor(texture.getTextureFormat()));
+        RIO_ASSERT(TextureFormatUtil::isUsableAsRenderTargetColor(texture.getTextureFormat()));
         linkNativeTexture2D(texture.getNativeTextureHandle());
     }
 
@@ -90,8 +90,8 @@ public:
 
     void linkTexture2D(const Texture2D& texture)
     {
-        RIO_ASSERT(rio::TextureFormatUtil::isUsableAsRenderTargetDepth(texture.getTextureFormat()));
-        linkNativeTexture2D(texture.getNativeTextureHandle(), rio::TextureFormatUtil::hasStencil(texture.getTextureFormat()));
+        RIO_ASSERT(TextureFormatUtil::isUsableAsRenderTargetDepth(texture.getTextureFormat()));
+        linkNativeTexture2D(texture.getNativeTextureHandle(), TextureFormatUtil::hasStencil(texture.getTextureFormat()));
     }
 
     void linkNativeTexture2D(NativeTexture2DHandle handle) override;

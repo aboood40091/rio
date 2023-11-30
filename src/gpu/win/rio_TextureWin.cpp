@@ -41,7 +41,7 @@ Texture2D::Texture2D(const char* base_fname)
     MemUtil::free(file);
 }
 
-Texture2D::Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMips)
+Texture2D::Texture2D(TextureFormat format, u32 width, u32 height, u32 numMips)
     : mSelfAllocated(false)
 {
     NativeSurface2D& surface = mTextureInner.surface;
@@ -50,17 +50,17 @@ Texture2D::Texture2D(rio::TextureFormat format, u32 width, u32 height, u32 numMi
     surface.mipLevels = numMips;
     surface.format = format;
 
-    [[maybe_unused]] bool success = rio::TextureFormatUtil::getNativeTextureFormat(surface.nativeFormat, format);
+    [[maybe_unused]] bool success = TextureFormatUtil::getNativeTextureFormat(surface.nativeFormat, format);
     RIO_ASSERT(success);
 
-    surface.imageSize = rio::Texture2DUtil::calcImageSize(format, width, height);
-    surface.mipmapSize = rio::Texture2DUtil::calcMipmapSize(format, width, height, numMips, surface.mipLevelOffset);
+    surface.imageSize = Texture2DUtil::calcImageSize(format, width, height);
+    surface.mipmapSize = Texture2DUtil::calcMipmapSize(format, width, height, numMips, surface.mipLevelOffset);
     surface._imageOffset = 0;
     surface._mipmapsOffset = 0;
     surface.image = nullptr;
     surface.mipmaps = nullptr;
 
-    mTextureInner.compMap = rio::TextureFormatUtil::getDefaultCompMap(format);
+    mTextureInner.compMap = TextureFormatUtil::getDefaultCompMap(format);
 
     {
         mTextureInner._footer.magic = 0x5101382D;
@@ -105,7 +105,7 @@ void Texture2D::createHandle_()
 
     NativeSurface2D& surface = mTextureInner.surface;
 
-    mHandle = rio::Texture2DUtil::createHandle(
+    mHandle = Texture2DUtil::createHandle(
         surface.format,
         surface.nativeFormat,
         surface.width,
@@ -125,7 +125,7 @@ Texture2D::~Texture2D()
 {
     if (mHandle != GL_NONE)
     {
-        rio::Texture2DUtil::destroyHandle(mHandle);
+        Texture2DUtil::destroyHandle(mHandle);
         mHandle = GL_NONE;
 
         if (mSelfAllocated)
@@ -139,7 +139,7 @@ Texture2D::~Texture2D()
 void Texture2D::setCompMap(u32 compMap)
 {
     mTextureInner.compMap = compMap;
-    rio::Texture2DUtil::setSwizzle(mHandle, compMap);
+    Texture2DUtil::setSwizzle(mHandle, compMap);
 }
 
 }

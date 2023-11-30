@@ -14,7 +14,7 @@ class RenderBuffer
 public:
     RenderBuffer();
     RenderBuffer(u32 w, u32 h);
-    RenderBuffer(const rio::BaseVec2i& size);
+    RenderBuffer(const BaseVec2i& size);
 #if RIO_IS_WIN
     ~RenderBuffer();
 #endif // RIO_IS_WIN
@@ -55,7 +55,7 @@ public:
     void setRenderTargetColorNull(u32 index = 0) { setRenderTargetColor(nullptr, index); }
     void setRenderTargetDepthNull() { setRenderTargetDepth(nullptr); }
 
-    const rio::BaseVec2i& getSize() const
+    const BaseVec2i& getSize() const
     {
         return mSize;
     }
@@ -67,7 +67,7 @@ public:
         resetScissor();
     }
 
-    void setSize(const rio::BaseVec2i& size)
+    void setSize(const BaseVec2i& size)
     {
         mSize = size;
         resetScissor();
@@ -81,7 +81,7 @@ public:
         mScissorSize.y = h;
     }
 
-    void setScissor(const rio::BaseVec2i& pos, const rio::BaseVec2i& size)
+    void setScissor(const BaseVec2i& pos, const BaseVec2i& size)
     {
         mScissorPos = pos;
         mScissorSize = size;
@@ -107,8 +107,17 @@ public:
         CLEAR_FLAG_DEPTH_STENCIL        =                    CLEAR_FLAG_DEPTH | CLEAR_FLAG_STENCIL
     };
 
-    void clear(u32 color_target_index, u32 clear_flag, const rio::Color4f& color = rio::Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0);
-    void clear(u32 clear_flag, const rio::Color4f& color = rio::Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0) { clear(0, clear_flag, color, depth, stencil); }
+    void clear(u32 color_target_index, u32 clear_flag, const Color4f& color = Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0);
+    void clear(u32 clear_flag, const Color4f& color = Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0) { clear(0, clear_flag, color, depth, stencil); }
+
+    bool read(
+        u32 color_target_index, void* pixels
+#if RIO_IS_WIN
+        , u32 width
+        , u32 height
+        , const NativeTextureFormat& native_format
+#endif // RIO_IS_WIN
+    );
 
 private:
 #if RIO_IS_WIN
@@ -118,13 +127,14 @@ private:
     void bindRenderTargetDepth_() const;
 
 private:
-    rio::BaseVec2i      mSize;
-    rio::BaseVec2i      mScissorPos;
-    rio::BaseVec2i      mScissorSize;
+    BaseVec2i           mSize;
+    BaseVec2i           mScissorPos;
+    BaseVec2i           mScissorSize;
     RenderTargetColor*  mpColorTarget[Graphics::RENDER_TARGET_MAX_NUM];
     RenderTargetDepth*  mpDepthTarget;
 #if RIO_IS_WIN
     u32                 mHandle;
+    mutable u32         mDrawBuffers[Graphics::RENDER_TARGET_MAX_NUM];
 
     void createHandle_();
 #endif // RIO_IS_WIN

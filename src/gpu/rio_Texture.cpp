@@ -22,6 +22,7 @@ u8 TextureFormatUtil::getPixelByteSize(TextureFormat format)
     case TEXTURE_FORMAT_R5_G5_B5_A1_UNORM:
     case TEXTURE_FORMAT_R4_G4_B4_A4_UNORM:
         return 2;
+    case TEXTURE_FORMAT_R32_UINT:
     case DEPTH_TEXTURE_FORMAT_R32_FLOAT:
     case TEXTURE_FORMAT_R8_G8_B8_A8_UNORM:
     case TEXTURE_FORMAT_R8_G8_B8_A8_UINT:
@@ -89,6 +90,7 @@ bool TextureFormatUtil::isUsableAsRenderTargetColor(TextureFormat format)
     case TEXTURE_FORMAT_R5_G6_B5_UNORM:
     case TEXTURE_FORMAT_R5_G5_B5_A1_UNORM:
     case TEXTURE_FORMAT_R4_G4_B4_A4_UNORM:
+    case TEXTURE_FORMAT_R32_UINT:
 #if RIO_IS_CAFE
     case DEPTH_TEXTURE_FORMAT_R32_FLOAT:
 #endif // RIO_IS_CAFE
@@ -228,6 +230,11 @@ bool TextureFormatUtil::getNativeTextureFormat(
         nativeFormat.format = GL_RGBA;
         nativeFormat.type = GL_UNSIGNED_SHORT_4_4_4_4;
         return true;
+    case TEXTURE_FORMAT_R32_UINT:
+        nativeFormat.internalformat = GL_R32UI;
+        nativeFormat.format = GL_RED_INTEGER;
+        nativeFormat.type = GL_UNSIGNED_INT;
+        return true;
     case DEPTH_TEXTURE_FORMAT_R32_FLOAT:
         nativeFormat.internalformat = GL_DEPTH_COMPONENT32F;
         nativeFormat.format = GL_DEPTH_COMPONENT;
@@ -330,7 +337,7 @@ bool TextureFormatUtil::getNativeTextureFormat(
         return true;
     default:
         RIO_ASSERT(false);
-        rio::MemUtil::set(&nativeFormat, 0, sizeof(NativeTextureFormat));
+        MemUtil::set(&nativeFormat, 0, sizeof(NativeTextureFormat));
         return false;
     }
 }
