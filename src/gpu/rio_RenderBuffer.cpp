@@ -241,6 +241,7 @@ bool RenderBuffer::read(
     {
 #if RIO_IS_CAFE
         GX2DrawDone();
+#if 0
         const GX2Surface& src = p_color_target->getNativeColorBuffer().surface;
         GX2Surface dst;
         RIO_ASSERT(src.dim == GX2_SURFACE_DIM_TEXTURE_2D);
@@ -259,6 +260,7 @@ bool RenderBuffer::read(
         GX2CalcSurfaceSizeAndAlignment(&dst);
         dst.image = pixels;
         GX2CopySurface(&src, 0, 0, &dst, 0, 0);
+#endif
 #elif RIO_IS_WIN
         bindFBO_();
         p_color_target->bind(color_target_index);
