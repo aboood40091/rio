@@ -59,7 +59,7 @@ void Window::resizeCallback_(s32 width, s32 height)
     RIO_GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, mWidth, mHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr));
     RIO_GL_CALL(glBindTexture(GL_TEXTURE_2D, GL_NONE));
 
-    rio::lyr::Layer::onResize_(width, height);
+    lyr::Layer::onResize_(width, height);
 
     const auto& callback = mNativeWindow.mpOnResizeCallback;
     if (callback == nullptr)
@@ -70,7 +70,7 @@ void Window::resizeCallback_(s32 width, s32 height)
 
 void Window::resizeCallback_(GLFWwindow* glfw_window, s32 width, s32 height)
 {
-    rio::Window* const window = rio::Window::instance();
+    Window* const window = Window::instance();
     if (window == nullptr || window->getNativeWindow().getGLFWwindow() != glfw_window)
         return;
 
@@ -393,7 +393,7 @@ void Window::swapBuffers() const
     setVpToFb_();
 
     // Disable Depth test
-    rio::RenderState render_state;
+    RenderState render_state;
     render_state.setDepthTestEnable(false);
     render_state.apply();
 
@@ -545,8 +545,8 @@ void Window::clearDepthStencil(f32 depth, u8 stencil)
 
 void Window::updateDepthBufferTexture_()
 {
-    rio::Graphics::setViewport(0, 0, mWidth, mHeight);
-    rio::Graphics::setScissor(0, 0, mWidth, mHeight);
+    Graphics::setViewport(0, 0, mWidth, mHeight);
+    Graphics::setScissor(0, 0, mWidth, mHeight);
 
     // Blit the depth-stencil renderbuffer to the depth-stencil texture
     RIO_GL_CALL(glBindFramebuffer(GL_READ_FRAMEBUFFER, mNativeWindow.mDepthBufferCopyFramebufferSrc));

@@ -38,7 +38,7 @@ void UniformBlock::setData(const void* data, u32 size)
     RIO_ASSERT(size != 0);
 
     // Additional check for Cafe
-    RIO_ASSERT(uintptr_t(data) % rio::Drawer::cUniformBlockAlignment == 0);
+    RIO_ASSERT(uintptr_t(data) % Drawer::cUniformBlockAlignment == 0);
     RIO_ASSERT(size % sizeof(u32) == 0);
 
     mpData = data;
@@ -77,7 +77,7 @@ void UniformBlock::setDataInvalidate(const void* data, u32 size)
     RIO_ASSERT(size != 0);
 
     // Additional check for Cafe
-    RIO_ASSERT(uintptr_t(data) % rio::Drawer::cUniformBlockAlignment == 0);
+    RIO_ASSERT(uintptr_t(data) % Drawer::cUniformBlockAlignment == 0);
     RIO_ASSERT(size % sizeof(u32) == 0);
 
     mpData = data;

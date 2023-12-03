@@ -19,9 +19,9 @@ Mesh::Mesh(const res::Mesh* res_mesh, Model* parent_mdl)
     mVBO.setStride(sizeof(res::Vertex));
     mVBO.setDataInvalidate(mResMesh.vertexBuffer().ptr(), mResMesh.vertexBuffer().size());
 
-    mPosStream.setLayout(0, rio::VertexStream::FORMAT_32_32_32_FLOAT, offsetof(res::Vertex, pos));
-    mTexCoordStream.setLayout(1, rio::VertexStream::FORMAT_32_32_FLOAT, offsetof(res::Vertex, tex_coord));
-    mNormalStream.setLayout(2, rio::VertexStream::FORMAT_32_32_32_FLOAT, offsetof(res::Vertex, normal));
+    mPosStream.setLayout(0, VertexStream::FORMAT_32_32_32_FLOAT, offsetof(res::Vertex, pos));
+    mTexCoordStream.setLayout(1, VertexStream::FORMAT_32_32_FLOAT, offsetof(res::Vertex, tex_coord));
+    mNormalStream.setLayout(2, VertexStream::FORMAT_32_32_32_FLOAT, offsetof(res::Vertex, normal));
 
     mVAO.addAttribute(mPosStream, mVBO);
     mVAO.addAttribute(mTexCoordStream, mVBO);

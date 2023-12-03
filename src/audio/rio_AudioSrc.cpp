@@ -159,17 +159,17 @@ void AudioSfx::setPosition(u32 slot, const Vector3f& pos)
 
     RIO_ASSERT(slot < size_t(cSlotMaxNum));
 
-    const rio::Vector3f& front    = rio::AudioMgr::instance()->getListenerFront();
-    const rio::Vector3f& right    = rio::AudioMgr::instance()->getListenerRight();
-    const rio::Vector3f& cam_pos  = rio::AudioMgr::instance()->getListenerPosition();
-    const f32            max_dist = rio::AudioMgr::instance()->getListenerMaxDistance();
+    const Vector3f& front    = AudioMgr::instance()->getListenerFront();
+    const Vector3f& right    = AudioMgr::instance()->getListenerRight();
+    const Vector3f& cam_pos  = AudioMgr::instance()->getListenerPosition();
+    const f32       max_dist = AudioMgr::instance()->getListenerMaxDistance();
 
-    rio::Vector3f dir = pos - cam_pos;
+    Vector3f dir = pos - cam_pos;
     s32 dist = dir.length() / max_dist * 255;
     if (dist > 255)
         dist = 255;
 
-    f32 angle = 90.f - rio::Mathf::rad2deg(std::atan2(dir.dot(front), dir.dot(right)));
+    f32 angle = 90.f - Mathf::rad2deg(std::atan2(dir.dot(front), dir.dot(right)));
 
     Mix_SetPosition(slot, angle, dist);
 }

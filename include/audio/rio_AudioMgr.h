@@ -45,27 +45,27 @@ public:
         setListenerMaxDistance(max_dist);
     }
 
-    const rio::Vector3f& getListenerPosition() const
+    const Vector3f& getListenerPosition() const
     {
         return mListener.pos;
     }
 
-    const rio::Vector3f& getListenerLookAt() const
+    const Vector3f& getListenerLookAt() const
     {
         return mListener.look_at;
     }
 
-    const rio::Vector3f& getListenerUp() const
+    const Vector3f& getListenerUp() const
     {
         return mListener.up;
     }
 
-    const rio::Vector3f& getListenerFront() const
+    const Vector3f& getListenerFront() const
     {
         return mListener.front;
     }
 
-    const rio::Vector3f& getListenerRight() const
+    const Vector3f& getListenerRight() const
     {
         return mListener.right;
     }

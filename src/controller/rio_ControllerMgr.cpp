@@ -80,12 +80,12 @@ void ControllerMgr::initializeDefault_()
     }
 #elif RIO_IS_WIN
     {
-        rio::FileDevice::LoadArg arg;
+        FileDevice::LoadArg arg;
         arg.path = "gamecontrollerdb.txt";
 
-        char* file = (char*)rio::FileDeviceMgr::instance()->load(arg);
+        char* file = (char*)FileDeviceMgr::instance()->load(arg);
         glfwUpdateGamepadMappings(file);
-        rio::MemUtil::free(file); file = nullptr;
+        MemUtil::free(file); file = nullptr;
     }
 
     for (u32 i = 0; i <= GLFW_JOYSTICK_LAST; i++)

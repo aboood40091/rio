@@ -427,7 +427,7 @@ void Window::setSwapInterval(u32 swap_interval)
 void Window::swapBuffers() const
 {
     // Disable Depth test to achieve same behavior as the MS Windows version
-    rio::RenderState render_state;
+    RenderState render_state;
     render_state.setDepthTestEnable(false);
     render_state.apply();
 

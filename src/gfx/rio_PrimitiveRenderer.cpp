@@ -116,7 +116,7 @@ PrimitiveRenderer::~PrimitiveRenderer()
 
 void PrimitiveRenderer::initialize_(const char* shader_path)
 {
-    mShader.load(shader_path, rio::Shader::MODE_UNIFORM_REGISTER);
+    mShader.load(shader_path, Shader::MODE_UNIFORM_REGISTER);
 
     mParamWVPOffset = mShader.getVertexUniformLocation("wvp");
     RIO_ASSERT(mParamWVPOffset != 0xFFFFFFFF);
@@ -283,14 +283,14 @@ void PrimitiveRenderer::initialize_(const char* shader_path)
         VertexBuffer::invalidateCache(mCylinderLIndexBuf,  (32   * 12) * sizeof(   u16));
     }
 
-    mDrawQuadSampler.setWrap(rio::TEX_WRAP_MODE_CLAMP,
-                             rio::TEX_WRAP_MODE_CLAMP,
-                             rio::TEX_WRAP_MODE_CLAMP);
+    mDrawQuadSampler.setWrap(TEX_WRAP_MODE_CLAMP,
+                             TEX_WRAP_MODE_CLAMP,
+                             TEX_WRAP_MODE_CLAMP);
 
-    mDrawQuadSampler.setFilter(rio::TEX_XY_FILTER_MODE_LINEAR,
-                               rio::TEX_XY_FILTER_MODE_LINEAR,
-                               rio::TEX_MIP_FILTER_MODE_NONE,
-                               rio::TEX_ANISO_1_TO_1);
+    mDrawQuadSampler.setFilter(TEX_XY_FILTER_MODE_LINEAR,
+                               TEX_XY_FILTER_MODE_LINEAR,
+                               TEX_MIP_FILTER_MODE_NONE,
+                               TEX_ANISO_1_TO_1);
 }
 
 void PrimitiveRenderer::setModelMatrix(const BaseMtx34f& model_matrix)
@@ -298,12 +298,12 @@ void PrimitiveRenderer::setModelMatrix(const BaseMtx34f& model_matrix)
     mModelMtx = static_cast<const Matrix34f&>(model_matrix);
 }
 
-void PrimitiveRenderer::setViewMtx(const rio::BaseMtx34f& view_mtx)
+void PrimitiveRenderer::setViewMtx(const BaseMtx34f& view_mtx)
 {
     mCameraMtx = static_cast<const Matrix34f&>(view_mtx);
 }
 
-void PrimitiveRenderer::setProjMtx(const rio::BaseMtx44f& proj_mtx)
+void PrimitiveRenderer::setProjMtx(const BaseMtx44f& proj_mtx)
 {
     mProjectionMtx = static_cast<const Matrix44f&>(proj_mtx);
 }

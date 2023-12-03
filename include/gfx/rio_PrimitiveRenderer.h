@@ -100,8 +100,8 @@ public:
     void setModelMatrix(const BaseMtx34f& model_matrix);
     const Matrix34f& getModelMatrix() const { return mModelMtx; }
 
-    void setViewMtx(const rio::BaseMtx34f& view_mtx);
-    void setProjMtx(const rio::BaseMtx44f& proj_mtx);
+    void setViewMtx(const BaseMtx34f& view_mtx);
+    void setProjMtx(const BaseMtx44f& proj_mtx);
 
     void setCamera(const Camera& camera);
     void setProjection(const Projection& projection);

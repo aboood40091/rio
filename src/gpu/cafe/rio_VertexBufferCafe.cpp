@@ -44,7 +44,7 @@ void VertexBuffer::setSubData(const void* data, u32 offset, u32 size)
     u8* dst = (u8*)mpData + offset;
 
     if (src != dst)
-        rio::MemUtil::copy(dst, src, size);
+        MemUtil::copy(dst, src, size);
 }
 
 void VertexBuffer::setDataInvalidate(const void* data, u32 size)
@@ -71,7 +71,7 @@ void VertexBuffer::setSubDataInvalidate(const void* data, u32 offset, u32 size)
     u8* dst = (u8*)mpData + offset;
 
     if (src != dst)
-        rio::MemUtil::copy(dst, src, size);
+        MemUtil::copy(dst, src, size);
 
     GX2Invalidate(GX2_INVALIDATE_MODE_CPU_ATTRIBUTE_BUFFER, (void*)dst, size);
 }

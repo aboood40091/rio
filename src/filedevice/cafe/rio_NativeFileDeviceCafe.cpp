@@ -59,7 +59,7 @@ NativeFileDevice::doOpen_(
                                                                                                              FS_ERROR_FLAG_ALREADY_OPEN));
     handle_inner->position = 0;
 
-    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status != FS_STATUS_OK)
     {
         handle_inner->handle = 0;
         return nullptr;
@@ -78,7 +78,7 @@ NativeFileDevice::doClose_(FileHandle* handle)
     FileHandleInner* handle_inner = getFileHandleInner_(handle);
 
     FSStatus status = FSCloseFile(client, &block, handle_inner->handle, FS_ERROR_FLAG_NONE);
-    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     return true;
@@ -110,7 +110,7 @@ NativeFileDevice::doRead_(
         return true;
     }
 
-    mLastRawError = rio::RawErrorCode(result);
+    mLastRawError = RawErrorCode(result);
     return false;
 }
 
@@ -140,7 +140,7 @@ NativeFileDevice::doWrite_(
         return true;
     }
 
-    mLastRawError = rio::RawErrorCode(result);
+    mLastRawError = RawErrorCode(result);
     return false;
 }
 
@@ -178,7 +178,7 @@ NativeFileDevice::doSeek_(
     }
 
     FSStatus status = FSSetPosFile(client, &block, handle_inner->handle, offset, FS_ERROR_FLAG_NONE);
-    if (mLastRawError = rio::RawErrorCode(status), status == FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status == FS_STATUS_OK)
     {
         handle_inner->position = offset;
         return true;
@@ -212,7 +212,7 @@ NativeFileDevice::doGetFileSize_(
     FSStat stat;
     FSStatus status = FSGetStat(client, &block, file_path.c_str(), &stat, FS_ERROR_FLAG_NONE);
 
-    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     *size = stat.size;
@@ -233,7 +233,7 @@ NativeFileDevice::doGetFileSize_(
     FSStat stat;
     FSStatus status = FSGetStatFile(client, &block, handle_inner->handle, &stat, FS_ERROR_FLAG_NONE);
 
-    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status != FS_STATUS_OK)
         return false;
 
     *size = stat.size;
@@ -255,7 +255,7 @@ NativeFileDevice::doIsExistFile_(
     FSStat stat;
     FSStatus status = FSGetStat(client, &block, file_path.c_str(), &stat, FSErrorFlag(FS_ERROR_FLAG_PERMISSION_ERROR | FS_ERROR_FLAG_NOT_FOUND));
 
-    if (mLastRawError = rio::RawErrorCode(status), status != FS_STATUS_OK)
+    if (mLastRawError = RawErrorCode(status), status != FS_STATUS_OK)
     {
         if (status != FS_STATUS_NOT_FOUND)
             return false;

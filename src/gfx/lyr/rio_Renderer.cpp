@@ -37,8 +37,8 @@ void Renderer::render() const
 {
     Window* const p_window = Window::instance();
 
-    rio::Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
-    rio::Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
+    Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
+    Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
 
     bool viewport_changed = false;
     bool scissor_changed = false;
@@ -61,22 +61,22 @@ void Renderer::render() const
 
         if (layer.mFlags.isOn(Layer::FLAGS_SET_VIEWPORT))
         {
-            rio::Graphics::setViewport(layer.mViewport.x, layer.mViewport.y, layer.mViewport.width, layer.mViewport.height, layer.mViewport.near, layer.mViewport.far);
+            Graphics::setViewport(layer.mViewport.x, layer.mViewport.y, layer.mViewport.width, layer.mViewport.height, layer.mViewport.near, layer.mViewport.far);
             viewport_changed = true;
         }
         else if (viewport_changed)
         {
-            rio::Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
+            Graphics::setViewport(0, 0, p_window->getWidth(), p_window->getHeight());
         }
 
         if (layer.mFlags.isOn(Layer::FLAGS_SET_SCISSOR))
         {
-            rio::Graphics::setScissor(layer.mScissor.x, layer.mScissor.y, layer.mScissor.width, layer.mScissor.height);
+            Graphics::setScissor(layer.mScissor.x, layer.mScissor.y, layer.mScissor.width, layer.mScissor.height);
             scissor_changed = true;
         }
         else if (scissor_changed)
         {
-            rio::Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
+            Graphics::setScissor(0, 0, p_window->getWidth(), p_window->getHeight());
         }
 
         u32 render_step_idx = 0;
