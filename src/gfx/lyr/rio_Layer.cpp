@@ -113,7 +113,7 @@ void Layer::setClearDepthStencil(f32 depth, u8 stencil)
     mFlags.set(FLAGS_CLEAR_DEPTH_STENCIL_BUFFER);
 }
 
-void Layer::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far)
+void Layer::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far, s32 frame_buffer_height)
 {
     mViewport.x = x;
     mViewport.y = y;
@@ -121,15 +121,17 @@ void Layer::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far)
     mViewport.height = height;
     mViewport.near = near;
     mViewport.far = far;
+    mViewport.frame_buffer_height = frame_buffer_height;
     mFlags.set(FLAGS_SET_VIEWPORT);
 }
 
-void Layer::setScissor(s32 x, s32 y, u32 width, u32 height)
+void Layer::setScissor(s32 x, s32 y, u32 width, u32 height, s32 frame_buffer_height)
 {
     mScissor.x = x;
     mScissor.y = y;
     mScissor.width = width;
     mScissor.height = height;
+    mScissor.frame_buffer_height = frame_buffer_height;
     mFlags.set(FLAGS_SET_SCISSOR);
 }
 

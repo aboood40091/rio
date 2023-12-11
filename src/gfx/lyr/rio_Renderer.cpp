@@ -61,7 +61,7 @@ void Renderer::render() const
 
         if (layer.mFlags.isOn(Layer::FLAGS_SET_VIEWPORT))
         {
-            Graphics::setViewport(layer.mViewport.x, layer.mViewport.y, layer.mViewport.width, layer.mViewport.height, layer.mViewport.near, layer.mViewport.far);
+            Graphics::setViewport(layer.mViewport.x, layer.mViewport.y, layer.mViewport.width, layer.mViewport.height, layer.mViewport.near, layer.mViewport.far, layer.mViewport.frame_buffer_height);
             viewport_changed = true;
         }
         else if (viewport_changed)
@@ -71,7 +71,7 @@ void Renderer::render() const
 
         if (layer.mFlags.isOn(Layer::FLAGS_SET_SCISSOR))
         {
-            Graphics::setScissor(layer.mScissor.x, layer.mScissor.y, layer.mScissor.width, layer.mScissor.height);
+            Graphics::setScissor(layer.mScissor.x, layer.mScissor.y, layer.mScissor.width, layer.mScissor.height, layer.mScissor.frame_buffer_height);
             scissor_changed = true;
         }
         else if (scissor_changed)

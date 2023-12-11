@@ -76,8 +76,8 @@ void RenderBuffer::bindFBO_() const
 
 void RenderBuffer::bind() const
 {
-    Graphics::setViewport(0, 0, mSize.x, mSize.y);
-    Graphics::setScissor(mScissorPos.x, mScissorPos.y, mScissorSize.x, mScissorSize.y);
+    Graphics::setViewport(0, 0, mSize.x, mSize.y, 0.0f, 1.0f, mSize.y);
+    Graphics::setScissor(mScissorPos.x, mScissorPos.y, mScissorSize.x, mScissorSize.y, mSize.y);
 
 #if RIO_IS_WIN
     bindFBO_();
@@ -170,8 +170,8 @@ void RenderBuffer::clear(u32 color_target_index, u32 clear_flag, const Color4f& 
             );
         }
 #elif RIO_IS_WIN
-        Graphics::setViewport(0, 0, mSize.x, mSize.y);
-        Graphics::setScissor(0, 0, mSize.x, mSize.y);
+        Graphics::setViewport(0, 0, mSize.x, mSize.y, 0.0f, 1.0f, mSize.y);
+        Graphics::setScissor(0, 0, mSize.x, mSize.y, mSize.y);
 
         bindFBO_();
 

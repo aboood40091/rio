@@ -21,10 +21,10 @@ s32 Graphics::sScissorY;
 u32 Graphics::sScissorWidth;
 u32 Graphics::sScissorHeight;
 
-void Graphics::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far)
+void Graphics::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far, s32 frame_buffer_height)
 {
 #ifdef RIO_WIN_GL_SCISSOR_INVERTED
-    y = Window::instance()->getHeight() - y - height;
+    y = (frame_buffer_height == -1 ? Window::instance()->getHeight() : frame_buffer_height) - y - height;
 #endif // RIO_WIN_GL_SCISSOR_INVERTED
 
     sViewportX = x;
@@ -38,10 +38,10 @@ void Graphics::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 fa
     RIO_GL_CALL(glDepthRange(near, far));
 }
 
-void Graphics::setScissor(s32 x, s32 y, u32 width, u32 height)
+void Graphics::setScissor(s32 x, s32 y, u32 width, u32 height, s32 frame_buffer_height)
 {
 #ifdef RIO_WIN_GL_SCISSOR_INVERTED
-    y = Window::instance()->getHeight() - y - height;
+    y = (frame_buffer_height == -1 ? Window::instance()->getHeight() : frame_buffer_height) - y - height;
 #endif // RIO_WIN_GL_SCISSOR_INVERTED
 
     sScissorX = x;

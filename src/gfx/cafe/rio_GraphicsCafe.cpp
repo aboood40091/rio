@@ -8,12 +8,12 @@
 
 namespace rio {
 
-void Graphics::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far)
+void Graphics::setViewport(s32 x, s32 y, u32 width, u32 height, f32 near, f32 far, s32)
 {
     GX2SetViewport(x, y, width, height, near, far);
 }
 
-void Graphics::setScissor(s32 x, s32 y, u32 width, u32 height)
+void Graphics::setScissor(s32 x, s32 y, u32 width, u32 height, s32)
 {
     GX2SetScissor(x, y, width, height);
 }

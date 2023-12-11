@@ -113,9 +113,9 @@ public:
     void setClearDepthStencil(f32 depth = 1.0f, u8 stencil = 0);
 
     // Set the viewport to use when drawing this layer
-    void setViewport(s32 x, s32 y, u32 width, u32 height, f32 near = 0.0f, f32 far = 1.0f);
+    void setViewport(s32 x, s32 y, u32 width, u32 height, f32 near = 0.0f, f32 far = 1.0f, s32 frame_buffer_height = -1);
     // Set the scissor box to use when drawing this layer
-    void setScissor(s32 x, s32 y, u32 width, u32 height);
+    void setScissor(s32 x, s32 y, u32 width, u32 height, s32 frame_buffer_height = -1);
 
     // Disable color clear.
     void resetClearColor();
@@ -194,6 +194,7 @@ protected:
         u32 height;
         f32 near;
         f32 far;
+        s32 frame_buffer_height;
     } mViewport;
 
     struct
@@ -202,6 +203,7 @@ protected:
         s32 y;
         u32 width;
         u32 height;
+        s32 frame_buffer_height;
     } mScissor;
 
     BitFlag8                mFlags;         // Flags.

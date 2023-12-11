@@ -26,8 +26,8 @@ class Window;
 class Graphics
 {
 public:
-    static void setViewport(s32 x, s32 y, u32 width, u32 height, f32 near = 0.0f, f32 far = 1.0f);
-    static void setScissor(s32 x, s32 y, u32 width, u32 height);
+    static void setViewport(s32 x, s32 y, u32 width, u32 height, f32 near = 0.0f, f32 far = 1.0f, s32 frame_buffer_height = -1);
+    static void setScissor(s32 x, s32 y, u32 width, u32 height, s32 frame_buffer_height = -1);
 
 public:
     enum CompareFunc
