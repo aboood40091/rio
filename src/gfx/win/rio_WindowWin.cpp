@@ -77,7 +77,7 @@ void Window::resizeCallback_(GLFWwindow* glfw_window, s32 width, s32 height)
     window->resizeCallback_(width, height);
 }
 
-bool Window::initialize_(bool resizable)
+bool Window::initialize_(bool resizable, u32 gl_major, u32 gl_minor)
 {
     // Initialize GLFW
     if (!glfwInit())
@@ -94,9 +94,10 @@ bool Window::initialize_(bool resizable)
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     }
 
-    // Request OpenGL v4.0 Core Profile
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    // Request OpenGL Core Profile
+    RIO_LOG("OpenGL Context Version: %u.%u\n", gl_major, gl_minor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, gl_major);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, gl_minor);
   //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 

@@ -21,10 +21,14 @@ public:
     // - width: The desired width
     // - height: The desired height
     // - resizable: Should window be resizable
+    // - gl_major: OpenGL Context Major Version
+    // - gl_minor: OpenGL Context Minor Version
     static bool createSingleton(
         u32 width = 1280, u32 height = 720
 #if RIO_IS_WIN
         , bool resizable = false
+        , u32 gl_major = 4
+        , u32 gl_minor = 0
 #endif // RIO_IS_WIN
     );
 
@@ -154,6 +158,8 @@ private:
     bool initialize_(
 #if RIO_IS_WIN
         bool resizable
+        , u32 gl_major
+        , u32 gl_minor
 #endif // RIO_IS_WIN
     );
     // Terminate the window

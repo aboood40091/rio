@@ -37,6 +37,8 @@ bool Initialize(const InitializeArg& arg)
         arg.window.width, arg.window.height
 #if RIO_IS_WIN
         , arg.window.resizable
+        , arg.window.gl_major
+        , arg.window.gl_minor
 #endif // RIO_IS_WIN
     ))
     {
