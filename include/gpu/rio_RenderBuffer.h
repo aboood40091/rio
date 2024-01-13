@@ -3,6 +3,7 @@
 
 #include <gfx/rio_Color.h>
 #include <gfx/rio_Graphics.h>
+#include <gpu/rio_Texture.h>
 
 namespace rio {
 
