@@ -218,10 +218,13 @@ StdIOFileDevice::doSeek_(
     {
     case FileDevice::SEEK_ORIGIN_BEGIN:
         std_origin = SEEK_SET;
+        break;
     case FileDevice::SEEK_ORIGIN_CURRENT:
         std_origin = SEEK_CUR;
+        break;
     case FileDevice::SEEK_ORIGIN_END:
         std_origin = SEEK_END;
+        break;
     default:
         return false;
     }
