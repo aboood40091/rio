@@ -48,8 +48,7 @@ void ControllerBase::setPointer_(bool is_on, bool touchkey_hold, const Vector2f&
 {
     if (is_on)
     {
-        mPointer.x = pos.x;
-        mPointer.y = pos.y;
+        mPointer = pos;
     }
 
     mPointerFlag.change(POINTER_ON, is_on);
@@ -78,7 +77,7 @@ void ControllerBase::updateDerivativeParams_(u32 prev_hold, bool prev_pointer_on
 
     mPadTrig.setDirect(~prev_hold & mPadHold.getDirect());
     mPadRelease.setDirect(prev_hold & ~mPadHold.getDirect());
-    mPadRepeat.setDirect(0);
+    mPadRepeat.makeAllZero();
 
     for (s32 i = 0; i < mPadBitMax; i++)
     {
@@ -219,6 +218,7 @@ u32 ControllerBase::getStickHold_(u32 prev_hold, const Vector2f& stick, f32 hold
 bool ControllerBase::isIdleBase_()
 {
     return getHoldMask() == 0 &&
+           !isPointerOn() &&
            mLeftStick == Vector2f{ 0.0f, 0.0f } &&
            mRightStick == Vector2f{ 0.0f, 0.0f } &&
            mLeftAnalogTrigger == 0.0f &&
@@ -236,8 +236,8 @@ void ControllerBase::setIdleBase_()
     for (s32 i = 0; i < mPadBitMax; i++)
         mPadHoldCounts[i] = 0;
 
-    mPointer.set(cInvalidPointer.x, cInvalidPointer.y);
-    mPointerS32.set(cInvalidPointerS32.x, cInvalidPointerS32.y);
+    mPointer = cInvalidPointer;
+    mPointerS32 = cInvalidPointerS32;
     mLeftStick.set(0.0f, 0.0f);
     mRightStick.set(0.0f, 0.0f);
     mLeftAnalogTrigger = 0.0f;
