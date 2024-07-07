@@ -17,6 +17,10 @@ public:
     {
     }
 
+    virtual ~RenderTarget()
+    {
+    }
+
     u32 getMipLevel() const
     {
         return mMipLevel;
