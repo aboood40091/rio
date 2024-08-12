@@ -105,7 +105,7 @@ public:
 private:
     typedef TList<VertexStream*> List;
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
     struct InternalFormat
     {

@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_VertexStream.h>
 
@@ -359,4 +359,4 @@ void VertexStream::setLayout(u8 location, Format format, u32 offset)
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

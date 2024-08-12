@@ -6,7 +6,7 @@
 
 #if RIO_IS_CAFE
 #include <gx2/sampler.h>
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 #include <misc/gl/rio_GL.h>
 #endif
 
@@ -48,7 +48,7 @@ enum TexWrapMode : u32
 
 #if RIO_IS_CAFE
 typedef GX2Sampler NativeSampler2D;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 typedef GLuint NativeSampler2D;
 #endif
 
@@ -344,7 +344,7 @@ inline void TextureSampler2D::update() const
     }
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 inline void TextureSampler2D::bindVS(u32 location, u32 slot) const
 {
@@ -356,7 +356,7 @@ inline void TextureSampler2D::bindFS(u32 location, u32 slot) const
     return bind(location, location, slot);
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 }
 

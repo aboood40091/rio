@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <filedevice/rio_FileDeviceMgr.h>
 #include <gpu/rio_Texture.h>
@@ -144,4 +144,4 @@ void Texture2D::setCompMap(u32 compMap)
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

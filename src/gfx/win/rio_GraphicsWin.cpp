@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gfx/rio_Graphics.h>
 
@@ -54,4 +54,4 @@ void Graphics::setScissor(s32 x, s32 y, u32 width, u32 height, s32 frame_buffer_
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

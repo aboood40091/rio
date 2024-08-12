@@ -14,7 +14,7 @@ public:
 #if RIO_IS_CAFE
         : mpFetchShaderBuf(nullptr)
         , mFetchShaderBufSize(0)
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         : mHandle(0)
 #endif
     {
@@ -56,7 +56,7 @@ private:
     u8              mFetchShader[0x20];                             // GX2FetchShader
     u8*             mpFetchShaderBuf;                               // Fetch shader buffer
     u32             mFetchShaderBufSize;                            // Fetch shader buffer size
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     u32             mHandle;                                        // OpenGL handle
 #endif
 };

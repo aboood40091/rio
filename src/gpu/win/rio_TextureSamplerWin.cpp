@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_TextureSampler.h>
 
@@ -222,4 +222,4 @@ void TextureSampler2D::bind(u32 vs_location, u32 fs_location, u32 slot) const
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

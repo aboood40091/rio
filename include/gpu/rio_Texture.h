@@ -5,7 +5,7 @@
 
 #if RIO_IS_CAFE
 #include <gx2/texture.h>
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 #include <misc/gl/rio_GL.h>
 #endif
 
@@ -94,7 +94,7 @@ typedef const GX2Texture* NativeTexture2DHandle;
 
 #define RIO_NATIVE_TEXTURE_2D_HANDLE_NULL nullptr
 
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 
 struct NativeTextureFormat
 {
@@ -162,12 +162,12 @@ public:
     static bool hasStencil(TextureFormat format);
     static u32 getDefaultCompMap(TextureFormat format);
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     static bool getNativeTextureFormat(
         NativeTextureFormat& nativeFormat,
         TextureFormat format
     );
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 };
 
 class TextureSampler2D;

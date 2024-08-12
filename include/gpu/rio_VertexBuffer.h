@@ -62,9 +62,9 @@ public:
 
 private:
     u32                 mBuffer;    // Buffer index (0-15)
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     u32                 mHandle;    // Buffer handle (for OpenGL)
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     const void*         mpData;     // Buffer data
     u32                 mSize;      // Buffer size
     u32                 mStride;    // Vertex Stride
@@ -74,7 +74,7 @@ private:
     friend class VertexArray;
 };
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 inline void VertexBuffer::setDataInvalidate(const void* data, u32 size)
 {
@@ -90,7 +90,7 @@ inline void VertexBuffer::invalidateCache(const void* data, u32 size)
 {
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 }
 

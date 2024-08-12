@@ -161,7 +161,7 @@ u32 TextureFormatUtil::getDefaultCompMap(TextureFormat format)
     return compMap[format & 0x3f];
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 bool TextureFormatUtil::getNativeTextureFormat(
     NativeTextureFormat& nativeFormat,
@@ -342,6 +342,6 @@ bool TextureFormatUtil::getNativeTextureFormat(
     }
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 }

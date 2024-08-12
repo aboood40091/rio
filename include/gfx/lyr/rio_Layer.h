@@ -74,9 +74,9 @@ public:
 private:
     static Projection& defaultProjection_();
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     static void onResize_(s32 width, s32 height);
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     friend class ::rio::Window;
 
 public:

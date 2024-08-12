@@ -5,7 +5,7 @@
 
 #if RIO_IS_CAFE
 #include <gfx/cafe/rio_NativeWindowCafe.h>
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 #include <gfx/win/rio_NativeWindowWin.h>
 #endif
 
@@ -25,11 +25,11 @@ public:
     // - gl_minor: OpenGL Context Minor Version
     static bool createSingleton(
         u32 width = 1280, u32 height = 720
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         , bool resizable = false
         , u32 gl_major = 4
         , u32 gl_minor = 0
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     );
 
     // Destroy window singleton instance
@@ -84,7 +84,7 @@ public:
     void clearDepthStencil();
     void clearDepthStencil(f32 depth, u8 stencil = 0);
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
     // Get the window's inner handle (deprecated)
     static GLFWwindow* getWindowInner()
@@ -95,13 +95,13 @@ public:
         return sInstance->mNativeWindow.mpGLFWwindow;
     }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
     NativeTexture2DHandle getWindowColorBufferTexture() const
     {
 #if RIO_IS_CAFE
         return &mNativeWindow.mColorBufferTexture;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         return mNativeWindow.mColorBufferTextureHandle;
 #endif
     }
@@ -128,18 +128,18 @@ public:
 
 #if RIO_IS_CAFE
         return &mNativeWindow.mDepthBufferTexture;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         return mNativeWindow.mDepthBufferTextureHandle;
 #endif
     }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     typedef NativeWindow::OnResizeCallback OnResizeCallback;
     void setOnResizeCallback(OnResizeCallback callback)
     {
         mNativeWindow.mpOnResizeCallback = callback;
     }
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 private:
     Window(u32 width, u32 height)
@@ -156,11 +156,11 @@ private:
 
     // Initialize the window
     bool initialize_(
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         bool resizable
         , u32 gl_major
         , u32 gl_minor
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     );
     // Terminate the window
     void terminate_();
@@ -171,7 +171,7 @@ private:
     bool foregroundAcquire_();
     void foregroundRelease_();
 
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 
     // Set viewport and scissor to framebuffer size
     inline void setVpToFb_() const;

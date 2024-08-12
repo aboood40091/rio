@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_UniformBlock.h>
 #include <misc/rio_MemUtil.h>
@@ -108,4 +108,4 @@ void UniformBlock::bind() const
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

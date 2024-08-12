@@ -43,7 +43,7 @@ Projection& Layer::defaultProjection_()
     return sDefaultProjection;
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 void Layer::onResize_(s32 width, s32 height)
 {
@@ -53,7 +53,7 @@ void Layer::onResize_(s32 width, s32 height)
     static_cast<OrthoProjection&>(defaultProjection_()).setTBLR(window_height_2, -window_height_2, -window_width_2, window_width_2);
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 Layer::Layer(const char* name, s32 priority)
     : mName(name)

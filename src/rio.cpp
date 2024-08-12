@@ -35,11 +35,11 @@ bool Initialize(const InitializeArg& arg)
     // Create the window
     if (!Window::createSingleton(
         arg.window.width, arg.window.height
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         , arg.window.resizable
         , arg.window.gl_major
         , arg.window.gl_minor
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     ))
     {
         FileDeviceMgr::destroySingleton();

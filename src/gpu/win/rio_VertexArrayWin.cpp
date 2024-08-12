@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_VertexArray.h>
 
@@ -66,7 +66,7 @@ void VertexArray::process()
                         stream->mInternalFormat.elem_count,
                         stream->mInternalFormat.type,
                         stride,
-                        (void*)stream->mOffset
+                        (void*)(uintptr_t)stream->mOffset
                     ));
                 }
                 else
@@ -77,7 +77,7 @@ void VertexArray::process()
                         stream->mInternalFormat.type,
                         stream->mInternalFormat.normalized,
                         stride,
-                        (void*)stream->mOffset
+                        (void*)(uintptr_t)stream->mOffset
                     ));
                 }
             }
@@ -94,4 +94,4 @@ void VertexArray::bind() const
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

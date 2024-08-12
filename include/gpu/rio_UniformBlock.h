@@ -104,15 +104,15 @@ public:
 private:
     u32         mVSIndex; // Buffer index in Vertex shader
     u32         mFSIndex; // Buffer index in Fragment shader
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     u32         mHandle;    // Buffer handle (for OpenGL)
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     const void* mpData;     // Buffer data
     u32         mSize;      // Buffer size
     ShaderStage mStage;     // Shader stage
 };
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 inline void UniformBlock::setDataInvalidate(const void* data, u32 size)
 {
@@ -128,7 +128,7 @@ inline void UniformBlock::invalidateCache(const void* data, u32 size)
 {
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 }
 

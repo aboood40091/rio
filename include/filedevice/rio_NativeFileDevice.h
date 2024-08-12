@@ -3,19 +3,19 @@
 
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 #include <filedevice/rio_StdIOFileDevice.h>
 #else
 #include <filedevice/rio_FileDevice.h>
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 namespace rio {
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 class NativeFileDevice : public StdIOFileDevice
 #else
 class NativeFileDevice : public FileDevice
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 {
 public:
     NativeFileDevice();
@@ -29,7 +29,7 @@ public:
 protected:
     NativeFileDevice(const std::string& drive_name);
 
-#if !RIO_IS_WIN
+#if !RIO_IS_DESKTOP
 private:
     virtual FileDevice* doOpen_(FileHandle* handle, const std::string& filename, FileOpenFlag flag);
     virtual bool doClose_(FileHandle* handle);

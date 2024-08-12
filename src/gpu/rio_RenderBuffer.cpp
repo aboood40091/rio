@@ -18,9 +18,9 @@ RenderBuffer::RenderBuffer()
     , mpColorTarget()
     , mpDepthTarget(nullptr)
 {
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     createHandle_();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 }
 
 RenderBuffer::RenderBuffer(u32 w, u32 h)
@@ -30,9 +30,9 @@ RenderBuffer::RenderBuffer(u32 w, u32 h)
     , mpColorTarget()
     , mpDepthTarget(nullptr)
 {
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     createHandle_();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 }
 
 RenderBuffer::RenderBuffer(const BaseVec2i& size)
@@ -42,12 +42,12 @@ RenderBuffer::RenderBuffer(const BaseVec2i& size)
     , mpColorTarget()
     , mpDepthTarget(nullptr)
 {
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     createHandle_();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 void RenderBuffer::createHandle_()
 {
@@ -72,16 +72,16 @@ void RenderBuffer::bindFBO_() const
     RIO_GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, mHandle));
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 void RenderBuffer::bind() const
 {
     Graphics::setViewport(0, 0, mSize.x, mSize.y, 0.0f, 1.0f, mSize.y);
     Graphics::setScissor(mScissorPos.x, mScissorPos.y, mScissorSize.x, mScissorSize.y, mSize.y);
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     bindFBO_();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     bindRenderTargetColor_();
     bindRenderTargetDepth_();
 }
@@ -93,21 +93,21 @@ void RenderBuffer::bindRenderTargetColor_() const
         if (mpColorTarget[i])
         {
             mpColorTarget[i]->bind(i);
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
             mDrawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
         }
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         else
         {
             mDrawBuffers[i] = GL_NONE;
         }
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     RIO_GL_CALL(glDrawBuffers(Graphics::RENDER_TARGET_MAX_NUM, mDrawBuffers));
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 }
 
 void RenderBuffer::bindRenderTargetDepth_() const
@@ -169,7 +169,7 @@ void RenderBuffer::clear(u32 color_target_index, u32 clear_flag, const Color4f& 
                 depth, stencil, GX2ClearFlags(depth_stencil_clear_flag)
             );
         }
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         Graphics::setViewport(0, 0, mSize.x, mSize.y, 0.0f, 1.0f, mSize.y);
         Graphics::setScissor(0, 0, mSize.x, mSize.y, mSize.y);
 
@@ -222,11 +222,11 @@ void RenderBuffer::clear(u32 color_target_index, u32 clear_flag, const Color4f& 
 
 bool RenderBuffer::read(
     u32 color_target_index, void* pixels
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     , u32 width
     , u32 height
     , const NativeTextureFormat& native_format
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 )
 {
     RIO_ASSERT(pixels);
@@ -261,7 +261,7 @@ bool RenderBuffer::read(
         dst.image = pixels;
         GX2CopySurface(&src, 0, 0, &dst, 0, 0);
 #endif
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         bindFBO_();
         p_color_target->bind(color_target_index);
         glReadBuffer(GL_COLOR_ATTACHMENT0 + color_target_index);

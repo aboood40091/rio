@@ -14,11 +14,11 @@ struct InitializeArg
     {
         u32 width = 1280;
         u32 height = 720;
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         bool resizable = false;
         u32 gl_major = 4;
         u32 gl_minor = 0;
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     } window;
     struct
     {

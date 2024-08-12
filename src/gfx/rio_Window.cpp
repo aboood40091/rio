@@ -8,11 +8,11 @@ Window* Window::sInstance = nullptr;
 
 bool Window::createSingleton(
     u32 width, u32 height
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     , bool resizable
     , u32 gl_major
     , u32 gl_minor
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 )
 {
     if (sInstance)
@@ -23,11 +23,11 @@ bool Window::createSingleton(
 
     Window* window = new Window(width, height);
     if (!window->initialize_(
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         resizable
         , gl_major
         , gl_minor
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     ))
     {
         delete window;

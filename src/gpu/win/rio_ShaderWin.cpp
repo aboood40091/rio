@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <filedevice/rio_FileDeviceMgr.h>
 #include <gpu/rio_Shader.h>
@@ -1027,4 +1027,4 @@ void Shader::setUniformArray(u32 count, const BaseVec4u* v, u32 vs_location, u32
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

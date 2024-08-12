@@ -49,7 +49,7 @@ public:
     // Wrap pre-existing GX2VertexShader and GX2PixelShader instances
     void load(GX2VertexShader* p_vertex_shader, GX2PixelShader* p_pixel_shader);
 
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 
     // Load shader resource by source strings.
     void load(const char* c_vertex_shader_src, const char* c_fragment_shader_src);
@@ -72,7 +72,7 @@ public:
     // Get the shader's mode.
     ShaderMode getSelfShaderMode() const { return mShaderMode; }
 
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 
     u32 getShaderProgram() const { return mShaderProgram; }
 
@@ -287,7 +287,7 @@ private:
     GX2PixelShader*     mpPixelShader;
     ShaderMode          mShaderMode;
     static ShaderMode   sCurrentShaderMode;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     u32                 mShaderProgram;
 #endif
 };

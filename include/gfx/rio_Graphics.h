@@ -3,7 +3,7 @@
 
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <misc/gl/rio_GL.h>
 #define ENUM_VAL(key, val_win, val_cafe) key = val_win

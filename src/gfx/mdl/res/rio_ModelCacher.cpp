@@ -44,7 +44,7 @@ Model* ModelCacher::loadModel(const char* base_fname, const char* key)
         return model;
 
     FileDevice::LoadArg arg;
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     arg.path = std::string("models/") + base_fname + "_LE.rmdl";
 #elif RIO_IS_CAFE
     arg.path = std::string("models/") + base_fname + "_BE.rmdl";

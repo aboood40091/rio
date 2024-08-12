@@ -1,8 +1,29 @@
 #ifndef RIO_TYPES_H
 #define RIO_TYPES_H
 
-#if !(defined(_WIN32) || defined(__WUT__))
+#if defined(_WIN32)
+    #define RIO_IS_WIN     1
+    #define RIO_IS_LINUX   0
+    #define RIO_IS_CAFE    0
+#elif defined(__linux__)
+    #define RIO_IS_WIN     0
+    #define RIO_IS_LINUX   1
+    #define RIO_IS_CAFE    0
+#elif defined(__WUT__)
+    #define RIO_IS_WIN     0
+    #define RIO_IS_LINUX   0
+    #define RIO_IS_CAFE    1
+#else
     #error "Unknown host platform."
+#endif
+
+#if defined(__WUT__)
+    #define RIO_IS_DESKTOP 0
+#else
+    #define RIO_IS_DESKTOP 1
+    #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
+        #error "Desktop targets are currently required to be little endian."
+    #endif // __BYTE_ORDER__
 #endif
 
 #if !(defined(RIO_DEBUG) || defined(RIO_RELEASE))
@@ -15,17 +36,6 @@
     #define RIO_FORCE_INLINE inline
 #else
     #define RIO_FORCE_INLINE __attribute__((always_inline)) inline
-#endif
-
-#if defined(_WIN32)
-    #define RIO_IS_WIN  1
-    #define RIO_IS_CAFE 0
-#elif defined(__WUT__)
-    #define RIO_IS_WIN  0
-    #define RIO_IS_CAFE 1
-#else
-    #define RIO_IS_WIN  0
-    #define RIO_IS_CAFE 0
 #endif
 
 #ifdef __cplusplus
@@ -66,7 +76,7 @@ static_assert(sizeof(f64) == 8);
 #endif
 
 #ifdef RIO_DEBUG
-    #if RIO_IS_WIN
+    #if RIO_IS_DESKTOP
         #define RIO_ASSERT(ARG) assert(ARG)
 
         #ifdef __cplusplus

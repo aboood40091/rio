@@ -17,7 +17,7 @@ public:
 
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 #include <misc/win/rio_MemUtilWin.h>
 #elif RIO_IS_CAFE
 #include <misc/cafe/rio_MemUtilCafe.h>

@@ -27,7 +27,7 @@ public:
 
 }
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 #include <gpu/win/rio_DrawerWin.h>
 #elif RIO_IS_CAFE
 #include <gpu/cafe/rio_DrawerCafe.h>

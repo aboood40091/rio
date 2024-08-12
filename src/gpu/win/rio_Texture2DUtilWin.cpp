@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/win/rio_Texture2DUtilWin.h>
 
@@ -274,4 +274,4 @@ void Texture2DUtil::uploadTextureCurrent(
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

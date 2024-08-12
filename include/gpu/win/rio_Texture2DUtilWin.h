@@ -3,7 +3,7 @@
 
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_Texture.h>
 
@@ -192,6 +192,6 @@ public:
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 #endif // RIO_GPU_TEXTURE_2D_UTIL_WIN_H

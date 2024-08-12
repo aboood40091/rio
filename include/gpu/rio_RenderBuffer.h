@@ -16,9 +16,9 @@ public:
     RenderBuffer();
     RenderBuffer(u32 w, u32 h);
     RenderBuffer(const BaseVec2i& size);
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     ~RenderBuffer();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 private:
     RenderBuffer(const RenderBuffer&);
@@ -113,17 +113,17 @@ public:
 
     bool read(
         u32 color_target_index, void* pixels
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         , u32 width
         , u32 height
         , const NativeTextureFormat& native_format
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     );
 
 private:
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     void bindFBO_() const;
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     void bindRenderTargetColor_() const;
     void bindRenderTargetDepth_() const;
 
@@ -133,12 +133,12 @@ private:
     BaseVec2i           mScissorSize;
     RenderTargetColor*  mpColorTarget[Graphics::RENDER_TARGET_MAX_NUM];
     RenderTargetDepth*  mpDepthTarget;
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
     u32                 mHandle;
     mutable u32         mDrawBuffers[Graphics::RENDER_TARGET_MAX_NUM];
 
     void createHandle_();
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 };
 
 }

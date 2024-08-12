@@ -78,7 +78,7 @@ private:
 protected:
 #if RIO_IS_CAFE
     mutable GX2ColorBuffer  mInnerBuffer;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     u32                     mHandle;
 #endif
 };
@@ -98,9 +98,9 @@ public:
     void linkNativeTexture2D(NativeTexture2DHandle handle, bool has_stencil)
     {
         linkNativeTexture2D(handle);
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
         mHasStencil = has_stencil;
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
     }
 
     void invalidateGPUCache() const override;
@@ -119,7 +119,7 @@ private:
 protected:
 #if RIO_IS_CAFE
     mutable GX2DepthBuffer  mInnerBuffer;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     u32                     mHandle;
     bool                    mHasStencil;
 #endif

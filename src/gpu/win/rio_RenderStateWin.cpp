@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <gpu/rio_RenderState.h>
 
@@ -107,4 +107,4 @@ void RenderState::applyCullingAndPolygonModeAndPolygonOffset() const
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

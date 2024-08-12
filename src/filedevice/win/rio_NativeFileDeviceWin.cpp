@@ -1,37 +1,23 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <filedevice/rio_NativeFileDevice.h>
 
-#include <misc/win/rio_Windows.h>
-
-#include <algorithm>
-
-namespace {
-
-static inline std::string GetCWD()
-{
-    std::string path = std::string(MAX_PATH, '\0');
-    GetModuleFileNameA(nullptr, &path[0], path.length());
-    std::replace(path.begin(), path.end(), '\\', '/');
-    return path.substr(0, path.find_last_of('/'));
-}
-
-}
+#include <filesystem>
 
 namespace rio {
 
 NativeFileDevice::NativeFileDevice()
-    : StdIOFileDevice("native", GetCWD())
+    : StdIOFileDevice("native", std::filesystem::current_path())
 {
 }
 
 NativeFileDevice::NativeFileDevice(const std::string& drive_name)
-    : StdIOFileDevice(drive_name, GetCWD())
+    : StdIOFileDevice(drive_name, std::filesystem::current_path())
 {
 }
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

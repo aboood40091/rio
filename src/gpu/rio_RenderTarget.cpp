@@ -12,7 +12,7 @@ RenderTargetColor::RenderTargetColor()
 {
 #if RIO_IS_CAFE
     MemUtil::set(&mInnerBuffer, 0, sizeof(GX2ColorBuffer));
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     mHandle = GL_NONE;
 #endif
 }
@@ -24,7 +24,7 @@ void RenderTargetColor::linkNativeTexture2D(NativeTexture2DHandle handle)
 #if RIO_IS_CAFE
     mInnerBuffer.surface = handle->surface;
     mInnerBuffer.surface.use = GX2_SURFACE_USE_COLOR_BUFFER;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     mHandle = handle;
 #endif
 }
@@ -50,7 +50,7 @@ void RenderTargetColor::bind(u32 index) const
 
 #if RIO_IS_CAFE
     GX2SetColorBuffer(&mInnerBuffer, static_cast<GX2RenderTarget>(GX2_RENDER_TARGET_0 + index));
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     RIO_ASSERT(mHandle != GL_NONE);
     RIO_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, mHandle, mMipLevel));
 #endif
@@ -73,7 +73,7 @@ RenderTargetDepth::RenderTargetDepth()
 #if RIO_IS_CAFE
     MemUtil::set(&mInnerBuffer, 0, sizeof(GX2DepthBuffer));
     GX2InitDepthBufferHiZEnable(&mInnerBuffer, GX2_DISABLE);
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     mHandle = GL_NONE;
     mHasStencil = false;
 #endif
@@ -86,7 +86,7 @@ void RenderTargetDepth::linkNativeTexture2D(NativeTexture2DHandle handle)
 #if RIO_IS_CAFE
     mInnerBuffer.surface = handle->surface;
     mInnerBuffer.surface.use = GX2_SURFACE_USE_DEPTH_BUFFER;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     mHandle = handle;
     mHasStencil = false;
 #endif
@@ -113,7 +113,7 @@ void RenderTargetDepth::bind() const
 
 #if RIO_IS_CAFE
     GX2SetDepthBuffer(&mInnerBuffer);
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     RIO_ASSERT(mHandle != GL_NONE);
     RIO_GL_CALL(glFramebufferTexture2D(
         GL_FRAMEBUFFER,
