@@ -76,6 +76,9 @@ public:
 
     u32 getShaderProgram() const { return mShaderProgram; }
 
+    u32 getUniformLocation(const char* name) const;
+    u32 getUniformBlockIndex(const char* name) const;
+
 #endif
 
     // Set the current global shader mode.
@@ -291,6 +294,40 @@ private:
     u32                 mShaderProgram;
 #endif
 };
+
+#if RIO_IS_WIN
+
+inline u32 Shader::getVertexSamplerLocation(const char* name) const
+{
+    return getUniformLocation(name);
+}
+
+inline u32 Shader::getFragmentSamplerLocation(const char* name) const
+{
+    return getUniformLocation(name);
+}
+
+inline u32 Shader::getVertexUniformLocation(const char* name) const
+{
+    return getUniformLocation(name);
+}
+
+inline u32 Shader::getFragmentUniformLocation(const char* name) const
+{
+    return getUniformLocation(name);
+}
+
+inline u32 Shader::getVertexUniformBlockIndex(const char* name) const
+{
+    return getUniformBlockIndex(name);
+}
+
+inline u32 Shader::getFragmentUniformBlockIndex(const char* name) const
+{
+    return getUniformBlockIndex(name);
+}
+
+#endif // RIO_IS_WIN
 
 }
 
