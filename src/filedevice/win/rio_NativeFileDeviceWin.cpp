@@ -9,12 +9,12 @@
 namespace rio {
 
 NativeFileDevice::NativeFileDevice()
-    : StdIOFileDevice("native", std::filesystem::current_path())
+    : StdIOFileDevice("native", std::filesystem::current_path().generic_string())
 {
 }
 
 NativeFileDevice::NativeFileDevice(const std::string& drive_name)
-    : StdIOFileDevice(drive_name, std::filesystem::current_path())
+    : StdIOFileDevice(drive_name, std::filesystem::current_path().generic_string())
 {
 }
 
