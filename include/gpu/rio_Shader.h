@@ -295,7 +295,7 @@ private:
 #endif
 };
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 inline u32 Shader::getVertexSamplerLocation(const char* name) const
 {
@@ -327,7 +327,7 @@ inline u32 Shader::getFragmentUniformBlockIndex(const char* name) const
     return getUniformBlockIndex(name);
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP
 
 }
 

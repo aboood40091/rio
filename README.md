@@ -76,8 +76,9 @@ Structures that do not need each their own separate folder have been collected h
 
 #### `rio_Types.h`
 Header that defines:
-* Macro `RIO_IS_WIN` on Windows and `RIO_IS_CAFE` on Wii U to 1 (0 otherwise). This is to be used to distinguish between host platforms at compile-time.  
-* Fixed-size types: `BOOL` as `int`, `s8`, `u8`, `s16`, `u16`, `s32`, `u32`, `s64`, `u64`, `f32` and `f64`.
+* Macro `RIO_IS_WIN` on Windows, `RIO_IS_LINUX` on Linux and `RIO_IS_CAFE` on Wii U to 1 (0 otherwise). This is to be used to distinguish between host platforms at compile-time.  
+* Macro `RIO_IS_DESKTOP` to 1 on platforms other than Wii U (0 otherwise).  
+* Fixed-size types: `BOOL` as `int`, `s8`, `u8`, `s16`, `u16`, `s32`, `u32`, `s64`, `u64`, `f32` and `f64`.  
 * `RIO_ASSERT` and `RIO_LOG` preprocessor functions (that only have an effect if build target is `RIO_DEBUG`).  
 
 #### gl/`rio_GL.h`

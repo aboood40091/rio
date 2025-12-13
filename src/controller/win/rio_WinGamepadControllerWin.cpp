@@ -1,6 +1,6 @@
 #include <misc/rio_Types.h>
 
-#if RIO_IS_WIN
+#if RIO_IS_DESKTOP
 
 #include <controller/win/rio_WinGamepadControllerWin.h>
 
@@ -65,4 +65,4 @@ void WinGamepadController::calcImpl_()
 
 }
 
-#endif // RIO_IS_WIN
+#endif // RIO_IS_DESKTOP

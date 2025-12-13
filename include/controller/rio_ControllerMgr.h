@@ -25,6 +25,11 @@ public:
     static constexpr ControllerDefine::ControllerId cMainGamepadId      = ControllerDefine::CONTROLLER_WIN;
     static constexpr ControllerDefine::ControllerId cMainPointerId      = ControllerDefine::CONTROLLER_WIN;
     static constexpr ControllerDefine::ControllerId cGamepadId          = ControllerDefine::CONTROLLER_WIN_GAMEPAD;
+#elif RIO_IS_LINUX
+    static constexpr ControllerDefine::ControllerId cMainControllerId   = ControllerDefine::CONTROLLER_WIN_GAMEPAD;
+    static constexpr ControllerDefine::ControllerId cMainGamepadId      = ControllerDefine::CONTROLLER_WIN_GAMEPAD;
+    static constexpr ControllerDefine::ControllerId cMainPointerId      = ControllerDefine::CONTROLLER_WIN_GAMEPAD;
+    static constexpr ControllerDefine::ControllerId cGamepadId          = ControllerDefine::CONTROLLER_WIN_GAMEPAD;
 #else
     static constexpr ControllerDefine::ControllerId cMainControllerId   = ControllerDefine::CONTROLLER_NULL;
     static constexpr ControllerDefine::ControllerId cMainGamepadId      = ControllerDefine::CONTROLLER_NULL;

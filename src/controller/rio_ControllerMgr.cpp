@@ -11,12 +11,16 @@
 #include <controller/cafe/rio_CafeDRCControllerCafe.h>
 #include <controller/cafe/rio_CafeVPadDeviceCafe.h>
 
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
 
 #include <controller/win/rio_WinGamepadControllerWin.h>
 
+#if RIO_IS_WIN
+
 #include <controller/win/rio_WinControllerWin.h>
 #include <controller/win/rio_KeyboardMouseDeviceWin.h>
+
+#endif // RIO_IS_WIN
 
 #endif
 
@@ -60,8 +64,11 @@ void ControllerMgr::initializeDefault_()
     mControllers.reserve(
 #if RIO_IS_CAFE
         5
-#elif RIO_IS_WIN
-        1 + (GLFW_JOYSTICK_LAST + 1)
+#elif RIO_IS_DESKTOP
+        (GLFW_JOYSTICK_LAST + 1)
+#if RIO_IS_WIN
+        + 1
+#endif // RIO_IS_WIN
 #else
         0
 #endif
@@ -78,7 +85,7 @@ void ControllerMgr::initializeDefault_()
     {
         mControllers.push_back(new CafeDRCController(this));
     }
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     {
         FileDevice::LoadArg arg;
         arg.path = "gamecontrollerdb.txt";
@@ -93,10 +100,12 @@ void ControllerMgr::initializeDefault_()
         mControllers.push_back(new WinGamepadController(this, i));
     }
 
+#if RIO_IS_WIN
     mDevices.push_back(new KeyboardMouseDevice(this));
     {
         mControllers.push_back(new WinController(this));
     }
+#endif // RIO_IS_WIN
 #endif
 }
 
