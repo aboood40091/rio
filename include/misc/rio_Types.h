@@ -5,25 +5,23 @@
     #define RIO_IS_WIN     1
     #define RIO_IS_LINUX   0
     #define RIO_IS_CAFE    0
+    #define RIO_IS_DESKTOP 1
 #elif defined(__linux__)
     #define RIO_IS_WIN     0
     #define RIO_IS_LINUX   1
     #define RIO_IS_CAFE    0
+    #define RIO_IS_DESKTOP 1
 #elif defined(__WUT__)
     #define RIO_IS_WIN     0
     #define RIO_IS_LINUX   0
     #define RIO_IS_CAFE    1
+    #define RIO_IS_DESKTOP 0
 #else
     #error "Unknown host platform."
 #endif
 
-#if defined(__WUT__)
-    #define RIO_IS_DESKTOP 0
-#else
-    #define RIO_IS_DESKTOP 1
-    #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
-        #error "Desktop targets are currently required to be little endian."
-    #endif // __BYTE_ORDER__
+#if RIO_IS_DESKTOP && __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
+    #error "Desktop targets are currently required to be little endian."
 #endif
 
 #if !(defined(RIO_DEBUG) || defined(RIO_RELEASE))
