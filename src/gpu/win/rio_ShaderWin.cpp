@@ -188,7 +188,7 @@ u32 Shader::getVertexAttribLocation(const char* name) const
     return loc;
 }
 
-u32 Shader::getVertexSamplerLocation(const char* name) const
+u32 Shader::getUniformLocation(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     u32 loc;
@@ -196,39 +196,7 @@ u32 Shader::getVertexSamplerLocation(const char* name) const
     return loc;
 }
 
-u32 Shader::getFragmentSamplerLocation(const char* name) const
-{
-    RIO_ASSERT(mLoaded);
-    u32 loc;
-    RIO_GL_CALL(loc = glGetUniformLocation(mShaderProgram, name));
-    return loc;
-}
-
-u32 Shader::getVertexUniformLocation(const char* name) const
-{
-    RIO_ASSERT(mLoaded);
-    u32 loc;
-    RIO_GL_CALL(loc = glGetUniformLocation(mShaderProgram, name));
-    return loc;
-}
-
-u32 Shader::getFragmentUniformLocation(const char* name) const
-{
-    RIO_ASSERT(mLoaded);
-    u32 loc;
-    RIO_GL_CALL(loc = glGetUniformLocation(mShaderProgram, name));
-    return loc;
-}
-
-u32 Shader::getVertexUniformBlockIndex(const char* name) const
-{
-    RIO_ASSERT(mLoaded);
-    u32 loc;
-    RIO_GL_CALL(loc = glGetUniformBlockIndex(mShaderProgram, name));
-    return loc;
-}
-
-u32 Shader::getFragmentUniformBlockIndex(const char* name) const
+u32 Shader::getUniformBlockIndex(const char* name) const
 {
     RIO_ASSERT(mLoaded);
     u32 loc;
