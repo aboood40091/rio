@@ -13,8 +13,8 @@ Examples can be found [here](https://github.com/aboood40091/RIO-Tests).
 Docs can be found... nowhere yet as I am still working on it. In the meantime, I tried to fill this README with as much information I could and left some useful comments in the headers.  
 
 ## Requirements & Dependencies
-* GCC compiler with C++17 support and GNU extensions.  
-* A build target must be specified by defining one of the two macros: `RIO_DEBUG` and `RIO_RELEASE`.
+* GCC compiler with C++20 support.  
+* A build target must be specified by defining one of the two macros: `RIO_DEBUG` and `RIO_RELEASE`.  
 * RIO has been tested with `Og` in the debug build and `O3` in the release build.  
 * `notes_build.txt` specifies the build options I used for testing.  
 

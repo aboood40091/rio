@@ -1,6 +1,6 @@
 General:
   Build options:
-    -std=gnu++17
+    -std=c++20
     -fPIC
     -m32
     -Wall
