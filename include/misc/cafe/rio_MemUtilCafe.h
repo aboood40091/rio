@@ -11,7 +11,10 @@ namespace rio {
 
 inline void* MemUtil::copy(void* dst, const void* src, size_t size)
 {
-    RIO_ASSERT(src && dst && size);
+    RIO_ASSERT(src && dst);
+    if (size == 0) // TODO: Investigate if this is necessary
+        return dst;
+
     RIO_ASSERT((src < dst || src >= (u8*)dst + size) &&
                (dst < src || dst >= (u8*)src + size));
 
@@ -20,7 +23,9 @@ inline void* MemUtil::copy(void* dst, const void* src, size_t size)
 
 inline void* MemUtil::set(void* ptr, u8 val, size_t size)
 {
-    RIO_ASSERT(ptr && size);
+    RIO_ASSERT(ptr);
+    if (size == 0) // TODO: Investigate if this is necessary
+        return ptr;
 
     return OSBlockSet(ptr, val, size);
 }
