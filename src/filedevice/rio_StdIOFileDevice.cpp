@@ -1,6 +1,7 @@
 #include <filedevice/rio_StdIOFileDevice.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <string>
