@@ -388,6 +388,12 @@ bool Window::isRunning() const
     return mNativeWindow.mIsRunning;
 }
 
+void Window::requestClose() const
+{
+    // TODO: Implement proper close request handling
+    terminate_();
+}
+
 void Window::terminate_()
 {
     mNativeWindow.mIsRunning = false;

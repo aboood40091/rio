@@ -198,6 +198,11 @@ bool Window::isRunning() const
     return !glfwWindowShouldClose(mNativeWindow.mpGLFWwindow);
 }
 
+void Window::requestClose() const
+{
+    glfwSetWindowShouldClose(mNativeWindow.mpGLFWwindow, GLFW_TRUE);
+}
+
 void Window::terminate_()
 {
     destroyFb_();

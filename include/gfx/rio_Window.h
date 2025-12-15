@@ -64,6 +64,9 @@ public:
     // Check if window is still running
     bool isRunning() const;
 
+    // Request closing the window
+    void requestClose() const;
+
     // Swap the front and back buffers
     // This function will perform a GPU flush and block until swapping is done
     // For Cafe, TV output is automatically duplicated to the DRC
