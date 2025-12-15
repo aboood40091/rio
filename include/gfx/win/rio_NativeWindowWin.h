@@ -1,7 +1,7 @@
 #ifndef RIO_GFX_NATIVE_WINDOW_WIN_H
 #define RIO_GFX_NATIVE_WINDOW_WIN_H
 
-#include <misc/gl/rio_GL.h>
+#include <gpu/rio_Texture.h>
 
 #include <thread>
 
@@ -25,10 +25,10 @@ public:
         : mpGLFWwindow(nullptr)
         , mpOnResizeCallback(nullptr)
         , mFramebufferHandle(GL_NONE)
-        , mColorBufferTextureHandle(GL_NONE)
+        , mColorBufferTextureHandle(RIO_NATIVE_TEXTURE_2D_HANDLE_NULL)
         , mColorBufferTextureFormat(TEXTURE_FORMAT_INVALID)
         , mDepthBufferHandle(GL_NONE)
-        , mDepthBufferTextureHandle(GL_NONE)
+        , mDepthBufferTextureHandle(RIO_NATIVE_TEXTURE_2D_HANDLE_NULL)
         , mDepthBufferTextureFormat(TEXTURE_FORMAT_INVALID)
         , mDepthBufferCopyFramebufferSrc(GL_NONE)
         , mDepthBufferCopyFramebufferDst(GL_NONE)
@@ -40,12 +40,12 @@ public:
 
     GLuint getFramebufferHandle() const { return mFramebufferHandle; }
 
-    GLuint getColorBufferTextureHandle() const { return mColorBufferTextureHandle; }
+    NativeTexture2DHandle getColorBufferTextureHandle() const { return mColorBufferTextureHandle; }
     TextureFormat getColorBufferTextureFormat() const { return mColorBufferTextureFormat; }
 
     GLuint getDepthBufferHandle() const { return mDepthBufferHandle; }
 
-    GLuint getDepthBufferTextureHandle() const { return mDepthBufferTextureHandle; }
+    NativeTexture2DHandle getDepthBufferTextureHandle() const { return mDepthBufferTextureHandle; }
     TextureFormat getDepthBufferTextureFormat() const { return mDepthBufferTextureFormat; }
 
 private:
@@ -80,12 +80,12 @@ private:
 
     GLuint mFramebufferHandle;
 
-    GLuint mColorBufferTextureHandle;
+    NativeTexture2DHandle mColorBufferTextureHandle;
     TextureFormat mColorBufferTextureFormat;
 
     GLuint mDepthBufferHandle;
 
-    GLuint mDepthBufferTextureHandle;
+    NativeTexture2DHandle mDepthBufferTextureHandle;
     TextureFormat mDepthBufferTextureFormat;
 
     GLuint mDepthBufferCopyFramebufferSrc;
