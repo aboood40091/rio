@@ -62,7 +62,7 @@ private:
             mFrameEndTarget = now;
         else
         {
-#if 0
+#if 1
             // This results in smooth FPS, but with very high CPU usage...
             while (mFrameEndTarget > Clock::now())
                 ;
