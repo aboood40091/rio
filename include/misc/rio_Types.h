@@ -69,9 +69,7 @@ static_assert(sizeof(s64) == sizeof(u64) && sizeof(u64) == 8);
 static_assert(sizeof(f32) == 4);
 static_assert(sizeof(f64) == 8);
 
-#if !(RIO_IS_CAFE || defined(BOOL))
-    #define BOOL int
-#endif
+typedef int BOOL;
 
 #ifdef RIO_DEBUG
     #if RIO_IS_DESKTOP
