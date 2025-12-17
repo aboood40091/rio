@@ -84,7 +84,7 @@ void Renderer::render() const
         for (const RenderStep& render_step : layer.mRenderSteps)
         {
             for (const DrawMethod& draw_method : render_step.mDrawMethods)
-                (draw_method.mObjPtr->*(draw_method.mFuncPtr))({ layer, render_step_idx });
+                draw_method({ layer, render_step_idx });
 
             render_step_idx++;
         }

@@ -18,6 +18,9 @@ class Window;
 
 namespace rio { namespace lyr {
 
+class Layer;
+class Renderer;
+
 class RenderStep
 {
     // Class representing a "render step", that is, a set of draw methods

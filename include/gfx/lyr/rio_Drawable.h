@@ -3,6 +3,10 @@
 
 #include <misc/rio_Types.h>
 
+#include <functional>
+#include <utility>
+#include <concepts>
+
 namespace rio { namespace lyr {
 
 class Layer;
@@ -16,35 +20,37 @@ struct DrawInfo
 class IDrawable
 {
     // Base interface for a drawable object, that is, an object with "draw methods".
-
-public:
-    // Draw method function pointer type.
-    typedef void (IDrawable::*DrawMethod)(const DrawInfo&);
 };
-
-class Renderer;
 
 class DrawMethod
 {
     // Class for holding a draw method function pointer for use with the Renderer.
 
 public:
-    DrawMethod(IDrawable* obj_ptr, IDrawable::DrawMethod func_ptr, s32 priority = 0);
+    DrawMethod() = default;
 
-    template <typename T>
-    DrawMethod(T* obj_ptr, void (T::*func_ptr)(const DrawInfo&), s32 priority = 0)
-        : DrawMethod(static_cast<IDrawable*>(obj_ptr), static_cast<IDrawable::DrawMethod>(func_ptr), priority)
+    template <class T>
+    DrawMethod(T* obj, void (T::*mf)(const DrawInfo&), s32 priority = 0)
+        : mPriority(priority)
+        , mFn([obj, mf](const DrawInfo& di) {
+            (obj->*mf)(di);
+          })
     {
     }
 
-    bool operator<(const DrawMethod& rhs) const;
+    void operator()(const DrawInfo& di) const
+    {
+        mFn(di);
+    }
+
+    bool operator<(const DrawMethod& rhs) const
+    {
+        return mPriority > rhs.mPriority;
+    }
 
 private:
-    IDrawable*              mObjPtr;    // Draw method owner object pointer.
-    IDrawable::DrawMethod   mFuncPtr;   // Draw method function pointer.
-    const s32               mPriority;  // Priority of this draw method. (Smaller value = drawn later)
-
-    friend class Renderer;
+    s32 mPriority{};
+    std::function<void(const DrawInfo&)> mFn;
 };
 
 } }
