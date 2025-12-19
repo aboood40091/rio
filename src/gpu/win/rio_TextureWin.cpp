@@ -14,7 +14,7 @@ namespace {
 
 // RTX: Custom texture format for this API
 // Magic: 5101382D; "RIOTEX2D"
-static const u32 TEX_MAGIC = 0x5101382D;
+// static const u32 TEX_MAGIC = 0x5101382D;
 
 // Minimum supported version
 static const u32 TEX_VERSION_MIN     = 0x01000000;
