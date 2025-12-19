@@ -94,8 +94,8 @@ typedef int BOOL;
         #define RIO_LOG(FMT, ARGS...) OSReport(FMT, ## ARGS)
     #endif
 #else
-    #define RIO_ASSERT(ARG) ((void)(ARG))
-    #define RIO_LOG(FMT, ARGS...)
+    #define RIO_ASSERT(ARG) do { if (!(ARG)) __builtin_unreachable(); } while (0)
+    #define RIO_LOG(FMT, ARGS...) do { } while (0)
 #endif // RIO_DEBUG
 
 #endif // RIO_TYPES_H
