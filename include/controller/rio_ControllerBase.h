@@ -29,7 +29,7 @@ public:
     f32 getLeftAnalogTrigger() const { return mLeftAnalogTrigger; }
     f32 getRightAnalogTrigger() const { return mRightAnalogTrigger; }
     const Vector2f& getPointer() const { return mPointer; }
-    const Vector2i& getPointerPrev() const { return mPointerS32; }
+    const Vector2i& getPointerS32() const { return mPointerS32; }
     bool isPointerOn() const { return mPointerFlag.isOn(POINTER_ON); }
     bool isPointerOnNow() const { return mPointerFlag.isOn(POINTER_ON_NOW); }
     bool isPointerOffNow() const { return mPointerFlag.isOn(POINTER_OFF_NOW); }

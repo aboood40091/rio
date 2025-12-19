@@ -49,6 +49,8 @@ void ControllerBase::setPointer_(bool is_on, bool touchkey_hold, const Vector2f&
     if (is_on)
     {
         mPointer = pos;
+        mPointerS32.x = (s32)pos.x;
+        mPointerS32.y = (s32)pos.y;
     }
 
     mPointerFlag.change(POINTER_ON, is_on);
@@ -105,9 +107,6 @@ void ControllerBase::updateDerivativeParams_(u32 prev_hold, bool prev_pointer_on
 
     mPointerFlag.change(POINTER_ON_NOW, !prev_pointer_on && mPointerFlag.isOn(POINTER_ON));
     mPointerFlag.change(POINTER_OFF_NOW, prev_pointer_on && mPointerFlag.isOff(POINTER_ON));
-
-    mPointerS32.x = (s32)mPointer.x;
-    mPointerS32.y = (s32)mPointer.y;
 }
 
 u32 ControllerBase::getPadHoldCount(s32 bit) const
