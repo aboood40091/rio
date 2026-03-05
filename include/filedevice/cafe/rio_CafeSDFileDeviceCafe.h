@@ -5,7 +5,25 @@
 
 namespace rio {
 
-class CafeSDFileDevice : public StdIOFileDevice
+class CafeSDCardMounter
+{
+public:
+    CafeSDCardMounter();
+    ~CafeSDCardMounter();
+
+    CafeSDCardMounter(const CafeSDCardMounter&) = delete;
+    CafeSDCardMounter& operator=(const CafeSDCardMounter&) = delete;
+
+    CafeSDCardMounter(CafeSDCardMounter&&) = delete;
+    CafeSDCardMounter& operator=(CafeSDCardMounter&&) = delete;
+
+    const char* getSDCardMountPath();
+
+private:
+    static u32 sSDMountCount;
+};
+
+class CafeSDFileDevice : public CafeSDCardMounter, public StdIOFileDevice
 {
 public:
     CafeSDFileDevice();
@@ -15,16 +33,6 @@ public:
     {
         return mCWD + '/' + path;
     }
-
-private:
-    class SDCardMounter
-    {
-    public:
-        SDCardMounter();
-        ~SDCardMounter();
-    };
-
-    SDCardMounter   mSDMounter;
 };
 
 }
