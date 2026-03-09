@@ -84,11 +84,11 @@ typedef int BOOL;
     #elif RIO_IS_CAFE
         #include <coreinit/debug.h>
 
-        #define RIO_ASSERT(ARG)                         \
-            do                                          \
-            {                                           \
-                if (!(ARG))                             \
-                    OSPanic(__FILE__, __LINE__, #ARG);  \
+        #define RIO_ASSERT(ARG)                                 \
+            do                                                  \
+            {                                                   \
+                if (!(ARG))                                     \
+                    OSPanic(__FILE__, __LINE__, "%s", #ARG);    \
             } while (0)
 
         #define RIO_LOG(FMT, ARGS...) OSReport(FMT, ## ARGS)

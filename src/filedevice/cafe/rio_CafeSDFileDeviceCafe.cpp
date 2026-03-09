@@ -10,15 +10,11 @@
 #define RIO_CAFE_SD_BASE_PATH "rio"
 #endif // RIO_CAFE_SD_BASE_PATH
 
-namespace {
-
-static u32 sSDMountCount = 0;
-
-}
-
 namespace rio {
 
-CafeSDFileDevice::SDCardMounter::SDCardMounter()
+u32 CafeSDCardMounter::sSDMountCount = 0;
+
+CafeSDCardMounter::CafeSDCardMounter()
 {
     if (sSDMountCount++ == 0)
     {
@@ -27,7 +23,7 @@ CafeSDFileDevice::SDCardMounter::SDCardMounter()
     }
 }
 
-CafeSDFileDevice::SDCardMounter::~SDCardMounter()
+CafeSDCardMounter::~CafeSDCardMounter()
 {
     if (--sSDMountCount == 0)
     {
@@ -36,9 +32,15 @@ CafeSDFileDevice::SDCardMounter::~SDCardMounter()
     }
 }
 
+const char* CafeSDCardMounter::getSDCardMountPath()
+{
+    RIO_ASSERT(sSDMountCount > 0);
+    return WHBGetSdCardMountPath();
+}
+
 CafeSDFileDevice::CafeSDFileDevice()
-    : StdIOFileDevice("sd", std::string(WHBGetSdCardMountPath()) + "/" RIO_CAFE_SD_BASE_PATH)
-    , mSDMounter()
+    : CafeSDCardMounter()
+    , StdIOFileDevice("sd", std::string(CafeSDCardMounter::getSDCardMountPath()) + "/" RIO_CAFE_SD_BASE_PATH)
 {
     RIO_LOG("CafeSDFileDevice.mCWD: %s\n", mCWD.c_str());
 }

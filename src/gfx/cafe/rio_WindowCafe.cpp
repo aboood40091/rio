@@ -391,7 +391,7 @@ bool Window::isRunning() const
 void Window::requestClose() const
 {
     // TODO: Implement proper close request handling
-    terminate_();
+    const_cast<Window*>(this)->terminate_();
 }
 
 void Window::terminate_()

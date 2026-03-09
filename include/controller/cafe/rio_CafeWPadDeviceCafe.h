@@ -6,20 +6,6 @@
 
 #include <padscore/kpad.h>
 
-extern "C"
-{
-
-typedef struct KPADUnifiedWpadStatus
-{
-    u32 data[17];
-} KPADUnifiedWpadStatus;
-
-void KPADInitEx(KPADUnifiedWpadStatus[], u32);
-u32 KPADGetMplsWorkSize();
-void KPADSetMplsWorkarea(void*);
-
-}
-
 namespace rio {
 
 class CafeWPadDevice : public ControlDevice
