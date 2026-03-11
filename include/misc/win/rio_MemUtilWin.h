@@ -11,8 +11,8 @@ namespace rio {
 inline void* MemUtil::copy(void* dst, const void* src, size_t size)
 {
     RIO_ASSERT(src && dst); // std::memcpy allows size 0
-    RIO_ASSERT((src < dst || src >= (u8*)dst + size) &&
-               (dst < src || dst >= (u8*)src + size));
+    RIO_ASSERT((src < dst || src >= (      u8*)dst + size) &&
+               (dst < src || dst >= (const u8*)src + size));
 
     return std::memcpy(dst, src, size);
 }

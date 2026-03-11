@@ -17,8 +17,8 @@ inline void* MemUtil::copy(void* dst, const void* src, size_t size)
         return dst;
     }
 
-    RIO_ASSERT((src < dst || src >= (u8*)dst + size) &&
-               (dst < src || dst >= (u8*)src + size));
+    RIO_ASSERT((src < dst || src >= (      u8*)dst + size) &&
+               (dst < src || dst >= (const u8*)src + size));
 
     return OSBlockMove(dst, src, size, 0);
 }
