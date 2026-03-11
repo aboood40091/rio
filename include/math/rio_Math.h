@@ -33,11 +33,11 @@ template <>
 class Math<f32>
 {
 public:
-    static f32 piHalf() { return 1.570796326794896619231; }
-    static f32 pi()     { return 3.141592653589793238462; }
-    static f32 pi2()    { return 6.283185307179586476924; }
-    static f32 ln2()    { return 0.69314718055994530942 ; }
-    static f32 ln2Inv() { return 1.442695040888963407   ; }
+    static f32 piHalf() { return 1.570796326794896619231f; }
+    static f32 pi()     { return 3.141592653589793238462f; }
+    static f32 pi2()    { return 6.283185307179586476924f; }
+    static f32 ln2()    { return 0.69314718055994530942f ; }
+    static f32 ln2Inv() { return 1.442695040888963407f   ; }
 
     static f32 sqrt(f32 x);
     static f32 rsqrt(f32 x);
