@@ -80,21 +80,18 @@ public:
 public:
     FileDevice(const std::string& drive_name)
         : TListNode<FileDevice*>(this)
-        , mDriveName(drive_name)
     {
+        setDriveName(drive_name);
     }
 
     virtual ~FileDevice();
 
-    const std::string& getDriveName() const
+    std::string getDriveName() const
     {
         return mDriveName;
     }
 
-    void setDriveName(const std::string& drive_name)
-    {
-        mDriveName = drive_name;
-    }
+    void setDriveName(const std::string& drive_name);
 
     u8* load(LoadArg& arg)
     {

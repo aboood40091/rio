@@ -93,7 +93,7 @@ void FileDeviceMgr::mount(FileDevice* device, const std::string& drive_name)
     RIO_ASSERT(device);
 
     if (!drive_name.empty())
-        device->mDriveName = drive_name;
+        device->setDriveName(drive_name);
 
     mDeviceList.pushBack(device);
 }

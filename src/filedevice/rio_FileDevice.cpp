@@ -1,6 +1,9 @@
 #include <filedevice/rio_FileDevice.h>
 #include <filedevice/rio_FileDeviceMgr.h>
+#include <filedevice/rio_Path.h>
 #include <misc/rio_MemUtil.h>
+
+#include <format>
 
 namespace {
 
@@ -26,6 +29,21 @@ FileDevice::~FileDevice()
 {
     if (FileDeviceMgr::instance())
         FileDeviceMgr::instance()->unmount(this);
+}
+
+void FileDevice::setDriveName(const std::string& drive_name)
+{
+    if (Path::isValidDriveName(drive_name))
+        mDriveName = drive_name;
+    else
+    {
+        RIO_ASSERT(false && "Invalid drive name");
+        mDriveName = std::format(
+            "drive_{:0{}X}",
+            reinterpret_cast<std::uintptr_t>(this),
+            sizeof(std::uintptr_t) * 2
+        );
+    }
 }
 
 RawErrorCode FileDevice::getLastRawError() const
