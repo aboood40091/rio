@@ -25,6 +25,11 @@ private:
     Renderer& operator=(const Renderer&);
 
 public:
+    Layer::iterator begin() { return mLayers.begin(); }
+    Layer::iterator end() { return mLayers.end(); }
+
+    u32 numLayers() const { return mLayers.size(); }
+
     // Create layer with the given name and render priority (Smaller value = drawn later)
     template <typename T = Layer>
     Layer::iterator addLayer(const char* name, s32 priority = 0)
@@ -34,11 +39,12 @@ public:
     }
 
     // Remove layer
-    void removeLayer(Layer::iterator it)
+    Layer::iterator removeLayer(Layer::iterator it)
     {
         Layer* p_layer = Layer::peelIterator(it);
-        mLayers.erase(it);
+        it = mLayers.erase(it);
         delete p_layer;
+        return it;
     }
 
     // Remove all layers
