@@ -226,6 +226,8 @@ bool RenderBuffer::read(
     , u32 width
     , u32 height
     , const NativeTextureFormat& native_format
+    , u32 x
+    , u32 y
 #endif // RIO_IS_DESKTOP
 )
 {
@@ -265,7 +267,7 @@ bool RenderBuffer::read(
         bindFBO_();
         p_color_target->bind(color_target_index);
         glReadBuffer(GL_COLOR_ATTACHMENT0 + color_target_index);
-        glReadPixels(0, 0, width, height, native_format.format, native_format.type, pixels);
+        glReadPixels(x, y, width, height, native_format.format, native_format.type, pixels);
 #endif
     }
 

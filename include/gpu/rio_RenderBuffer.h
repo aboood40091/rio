@@ -111,12 +111,17 @@ public:
     void clear(u32 color_target_index, u32 clear_flag, const Color4f& color = Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0);
     void clear(u32 clear_flag, const Color4f& color = Color4f::cBlack, f32 depth = 1.0f, u8 stencil = 0) { clear(0, clear_flag, color, depth, stencil); }
 
+    // Reads back a region of a colour target. (x, y) is the lower-left corner
+    // of the region in framebuffer coordinates; the default of (0, 0) reads
+    // from the start of the buffer, as before.
     bool read(
         u32 color_target_index, void* pixels
 #if RIO_IS_DESKTOP
         , u32 width
         , u32 height
         , const NativeTextureFormat& native_format
+        , u32 x = 0
+        , u32 y = 0
 #endif // RIO_IS_DESKTOP
     );
 
